@@ -1,0 +1,1 @@
+﻿是应用层中必需的,它实现了XX.Application.Contracts项目中定义的接口.
