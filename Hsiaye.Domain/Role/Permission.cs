@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Hsiaye.Domain.Shared;
+using System;
 using System.Collections.Generic;
 using System.Text;
 
@@ -12,5 +13,6 @@ namespace Hsiaye.Domain.Permission
         public string Name { get; set; }
         public int RoleId { get; set; }
         public long MemberId { get; set; }
+        public MultiTenancySides MultiTenancySides { get; set; }
     }
 }

@@ -10,5 +10,7 @@ namespace Hsiaye.Domain.Role
         public string DisplayName { get; set; }//显示名称
         public string Description { get; set; }//
         public bool IsStatic { get; set; }//是否内置
+        public bool IsDefault { get; set; }
+        public int TenantId { get; set; }
     }
 }

@@ -17,4 +17,9 @@ namespace Hsiaye.Domain.Member
         public long MemberId { get; set; }
         public string UserNameOrEmailAddress { get; set; }
     }
+    public enum MemberLoginAttemptResult
+    {
+        成功 = 1,
+        失败 = 2,
+    }
 }
