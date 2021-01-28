@@ -1,3 +1,4 @@
+using Hsiaye.Extensions;
 using NUnit.Framework;
 
 namespace Hsiaye.NUnitTest
@@ -12,6 +13,8 @@ namespace Hsiaye.NUnitTest
         [Test]
         public void Test1()
         {
+            HexCalc calc = new HexCalc(3);
+            string res = calc.Add("2", "1");
         }
     }
 }
