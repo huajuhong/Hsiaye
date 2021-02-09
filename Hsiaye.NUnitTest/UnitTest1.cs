@@ -1,6 +1,7 @@
 using Hsiaye.Dapper;
 using Hsiaye.Dapper.Mapper;
 using Hsiaye.Dapper.Sql;
+using Hsiaye.Domain;
 using Hsiaye.Extensions;
 using NUnit.Framework;
 using System.Collections.Generic;
@@ -87,18 +88,11 @@ namespace Hsiaye.NUnitTest
             //var list = Db.GetList<Demo>(group, new List<ISort> { sort });
 
             //列表：页码：1，分页大小：2
-            var page1 = Db.GetPage<Demo>(null, new List<ISort> { sort }, 0, 2);
+            //var page1 = Db.GetPage<Demo>(null, new List<ISort> { sort }, 0, 2);
             //列表：页码：2，分页大小：2
             var page2 = Db.GetPage<Demo>(null, new List<ISort> { sort }, 1, 2);
 
-            //var page2 = Db.GetSet<Demo>(null, new List<ISort> { sort }, 2, 2, null, 1000, true);
+            var pageSet1 = Db.GetSet<Demo>(null, new List<ISort> { sort }, 2, 2, 1000, true);
         }
-    }
-
-    public class Demo
-    {
-        public int Id { get; set; }
-        public string Name { get; set; }
-        public string Code { get; set; }
     }
 }
