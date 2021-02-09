@@ -12,6 +12,10 @@ using System.Linq;
 using System.Text.Json;
 using System.Threading.Tasks;
 using Hsiaye.Web.Extensions;
+using Hsiaye.Dapper;
+using Hsiaye.Dapper.Mapper;
+using System.Reflection;
+using Hsiaye.Dapper.Sql;
 
 namespace Hsiaye.Web
 {
@@ -41,6 +45,14 @@ namespace Hsiaye.Web
                 c.SwaggerDoc("v1", new OpenApiInfo { Title = "Hsiaye.Web", Version = "v1", Description = "新的开始", });
             });
 
+            services.AddTransient(serviceProvider =>
+            {
+                var connection = new System.Data.SqlClient.SqlConnection("Password=sn668;Persist Security Info=True;User ID=sa;Initial Catalog=Hsiaye;Data Source=.");
+                var config = new DapperExtensionsConfiguration(typeof(AutoClassMapper<>), new List<Assembly>(), new SqlServerDialect());
+                var sqlGenerator = new SqlGeneratorImpl(config);
+                IDatabase database = new Database(connection, sqlGenerator);
+                return database;
+            });
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

@@ -17,6 +17,5 @@ namespace Hsiaye.Web.Controllers
 
         //2.当前角色列表（包含拥有的权限数组）
         //  
-
     }
 }
