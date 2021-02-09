@@ -8,4 +8,9 @@
     <PackageReference Include="Dapper" Version="2.0.78" />
   </ItemGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\Hsiaye.Domain.Shared\Hsiaye.Domain.Shared.csproj" />
+    <ProjectReference Include="..\Hsiaye.Extensions\Hsiaye.Extensions.csproj" />
+  </ItemGroup>
+
 </Project>
