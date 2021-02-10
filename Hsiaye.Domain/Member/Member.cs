@@ -6,8 +6,8 @@ namespace Hsiaye.Domain.Member
 {
     public class Member
     {
-        public List<object> Permissions { get; set; }
-        public List<object> Roles { get; set; }
+        public List<string> Permissions { get; set; }
+        public List<string> Roles { get; set; }
         public string UserName { get; set; }
         public bool IsPhoneNumberConfirmed { get; set; }
         public string PhoneNumber { get; set; }
