@@ -3,7 +3,7 @@ using System.Reflection;
 using Microsoft.AspNetCore.Mvc.Abstractions;
 using Microsoft.AspNetCore.Mvc.Controllers;
 
-namespace Abp.AspNetCore.Mvc.Extensions
+namespace Hsiaye.Web.Extensions.Mvc
 {
     public static class ActionDescriptorExtensions
     {
