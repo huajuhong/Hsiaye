@@ -4,4 +4,16 @@
     <TargetFramework>net5.0</TargetFramework>
   </PropertyGroup>
 
+  <ItemGroup>
+    <PackageReference Include="Microsoft.AspNetCore.Http.Abstractions" Version="2.2.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Hsiaye.Application.Contracts\Hsiaye.Application.Contracts.csproj" />
+    <ProjectReference Include="..\Hsiaye.Dapper\Hsiaye.Dapper.csproj" />
+    <ProjectReference Include="..\Hsiaye.Domain.Shared\Hsiaye.Domain.Shared.csproj" />
+    <ProjectReference Include="..\Hsiaye.Domain\Hsiaye.Domain.csproj" />
+    <ProjectReference Include="..\Hsiaye.Extensions\Hsiaye.Extensions.csproj" />
+  </ItemGroup>
+
 </Project>
