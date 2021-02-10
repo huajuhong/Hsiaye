@@ -10,7 +10,10 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\Hsiaye.Application.Contracts\Hsiaye.Application.Contracts.csproj" />
+    <ProjectReference Include="..\Hsiaye.Application\Hsiaye.Application.csproj" />
     <ProjectReference Include="..\Hsiaye.Dapper\Hsiaye.Dapper.csproj" />
+    <ProjectReference Include="..\Hsiaye.Domain.Shared\Hsiaye.Domain.Shared.csproj" />
     <ProjectReference Include="..\Hsiaye.Domain\Hsiaye.Domain.csproj" />
   </ItemGroup>
 

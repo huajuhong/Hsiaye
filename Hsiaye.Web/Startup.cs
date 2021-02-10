@@ -16,6 +16,8 @@ using Hsiaye.Dapper;
 using Hsiaye.Dapper.Mapper;
 using System.Reflection;
 using Hsiaye.Dapper.Sql;
+using Microsoft.AspNetCore.Http;
+using Hsiaye.Web.Extensions.Filters;
 
 namespace Hsiaye.Web
 {
@@ -33,7 +35,12 @@ namespace Hsiaye.Web
         {
             //响应压缩
             services.AddResponseCompression();
-            services.AddControllers().AddJsonOptions(options =>
+            services.AddControllers(options =>
+            {
+                options.Filters.Add<AuthorizationFilter>();
+                options.Filters.Add<ActionFilter>();
+                options.Filters.Add<ExceptionFilter>();
+            }).AddJsonOptions(options =>
             {
                 options.JsonSerializerOptions.PropertyNamingPolicy = null;//默认大驼峰命名规则
                 options.JsonSerializerOptions.WriteIndented = true;//缩进
@@ -53,6 +60,7 @@ namespace Hsiaye.Web
                 IDatabase database = new Database(connection, sqlGenerator);
                 return database;
             });
+            services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
