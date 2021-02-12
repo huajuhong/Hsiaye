@@ -39,7 +39,7 @@ namespace Hsiaye.Web
             {
                 options.Filters.Add<AuthorizationFilter>();
                 options.Filters.Add<ActionFilter>();
-                options.Filters.Add<ExceptionFilter>();
+                options.Filters.Add(new ExceptionFilter());
             }).AddJsonOptions(options =>
             {
                 options.JsonSerializerOptions.PropertyNamingPolicy = null;//默认大驼峰命名规则

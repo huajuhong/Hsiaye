@@ -1,6 +1,7 @@
 ﻿using Hsiaye.Application.Authorization;
 using Hsiaye.Dapper;
 using Hsiaye.Domain;
+using Hsiaye.Domain.Shared;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Authorization;
@@ -32,7 +33,7 @@ namespace Hsiaye.Web.Controllers
             var list = _database.GetPage<Demo>(null, new List<ISort> { sort }, page, limit);
             return list;
         }
-        [Authorize]
+        //[Authorize]
         public string Current()
         {
             return "1";

@@ -6,7 +6,7 @@ namespace Hsiaye.Domain.Member
 {
     public class MemberLogin
     {
-        public int? TenantId { get; set; }
+        public int TenantId { get; set; }
         public long MemberId { get; set; }
 
         //登录提供程序

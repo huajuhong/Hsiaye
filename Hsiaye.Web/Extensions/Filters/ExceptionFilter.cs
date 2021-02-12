@@ -22,6 +22,7 @@ namespace Hsiaye.Web.Extensions.Filters
                 result = new ApiResult { Code = 500, Message = "服务器内部错误" };
             }
             context.Result = new JsonResult(result);
+            context.ExceptionHandled = true;
         }
     }
 }
