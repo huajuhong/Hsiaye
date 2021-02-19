@@ -1,6 +1,5 @@
 ﻿using Hsiaye.Application.Authorization;
 using Hsiaye.Dapper;
-using Hsiaye.Domain.Member;
 using Hsiaye.Domain.Shared;
 using Microsoft.AspNetCore.Mvc.Controllers;
 using Microsoft.AspNetCore.Mvc.Filters;
@@ -10,6 +9,8 @@ using System.Linq;
 using System.Threading.Tasks;
 using Hsiaye.Web.Extensions.Mvc;
 using Microsoft.AspNetCore.Mvc;
+using Hsiaye.Domain;
+using Hsiaye.Domain.Members;
 
 namespace Hsiaye.Web.Extensions.Filters
 {

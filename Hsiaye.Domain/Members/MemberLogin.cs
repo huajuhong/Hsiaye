@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace Hsiaye.Domain.Member
+namespace Hsiaye.Domain.Members
 {
     public class MemberLogin
     {

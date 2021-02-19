@@ -2,10 +2,11 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace Hsiaye.Domain.Member
+namespace Hsiaye.Domain.Members
 {
     public class Member
     {
+        public long Id { get; set; }
         public List<string> Permissions { get; set; }
         public List<string> Roles { get; set; }
         public string UserName { get; set; }

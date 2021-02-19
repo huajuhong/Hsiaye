@@ -1,11 +1,10 @@
-﻿
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Text;
 
-namespace Hsiaye.Application.Contracts.Role.Dto
+namespace Hsiaye.Application.Contracts.Roles.Dto
 {
-    public class RoleEditDto
+    public class RoleDto
     {
         public int Id { get; set; }
         //[Required]
@@ -14,8 +13,9 @@ namespace Hsiaye.Application.Contracts.Role.Dto
         //[Required]
         public string DisplayName { get; set; }
 
+
         public string Description { get; set; }
 
-        public bool IsStatic { get; set; }
+        public List<string> GrantedPermissions { get; set; }
     }
 }

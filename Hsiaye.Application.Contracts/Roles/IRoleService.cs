@@ -1,9 +1,9 @@
-﻿using Hsiaye.Application.Contracts.Role.Dto;
+﻿using Hsiaye.Application.Contracts.Roles.Dto;
 using System;
 using System.Collections.Generic;
 using System.Text;
 
-namespace Hsiaye.Application.Contracts.Role
+namespace Hsiaye.Application.Contracts.Roles
 {
     public interface IRoleService
     {

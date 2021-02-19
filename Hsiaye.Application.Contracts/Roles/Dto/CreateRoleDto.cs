@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace Hsiaye.Application.Contracts.Role.Dto
+namespace Hsiaye.Application.Contracts.Roles.Dto
 {
     public class CreateRoleDto
     {

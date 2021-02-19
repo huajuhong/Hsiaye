@@ -3,16 +3,19 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 
-namespace Hsiaye.Domain.Permission
+namespace Hsiaye.Domain.Roles
 {
+    /// <summary>
+    /// 角色和用户权限表
+    /// TenantId、RoleId、MemberId不等于0时，分别为他们自己的权限，例如租户权限、角色权限和成员权限
+    /// </summary>
     public class Permission
     {
-        public int ParentId { get; }
         public long CreatorMemberId { get; set; }
         public bool IsGranted { get; set; }
         public string Name { get; set; }
+        public int TenantId { get; }
         public int RoleId { get; set; }
         public long MemberId { get; set; }
-        public MultiTenancySides MultiTenancySides { get; set; }
     }
 }

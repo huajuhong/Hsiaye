@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace Hsiaye.Domain.Role
+namespace Hsiaye.Domain.Roles
 {
     public class Role
     {
