@@ -39,8 +39,8 @@ namespace Hsiaye.Web.Extensions.Filters
                 context.Result = new JsonResult(new ApiResult { Code = 402, Message = "token无效" });
                 return;
             }
-            IFieldPredicate predicate = Predicates.Field<MemberLogin>(f => f.ProviderKey, Operator.Eq, token);
-            var model = _database.GetList<MemberLogin>(predicate).FirstOrDefault();
+            IFieldPredicate predicate = Predicates.Field<MemberToken>(f => f.ProviderKey, Operator.Eq, token);
+            var model = _database.GetList<MemberToken>(predicate).FirstOrDefault();
             if (model == null)
             {
                 context.Result = new JsonResult(new ApiResult { Code = 403, Message = "token过期" });

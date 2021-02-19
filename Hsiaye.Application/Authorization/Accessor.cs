@@ -17,7 +17,7 @@ namespace Hsiaye.Application.Authorization
             _httpContextAccessor = httpContextAccessor;
         }
 
-        public long MemberId => _database.GetList<MemberLogin>(Predicates.Field<MemberLogin>(f => f.ProviderKey, Operator.Eq, _httpContextAccessor.GetToken())).FirstOrDefault().MemberId;
+        public long MemberId => _database.GetList<MemberToken>(Predicates.Field<MemberToken>(f => f.ProviderKey, Operator.Eq, _httpContextAccessor.GetToken())).FirstOrDefault().MemberId;
         public Member Member => _database.Get<Member>(Id);
     }
 }
