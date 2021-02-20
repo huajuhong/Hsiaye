@@ -4,15 +4,12 @@ using System.Text;
 
 namespace Hsiaye.Application.Contracts.Members.Dto
 {
-    
+
     public class CreateMemberDto
     {
         public string UserName { get; set; }
 
         public string Name { get; set; }
-
-        //[Required]
-        public string Surname { get; set; }
 
         //[Required]
         //[EmailAddress]
@@ -29,7 +26,7 @@ namespace Hsiaye.Application.Contracts.Members.Dto
         {
             if (RoleNames == null)
             {
-                RoleNames = new string[0];
+                RoleNames = Array.Empty<string>();
             }
         }
     }

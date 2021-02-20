@@ -13,6 +13,10 @@ namespace Hsiaye.Domain.Shared
             Code = code;
         }
         public UserFriendlyException(string message) : base(message) { }
+        public UserFriendlyException(Exception exception) : base("服务器内部错误")
+        {
+            string message = exception.Message;
+        }
         public int Code { get; set; }
     }
 }

@@ -18,10 +18,7 @@ namespace Hsiaye.Application.Contracts.Members
         void DeActivate(long id);
         List<RoleDto> GetRoles();
         MemberDto Get(long id);
-        MemberDto GetAll(string Keyword, bool IsActive, int SkipCount, int MaxResultCount);
-
         bool ChangePassword(ChangePasswordDto input);
         bool ResetPassword(ResetPasswordDto input);
-
     }
 }

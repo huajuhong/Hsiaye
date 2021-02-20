@@ -5,12 +5,6 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Compile Remove="Authorization\**" />
-    <EmbeddedResource Remove="Authorization\**" />
-    <None Remove="Authorization\**" />
-  </ItemGroup>
-
-  <ItemGroup>
     <ProjectReference Include="..\Hsiaye.Domain.Shared\Hsiaye.Domain.Shared.csproj" />
   </ItemGroup>
 

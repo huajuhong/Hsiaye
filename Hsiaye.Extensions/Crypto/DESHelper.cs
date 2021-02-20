@@ -7,9 +7,9 @@ namespace Hsiaye.Extensions.Crypto
 {
     public class DESHelper
     {
-        public static string Decrypt(string base64Data, string key)
+        public static string Decrypt(string base64String, string key)
         {
-            byte[] encryptedBytes = Convert.FromBase64String(base64Data);
+            byte[] encryptedBytes = Convert.FromBase64String(base64String);
             byte[] bytes = Decrypt(encryptedBytes, key);
             if (bytes != null)
                 return Encoding.UTF8.GetString(bytes);

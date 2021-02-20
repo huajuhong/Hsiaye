@@ -17,6 +17,7 @@ namespace Hsiaye.Application.Contracts.Roles
         RoleDto GetAll(string Keyword, bool IsActive, int SkipCount, int MaxResultCount);
 
         public List<PermissionDto> GetAllPermissions();
+        public List<RoleDto> GetAll();
 
         GetRoleForEditOutput GetRoleForEdit(int id);
 
