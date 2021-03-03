@@ -14,12 +14,12 @@ namespace Hsiaye.Application.Contracts.Roles
         void Delete(int id);
 
         RoleDto Get(long id);
-        RoleDto GetAll(string Keyword, bool IsActive, int SkipCount, int MaxResultCount);
+
+        List<RoleDto> GetAll(string keyword, int page, int limit);
 
         public List<PermissionDto> GetAllPermissions();
-        public List<RoleDto> GetAll();
 
-        GetRoleForEditOutput GetRoleForEdit(int id);
+        public List<RoleDto> GetAll();
 
         List<RoleListDto> GetRoles(string permission);
     }

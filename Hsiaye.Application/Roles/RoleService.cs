@@ -57,7 +57,7 @@ namespace Hsiaye.Application.Roles
                 foreach (var permission in input.GrantedPermissions)
                 {
                     if (!_permissionChecker.IsGranted(permission))
-                        throw new UserFriendlyException($"无法操作权限：{permission}");
+                        throw new UserFriendlyException($"无权限操作权限：{permission}");
                     permissions.Add(new Permission
                     {
                         CreatorMemberId = _accessor.MemberId,
@@ -99,14 +99,29 @@ namespace Hsiaye.Application.Roles
             var role = _database.Get<Role>(id);
             var permissions = _database.GetList<Permission>(Predicates.Field<Permission>(f => f.RoleId, Operator.Eq, role.Id));
             var roleDto = ExpressionGenericMapper<Role, RoleDto>.MapperTo(role);
-            if (permissions != null && permissions.Count() > 0)
+            if (permissions != null && permissions.Any())
                 roleDto.GrantedPermissions = permissions.ToList().FindAll(x => x.IsGranted).Select(x => x.Name).ToList();
             return roleDto;
         }
 
-        public RoleDto GetAll(string Keyword, bool IsActive, int SkipCount, int MaxResultCount)
+        public List<RoleDto> GetAll(string keyword, int page, int limit)
         {
-            throw new NotImplementedException();
+            var predicates = new List<IPredicate>
+            {
+                Predicates.Field<Role>(e => e.Name, Operator.Like, keyword),
+                Predicates.Field<Role>(e => e.DisplayName, Operator.Like, keyword),
+                Predicates.Field<Role>(e => e.Description, Operator.Like, keyword),
+            };
+            var sort = new List<ISort> { Predicates.Sort<Role>(x => x.CreateTime) };
+            var roles = _database.GetPage<Role>(Predicates.Group(GroupOperator.And, predicates.ToArray()), sort, page, limit).ToList();
+            var roleDtos = ExpressionGenericMapper<Role, RoleDto>.MapperTo(roles);
+            foreach (var roleDto in roleDtos)
+            {
+                var permissions = _database.GetList<Permission>(Predicates.Field<Permission>(f => f.RoleId, Operator.Eq, roleDto.Id));
+                if (permissions != null && permissions.Any())
+                    roleDto.GrantedPermissions = permissions.ToList().FindAll(x => x.IsGranted).Select(x => x.Name).ToList();
+            }
+            return roleDtos;
         }
 
         public List<RoleDto> GetAll()
@@ -137,11 +152,6 @@ namespace Hsiaye.Application.Roles
             return permissionDtos;
         }
 
-        public GetRoleForEditOutput GetRoleForEdit(long id)
-        {
-            throw new NotImplementedException();
-        }
-
         public List<RoleListDto> GetRoles(string permission)
         {
             var roles = GetAll().FindAll(r => r.GrantedPermissions.Any(p => p == permission));
@@ -152,7 +162,33 @@ namespace Hsiaye.Application.Roles
 
         public RoleDto Update(RoleDto input)
         {
-            throw new NotImplementedException();
+            var role = _database.Get<Role>(input.Id);
+            role.Name = input.Name;
+            role.DisplayName = input.DisplayName;
+            role.Description = input.Description;
+            if (!_accessor.RoleIds.Any(rid => rid == role.Id))
+                throw new UserFriendlyException($"无权限操作角色：{role.Name}");
+            _database.BeginTransaction();
+            try
+            {
+                _database.Update(role);
+                var permissions = _database.GetList<Permission>(Predicates.Field<Permission>(f => f.RoleId, Operator.Eq, role.Id)).ToList();
+                if (permissions.Any())
+                    _database.Delete(permissions);
+                permissions = new List<Permission>();
+                foreach (var permissionName in input.GrantedPermissions)
+                {
+                    permissions.Add(new Permission { CreatorMemberId = _accessor.MemberId, IsGranted = true, MemberId = 0, Name = permissionName, RoleId = role.Id });
+                }
+                _database.Insert(permissions);
+                _database.Commit();
+                return input;
+            }
+            catch (Exception ex)
+            {
+                _database.Rollback();
+                throw new UserFriendlyException(ex);
+            }
         }
     }
 }
