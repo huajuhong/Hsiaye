@@ -3,6 +3,7 @@ using Hsiaye.Application.Contracts.Roles;
 using Hsiaye.Application.Contracts.Roles.Dto;
 using Hsiaye.Dapper;
 using Hsiaye.Domain.Authorization;
+using Hsiaye.Domain.Members;
 using Hsiaye.Domain.Roles;
 using Hsiaye.Domain.Shared;
 using Hsiaye.Extensions.Mapper;
@@ -95,7 +96,12 @@ namespace Hsiaye.Application.Roles
 
         public RoleDto Get(long id)
         {
-            throw new NotImplementedException();
+            var role = _database.Get<Role>(id);
+            var permissions = _database.GetList<Permission>(Predicates.Field<Permission>(f => f.RoleId, Operator.Eq, role.Id));
+            var roleDto = ExpressionGenericMapper<Role, RoleDto>.MapperTo(role);
+            if (permissions != null && permissions.Count() > 0)
+                roleDto.GrantedPermissions = permissions.ToList().FindAll(x => x.IsGranted).Select(x => x.Name).ToList();
+            return roleDto;
         }
 
         public RoleDto GetAll(string Keyword, bool IsActive, int SkipCount, int MaxResultCount)
@@ -105,12 +111,30 @@ namespace Hsiaye.Application.Roles
 
         public List<RoleDto> GetAll()
         {
-            throw new NotImplementedException();
+            var predicate = Predicates.Field<Member_Role>(f => f.MemberId, Operator.Eq, _accessor.MemberId);
+            var member_Roles = _database.GetList<Member_Role>(predicate);
+            List<RoleDto> roleDtos = new List<RoleDto>();
+            RoleDto roleDto;
+            foreach (var item in member_Roles)
+            {
+                roleDto = Get(item.RoleId);
+                roleDtos.Add(roleDto);
+            }
+            return roleDtos;
         }
 
         public List<PermissionDto> GetAllPermissions()
         {
-            throw new NotImplementedException();
+            var predicate = Predicates.Field<Member_Role>(f => f.MemberId, Operator.Eq, _accessor.MemberId);
+            var member_Roles = _database.GetList<Member_Role>(predicate);
+            List<PermissionDto> permissionDtos = new List<PermissionDto>();
+            foreach (var item in member_Roles)
+            {
+                var permissions = _database.GetList<Permission>(Predicates.Field<Permission>(f => f.RoleId, Operator.Eq, item.RoleId));
+                var dtos = ExpressionGenericMapper<List<Permission>, List<PermissionDto>>.MapperTo(permissions.ToList());
+                permissionDtos.AddRange(dtos);
+            }
+            return permissionDtos;
         }
 
         public GetRoleForEditOutput GetRoleForEdit(int id)
