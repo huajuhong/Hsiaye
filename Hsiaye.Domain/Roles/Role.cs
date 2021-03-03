@@ -7,6 +7,7 @@ namespace Hsiaye.Domain.Roles
     public class Role
     {
         public int Id { get; set; }
+        public DateTime CreateTime { get; set; }
         public string DisplayName { get; set; }//显示名称
         public bool IsDefault { get; set; }
         public bool IsStatic { get; set; }//是否内置

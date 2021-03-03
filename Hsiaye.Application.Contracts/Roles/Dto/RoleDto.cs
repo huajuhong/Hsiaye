@@ -7,8 +7,10 @@ namespace Hsiaye.Application.Contracts.Roles.Dto
     public class RoleDto
     {
         public int Id { get; set; }
+        public DateTime CreateTime { get; set; }
         //[Required]
         public string Name { get; set; }
+
 
         //[Required]
         public string DisplayName { get; set; }

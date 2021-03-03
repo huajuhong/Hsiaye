@@ -6,7 +6,7 @@ namespace Hsiaye.Application.Contracts.Roles.Dto
 {
     public class RoleListDto
     {
-        public DateTime CreationTime { get; set; }
+        public DateTime CreateTime { get; set; }
         public string Name { get; set; }
 
         public string DisplayName { get; set; }

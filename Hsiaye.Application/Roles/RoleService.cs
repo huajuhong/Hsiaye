@@ -137,14 +137,16 @@ namespace Hsiaye.Application.Roles
             return permissionDtos;
         }
 
-        public GetRoleForEditOutput GetRoleForEdit(int id)
+        public GetRoleForEditOutput GetRoleForEdit(long id)
         {
             throw new NotImplementedException();
         }
 
         public List<RoleListDto> GetRoles(string permission)
         {
-            throw new NotImplementedException();
+            var roles = GetAll().FindAll(r => r.GrantedPermissions.Any(p => p == permission));
+            var dtos = ExpressionGenericMapper<List<RoleDto>, List<RoleListDto>>.MapperTo(roles);
+            return dtos;
         }
 
 
