@@ -19,7 +19,7 @@ namespace Hsiaye.Application.Members
 {
     public class MemberService : IMemberService
     {
-        private static readonly string AdminUserName = "admin";
+        private static readonly string AdminUserName = "hsiaye";
         private static readonly string DESKey = "hsiaye-sunzhimin";
         private readonly IDatabase _database;
         private readonly IAccessor _accessor;
