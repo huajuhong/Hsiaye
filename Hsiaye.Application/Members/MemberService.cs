@@ -19,7 +19,7 @@ namespace Hsiaye.Application.Members
 {
     public class MemberService : IMemberService
     {
-        private static readonly string AdminUserName = "hsiaye";
+        internal static readonly string AdminUserName = "hsiaye";
         private static readonly string DESKey = "hsiaye-sunzhimin";
         private readonly IDatabase _database;
         private readonly IAccessor _accessor;
@@ -70,9 +70,9 @@ namespace Hsiaye.Application.Members
                 PhoneNumber = string.Empty,
                 TenantId = _accessor.TenantId,
             };
-            _database.BeginTransaction();
             try
             {
+                _database.BeginTransaction();
                 long id = _database.Insert(model);
                 List<IPredicate> predicates = new List<IPredicate>
                 {
@@ -171,9 +171,9 @@ namespace Hsiaye.Application.Members
             model.Name = input.Name;
             model.EmailAddress = input.EmailAddress;
             model.IsActive = input.IsActive;
-            _database.BeginTransaction();
             try
             {
+                _database.BeginTransaction();
                 _database.Update(model);
                 List<Member_Role> member_Roles = _database.GetList<Member_Role>(Predicates.Field<Member_Role>(f => f.MemberId, Operator.Eq, input.Id)).ToList();
                 _database.Delete(member_Roles);

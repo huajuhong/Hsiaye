@@ -12,6 +12,7 @@ namespace Hsiaye.Web.Controllers
         {
             return View();
         }
+
         //1.当前用户列表（包含拥有的角色数组）
         //  当前用户可管理的角色
 

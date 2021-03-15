@@ -14,7 +14,7 @@ namespace Hsiaye.Domain.Authorization
         public long CreatorMemberId { get; set; }
         public bool IsGranted { get; set; }
         public string Name { get; set; }
-        public int TenantId { get; }
+        public int TenantId { get; set; }
         public int RoleId { get; set; }
         public long MemberId { get; set; }
     }
