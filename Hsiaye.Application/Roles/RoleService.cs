@@ -86,36 +86,37 @@ namespace Hsiaye.Application.Roles
             role.Name = input.Name;
             role.DisplayName = input.DisplayName;
             role.Description = input.Description;
-
-            List<Permission> permissions = new List<Permission>();
-            List<IPredicate> predicates;
-            foreach (var item in input.GrantedPermissions)
+            if (!_accessor.RoleIds.Any(rid => rid == role.Id))
+                throw new UserFriendlyException($"无权限操作角色：{role.Name}");
+            _database.BeginTransaction();
+            try
             {
-                predicates = new List<IPredicate>
+                _database.Update(role);
+                var permissions = _database.GetList<Permission>(Predicates.Field<Permission>(f => f.RoleId, Operator.Eq, role.Id)).ToList();
+                if (permissions.Any())
+                    _database.Delete(permissions);
+                permissions = new List<Permission>();
+                foreach (var permissionName in input.GrantedPermissions)
                 {
-                    Predicates.Field<Permission>(f => f.RoleId, Operator.Eq, role.Id),
-                    Predicates.Field<Permission>(f => f.TenantId, Operator.Eq, role.TenantId)
-                };
-                long count = _database.Count<Permission>(Predicates.Group(GroupOperator.And, predicates.ToArray()));
-                if (count > 0)
-                    continue;
-
-                permissions.Add(new Permission
-                {
-                    CreatorMemberId = _accessor.MemberId,
-                    IsGranted = true,
-                    Name = item,
-                    TenantId = _accessor.TenantId,
-                    RoleId = role.Id,
-                    MemberId = 0
-                });
-            }
-
-            if (permissions.Any())
-            {
+                    permissions.Add(new Permission
+                    {
+                        CreatorMemberId = _accessor.MemberId,
+                        IsGranted = true,
+                        Name = permissionName,
+                        TenantId = _accessor.TenantId,
+                        RoleId = role.Id,
+                        MemberId = 0
+                    });
+                }
                 _database.Insert(permissions);
+                _database.Commit();
+                return true;
             }
-            return true;
+            catch (Exception ex)
+            {
+                _database.Rollback();
+                throw new UserFriendlyException(ex);
+            }
         }
 
         public void Delete(int id)
@@ -155,19 +156,8 @@ namespace Hsiaye.Application.Roles
             foreach (var roleDto in roleDtos)
             {
                 var permissions = _database.GetList<Permission>(Predicates.Field<Permission>(f => f.RoleId, Operator.Eq, roleDto.Id));
-                if (permissions != null && permissions.Any())
-                    roleDto.GrantedPermissions = permissions.ToList().FindAll(x => x.IsGranted).Select(x => x.Name).ToList();
-            }
-            return roleDtos;
-        }
-
-            var roles = _database.GetPage<Role>(Predicates.Group(GroupOperator.And, predicates.ToArray()), null, page, limit).ToList();
-            var roleDtos = ExpressionGenericMapper<List<Role>, List<RoleDto>>.MapperTo(roles);
-            roleDtos.ForEach(roleDto =>
-            {
-                var permissions = _database.GetList<Permission>(Predicates.Field<Permission>(f => f.RoleId, Operator.Eq, roleDto.Id));
                 roleDto.GrantedPermissions = permissions.ToList().FindAll(x => x.IsGranted).Select(x => x.Name).ToList();
-            });
+            }
             return roleDtos;
         }
 
@@ -222,38 +212,6 @@ namespace Hsiaye.Application.Roles
             var roles = GetAll().FindAll(r => r.GrantedPermissions.Any(p => p == permission));
             var dtos = ExpressionGenericMapper<List<RoleDto>, List<RoleListDto>>.MapperTo(roles);
             return dtos;
-        }
-
-
-        public RoleDto Update(RoleDto input)
-        {
-            var role = _database.Get<Role>(input.Id);
-            role.Name = input.Name;
-            role.DisplayName = input.DisplayName;
-            role.Description = input.Description;
-            if (!_accessor.RoleIds.Any(rid => rid == role.Id))
-                throw new UserFriendlyException($"无权限操作角色：{role.Name}");
-            _database.BeginTransaction();
-            try
-            {
-                _database.Update(role);
-                var permissions = _database.GetList<Permission>(Predicates.Field<Permission>(f => f.RoleId, Operator.Eq, role.Id)).ToList();
-                if (permissions.Any())
-                    _database.Delete(permissions);
-                permissions = new List<Permission>();
-                foreach (var permissionName in input.GrantedPermissions)
-                {
-                    permissions.Add(new Permission { CreatorMemberId = _accessor.MemberId, IsGranted = true, MemberId = 0, Name = permissionName, RoleId = role.Id });
-                }
-                _database.Insert(permissions);
-                _database.Commit();
-                return input;
-            }
-            catch (Exception ex)
-            {
-                _database.Rollback();
-                throw new UserFriendlyException(ex);
-            }
         }
     }
 }

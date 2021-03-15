@@ -11,7 +11,8 @@ namespace Hsiaye.Application.Contracts.Roles
         bool Update(RoleDto input);
         void Delete(int id);
         RoleDto Get(int id);
-        List<RoleDto> GetAll(string Keyword, int SkipCount, int MaxResultCount);
+
+        List<RoleDto> GetAll(string keyword, int page, int limit);
 
         /// <summary>
         /// 当前用户的角色拥有的权限

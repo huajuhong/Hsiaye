@@ -154,9 +154,9 @@ namespace Hsiaye.Application.Members
             };
             var admin = _database.GetList<Member>(Predicates.Group(GroupOperator.And, predicates.ToArray())).FirstOrDefault();
             if (admin == null)
-                return false;
+                throw new UserFriendlyException("当前用户无权限");
             if (admin.Password != DESHelper.Encrypt(input.AdminPassword, DESKey))
-                return false;
+                throw new UserFriendlyException("超管密码错误");
             var model = _database.Get<Member>(input.MemberId);
             model.Password = DESHelper.Encrypt(input.NewPassword, DESKey);
             return _database.Update(model);
