@@ -23,6 +23,7 @@ namespace Hsiaye.Application.Contracts.Roles
         /// 当前用户拥有的角色
         /// </summary>
         /// <returns></returns>
+
         public List<RoleDto> GetAll();
 
         /// <summary>
