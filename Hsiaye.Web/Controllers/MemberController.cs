@@ -15,7 +15,7 @@ namespace Hsiaye.Web.Controllers
 
         public IActionResult Login()
         {
-
+            return null;
         }
 
         //1.当前用户列表（包含拥有的角色数组）
