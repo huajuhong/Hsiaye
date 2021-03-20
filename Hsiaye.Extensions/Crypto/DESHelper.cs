@@ -7,6 +7,17 @@ namespace Hsiaye.Extensions.Crypto
 {
     public class DESHelper
     {
+        private static readonly string DESKey = "hsiaye-1024";
+        public static string DecryptByGeneric(string base64String)
+        {
+            return Decrypt(base64String, DESKey);
+        }
+
+        public static string EncryptByGeneric(string data)
+        {
+            return Encrypt(data, DESKey);
+        }
+
         public static string Decrypt(string base64String, string key)
         {
             byte[] encryptedBytes = Convert.FromBase64String(base64String);
