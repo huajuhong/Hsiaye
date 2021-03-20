@@ -1,4 +1,6 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Hsiaye.Domain.Shared;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Caching.Memory;
 using System;
 using System.Collections.Generic;
 using System.Drawing;
@@ -15,23 +17,36 @@ namespace Hsiaye.Web.Controllers
     [Route("[controller]/[action]")]
     public class CaptchaController : Controller
     {
+        private readonly IMemoryCache _cache;
+
+        public CaptchaController(IMemoryCache cache)
+        {
+            _cache = cache;
+        }
+
+        [HttpGet]
         public IActionResult Get()
         {
-            string text = Guid.NewGuid().ToString("N").Substring(0, 4);
+            string code = new Random(Guid.NewGuid().GetHashCode()).Next(0, 9999).ToString().PadLeft(4, '0');
+            byte[] fileContents = GetVerifyCode(code);
+            var image = "data:image/png;base64," + Convert.ToBase64String(fileContents);
 
-            return File(GetVerifyCode(text), "image/png");
+            string key = "CaptchaImage" + Guid.NewGuid().ToString("N");
+            _cache.Set(key, code, new TimeSpan(0, 3, 0));
+            return Json(new { key, image });
+            //return File(fileContents, "image/png");
         }
-        public byte[] GetVerifyCode(string code)
+        private static byte[] GetVerifyCode(string code)
         {
-            Random rnd = new Random();
             int width = 70;
             int height = 36;
             var v00 = new PointF(0, height);
             var v11 = new PointF(width, 0);
+            Random random = new Random(Guid.NewGuid().GetHashCode());
             List<List<PointF>> pointFss = new List<List<PointF>>
             {
-                new List<PointF> { v00, new PointF(rnd.Next(width / 2, width) * 1.3F, 0), new PointF(rnd.Next(0, width / 2), height * 1.3F), v11 },
-                new List<PointF> { v00, new PointF(rnd.Next(0, width), height * 1.3F), new PointF(rnd.Next(0, width) * 1.3F, 0), v11 },
+                new List<PointF> { v00, new PointF(random.Next(width / 2, width) * 1.3F, 0), new PointF(random.Next(0, width / 2), height * 1.3F), v11 },
+                new List<PointF> { v00, new PointF(random.Next(0, width), height * 1.3F), new PointF(random.Next(0, width) * 1.3F, 0), v11 },
             };
             const int fontSize = 20;
             Font ft = new Font("consolas", fontSize);
@@ -43,16 +58,16 @@ namespace Hsiaye.Web.Controllers
             using Bitmap bmp = new Bitmap(width, height);
             using Graphics g = Graphics.FromImage(bmp);
             g.Clear(Color.White);
-            Color clr = color[rnd.Next(color.Length)];
+            Color clr = color[random.Next(color.Length)];
             //画噪线 
             for (int i = 0; i < 3; i++)
             {
-                int x1 = rnd.Next(width);
-                int y1 = rnd.Next(height);
-                int x2 = rnd.Next(width);
-                int y2 = rnd.Next(height);
+                int x1 = random.Next(width);
+                int y1 = random.Next(height);
+                int x2 = random.Next(width);
+                int y2 = random.Next(height);
                 g.DrawLine(new Pen(clr), x1, y1, x2, y2);
-                g.DrawBeziers(new Pen(clr, 2), pointFss[rnd.Next(0, 1)].ToArray());
+                g.DrawBeziers(new Pen(clr, 2), pointFss[random.Next(0, 1)].ToArray());
             }
             //画验证码字符串 
             for (int i = 0; i < code.Length; i++)
@@ -65,5 +80,17 @@ namespace Hsiaye.Web.Controllers
             return ms.ToArray();
         }
 
+        [HttpGet]
+        public IActionResult Verify(string key, string code)
+        {
+            string value = _cache.Get<string>(key);
+            if (string.IsNullOrEmpty(value))
+                throw new UserFriendlyException("图形验证码已过期");
+            if (!value.Equals(code, StringComparison.OrdinalIgnoreCase))
+                throw new UserFriendlyException("图形验证码错误");
+            //业务代码
+            _cache.Remove(key);
+            return Ok();
+        }
     }
 }
