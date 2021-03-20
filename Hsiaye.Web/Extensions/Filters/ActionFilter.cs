@@ -12,9 +12,23 @@ namespace Hsiaye.Web.Extensions.Filters
     {
         public void OnActionExecuted(ActionExecutedContext context)
         {
-            if (context.Result is ObjectResult)
+
+            if (context.Result is ObjectResult objectResult)
             {
-                context.Result = new JsonResult(new ApiResult { Code = 0, Message = "success", Data = (context.Result as ObjectResult).Value });
+                context.Result = new JsonResult(new ApiResult { Code = 200, Message = "success", Data = objectResult.Value });
+                return;
+            }
+
+            if (context.Result is JsonResult jsonResult)
+            {
+                context.Result = new JsonResult(new ApiResult { Code = 200, Message = "success", Data = jsonResult.Value });
+                return;
+            }
+
+            if (context.Result is StatusCodeResult statusCodeResult)
+            {
+                context.Result = new JsonResult(new ApiResult { Code = statusCodeResult.StatusCode, Message = "success", });
+                return;
             }
         }
 
