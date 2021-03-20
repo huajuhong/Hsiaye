@@ -40,21 +40,14 @@ namespace Abp.IO
         }
         public static void Write(string filePath, byte[] buffer)
         {
-            try
+            if (!File.Exists(filePath))
             {
-                if (!File.Exists(filePath))
+                FileInfo file = new FileInfo(filePath);
+                using (FileStream fs = file.Create())
                 {
-                    FileInfo file = new FileInfo(filePath);
-                    using (FileStream fs = file.Create())
-                    {
-                        fs.Write(buffer, 0, buffer.Length);
-                        fs.Close();
-                    }
+                    fs.Write(buffer, 0, buffer.Length);
+                    fs.Close();
                 }
-            }
-            catch (System.Exception ex)
-            {
-                throw ex;
             }
         }
         public static string Read(string filePath)
