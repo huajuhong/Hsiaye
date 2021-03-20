@@ -2,6 +2,7 @@
 using Hsiaye.Dapper;
 using Hsiaye.Domain.Members;
 using Hsiaye.Domain.Shared;
+using Hsiaye.Extensions.Crypto;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Caching.Memory;
 using System;
@@ -21,6 +22,30 @@ namespace Hsiaye.Web.Controllers
         {
             _cache = cache;
             _database = database;
+            //创建管理员账户
+            if (_database.Count<Member>(Predicates.Field<Member>(f => f.UserName, Operator.Eq, "admin")) < 1)
+            {
+                Member member = new Member
+                {
+                    CreateTime = DateTime.Now,
+                    AccessFailedCount = 0,
+                    AuthenticationSource = "系统自动创建",
+                    Avatar = "",
+                    UserName = "admin",
+                    Name = "yuebole",
+                    PhoneNumber = "18140340282",
+                    IsPhoneNumberConfirmed = true,
+                    Password = DESHelper.EncryptByGeneric("101010"),
+                    PasswordResetCode = "",
+                    EmailAddress = "891424065@qq.com",
+                    IsEmailConfirmed = true,
+                    EmailConfirmationCode = "",
+                    IsActive = true,
+                    TenantId = 1,
+                    LastLoginTime = DateTime.Now,
+                };
+                _database.Insert(member);
+            }
         }
         [HttpGet]
         public MemberToken Login(LoginDto input)
@@ -30,7 +55,7 @@ namespace Hsiaye.Web.Controllers
                 throw new UserFriendlyException("图形验证码已过期");
             if (!value.Equals(input.VerifyCode, StringComparison.OrdinalIgnoreCase))
                 throw new UserFriendlyException("图形验证码错误");
-
+            input.Password = DESHelper.EncryptByGeneric(input.Password);
             List<IPredicate> predicates = new List<IPredicate>
             {
                 Predicates.Field<Member>(f => f.UserName, Operator.Eq, input.UserName),
@@ -52,6 +77,8 @@ namespace Hsiaye.Web.Controllers
             };
             _database.Insert(memberToken);
             _cache.Remove(input.VerifyKey);
+
+            //todo 将Member信息映射为MemberDto缓存到内存
 
             return memberToken;
         }

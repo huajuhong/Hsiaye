@@ -6,6 +6,7 @@ namespace Hsiaye.Domain.Members
 {
     public class MemberToken
     {
+        public int Id { get; set; }
         public int TenantId { get; set; }
         public long MemberId { get; set; }
         //登录提供程序

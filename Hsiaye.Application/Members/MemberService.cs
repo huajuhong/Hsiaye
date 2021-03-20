@@ -20,7 +20,6 @@ namespace Hsiaye.Application.Members
     public class MemberService : IMemberService
     {
         internal static readonly string AdminUserName = "hsiaye";
-        private static readonly string DESKey = "hsiaye-sunzhimin";
         private readonly IDatabase _database;
         private readonly IAccessor _accessor;
         private readonly IRoleService _roleService;
@@ -46,11 +45,11 @@ namespace Hsiaye.Application.Members
         public bool ChangePassword(ChangePasswordDto input)
         {
             var model = _database.Get<Member>(_accessor.MemberId);
-            if (model.Password != DESHelper.Encrypt(input.CurrentPassword, DESKey))
+            if (model.Password != DESHelper.EncryptByGeneric(input.CurrentPassword))
             {
                 throw new UserFriendlyException("当前密码不正确");
             }
-            model.Password = DESHelper.Encrypt(input.NewPassword, DESKey);
+            model.Password = DESHelper.EncryptByGeneric(input.NewPassword);
             return _database.Update(model);
         }
 
@@ -64,7 +63,7 @@ namespace Hsiaye.Application.Members
                 Name = input.Name,
                 EmailAddress = input.EmailAddress,
                 IsActive = input.IsActive,
-                Password = DESHelper.Encrypt(input.Password, DESKey),
+                Password = DESHelper.EncryptByGeneric(input.Password),
                 EmailConfirmationCode = string.Empty,
                 PasswordResetCode = string.Empty,
                 PhoneNumber = string.Empty,
@@ -155,10 +154,10 @@ namespace Hsiaye.Application.Members
             var admin = _database.GetList<Member>(Predicates.Group(GroupOperator.And, predicates.ToArray())).FirstOrDefault();
             if (admin == null)
                 throw new UserFriendlyException("当前用户无权限");
-            if (admin.Password != DESHelper.Encrypt(input.AdminPassword, DESKey))
+            if (admin.Password != DESHelper.EncryptByGeneric(input.AdminPassword))
                 throw new UserFriendlyException("超管密码错误");
             var model = _database.Get<Member>(input.MemberId);
-            model.Password = DESHelper.Encrypt(input.NewPassword, DESKey);
+            model.Password = DESHelper.EncryptByGeneric(input.NewPassword);
             return _database.Update(model);
         }
 
