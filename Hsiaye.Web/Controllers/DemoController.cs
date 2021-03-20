@@ -27,12 +27,14 @@ namespace Hsiaye.Web.Controllers
 
 
         //http://localhost:55448/demo/list?page=0&limit=3
+        [HttpGet]
         public IEnumerable<Demo> List(int page, int limit)
         {
             ISort sort = Predicates.Sort<Demo>(x => x.Id, false);
             var list = _database.GetPage<Demo>(null, new List<ISort> { sort }, page, limit);
             return list;
         }
+        [HttpGet]
         //[Authorize]
         public string Current()
         {
