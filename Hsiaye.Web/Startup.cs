@@ -65,7 +65,7 @@ namespace Hsiaye.Web
                 IDatabase database = new Database(connection, sqlGenerator);
                 return database;
             });
-            services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
+            services.AddTransient<IHttpContextAccessor, HttpContextAccessor>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
