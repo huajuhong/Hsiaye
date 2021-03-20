@@ -10,12 +10,14 @@ namespace Hsiaye.Domain.Shared
     {
         public UserFriendlyException(int code, string message) : base(message)
         {
-            Code = code;
+            this.Code = code;
         }
-        public UserFriendlyException(string message) : base(message) { }
+        public UserFriendlyException(string message) : base(message) { this.Code = 400; }
         public UserFriendlyException(Exception exception) : base("服务器内部错误")
         {
+            this.Code = 400;
             string message = exception.Message;
+            //todo 日志记录错误信息
         }
         public int Code { get; set; }
     }
