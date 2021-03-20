@@ -10,7 +10,7 @@ namespace Hsiaye.Application.Contracts.Members.Dto
     {
         public string UserName { get; set; }
         public string Password { get; set; }
-        public int VerifyId { get; set; }
+        public string VerifyKey { get; set; }
         public string VerifyCode { get; set; }
     }
 }
