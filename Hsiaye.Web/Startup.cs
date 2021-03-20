@@ -18,6 +18,8 @@ using System.Reflection;
 using Hsiaye.Dapper.Sql;
 using Microsoft.AspNetCore.Http;
 using Hsiaye.Web.Extensions.Filters;
+using System.Text.Encodings.Web;
+using System.Text.Unicode;
 
 namespace Hsiaye.Web
 {
@@ -33,6 +35,8 @@ namespace Hsiaye.Web
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+            services.AddMemoryCache();
+
             //响应压缩
             services.AddResponseCompression();
             services.AddControllers(options =>
@@ -44,7 +48,8 @@ namespace Hsiaye.Web
             {
                 options.JsonSerializerOptions.PropertyNamingPolicy = null;//默认大驼峰命名规则
                 options.JsonSerializerOptions.WriteIndented = true;//缩进
-                options.JsonSerializerOptions.Converters.Add(new JsonSerializerDateTimeConverter());
+                options.JsonSerializerOptions.Converters.Add(new JsonSerializerDateTimeConverter());//时间转换器
+                options.JsonSerializerOptions.Encoder = JavaScriptEncoder.UnsafeRelaxedJsonEscaping;//字符串中有Unicode字符时需要此设置转义
             }).SetCompatibilityVersion(CompatibilityVersion.Version_3_0);
 
             services.AddSwaggerGen(c =>
