@@ -20,6 +20,12 @@ using Microsoft.AspNetCore.Http;
 using Hsiaye.Web.Extensions.Filters;
 using System.Text.Encodings.Web;
 using System.Text.Unicode;
+using Hsiaye.Application.Contracts.Members;
+using Hsiaye.Application.Members;
+using Hsiaye.Application.Authorization;
+using Hsiaye.Application.Contracts.Authorization;
+using Hsiaye.Application.Roles;
+using Hsiaye.Application.Contracts.Roles;
 
 namespace Hsiaye.Web
 {
@@ -65,7 +71,11 @@ namespace Hsiaye.Web
                 IDatabase database = new Database(connection, sqlGenerator);
                 return database;
             });
-            services.AddTransient<IHttpContextAccessor, HttpContextAccessor>();
+            services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
+            services.AddScoped<IMemberService, MemberService>();
+            services.AddScoped<IAccessor, Accessor>();
+            services.AddScoped<IRoleService, RoleService>(); 
+            services.AddScoped<IPermissionChecker, PermissionChecker>(); 
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

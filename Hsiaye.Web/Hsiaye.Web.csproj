@@ -5,6 +5,54 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Remove="%2a%2a\**" />
+    <Content Remove="%2a%2a\**" />
+    <EmbeddedResource Remove="%2a%2a\**" />
+    <None Remove="%2a%2a\**" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Compile Remove="%2a%2a/%2a.cs" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Content Remove="%2a%2a\%2a.config" />
+    <Content Remove="%2a%2a\%2a.cshtml" />
+    <Content Remove="%2a%2a\%2a.json" />
+    <Content Remove="%2a%2a\%2a.razor" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <EmbeddedResource Remove="%2a%2a/%2a.resx" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Remove="%2a%2a/%2a" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Compile Include="Controllers\CaptchaController.cs" />
+    <Compile Include="Controllers\DemoController.cs" />
+    <Compile Include="Controllers\MemberController.cs" />
+    <Compile Include="Controllers\WeatherForecastController.cs" />
+    <Compile Include="Extensions\Filters\ActionFilter.cs" />
+    <Compile Include="Extensions\Filters\AuthorizationFilter.cs" />
+    <Compile Include="Extensions\Filters\ExceptionFilter.cs" />
+    <Compile Include="Extensions\JsonSerializerDateTimeConverter.cs" />
+    <Compile Include="Extensions\Mvc\ActionDescriptorExtensions.cs" />
+    <Compile Include="Extensions\Mvc\AjaxRequestExtensions.cs" />
+    <Compile Include="Models\Member.cs" />
+    <Compile Include="Program.cs" />
+    <Compile Include="Startup.cs" />
+    <Compile Include="WeatherForecast.cs" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Content Include="appsettings.Development.json" />
+    <Content Include="appsettings.json" />
+  </ItemGroup>
+
+  <ItemGroup>
     <PackageReference Include="Swashbuckle.AspNetCore" Version="6.1.1" />
     <PackageReference Include="System.Data.SqlClient" Version="4.8.2" />
     <PackageReference Include="System.Drawing.Common" Version="5.0.2" />

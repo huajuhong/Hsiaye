@@ -1,4 +1,5 @@
-﻿using Hsiaye.Application.Contracts.Members.Dto;
+﻿using Hsiaye.Application.Contracts.Members;
+using Hsiaye.Application.Contracts.Members.Dto;
 using Hsiaye.Dapper;
 using Hsiaye.Domain.Members;
 using Hsiaye.Domain.Shared;
@@ -12,16 +13,19 @@ using System.Threading.Tasks;
 
 namespace Hsiaye.Web.Controllers
 {
-    [Route("[controller]/[action]")]
+    [ApiController]
+    [Route("api/[controller]/[action]")]
     public class MemberController : ControllerBase
     {
+        private readonly IMemberService _memberService;
         private readonly IMemoryCache _cache;
         private readonly IDatabase _database;
 
-        public MemberController(IMemoryCache cache, IDatabase database)
+        public MemberController(IMemoryCache cache, IDatabase database, IMemberService memberService)
         {
             _cache = cache;
             _database = database;
+            _memberService = memberService;
             //创建管理员账户
             if (_database.Count<Member>(Predicates.Field<Member>(f => f.UserName, Operator.Eq, "admin")) < 1)
             {
@@ -29,7 +33,7 @@ namespace Hsiaye.Web.Controllers
                 {
                     CreateTime = DateTime.Now,
                     AccessFailedCount = 0,
-                    AuthenticationSource = "系统自动创建",
+                    AuthenticationSource = "系统初始创建",
                     Avatar = "",
                     UserName = "admin",
                     Name = "yuebole",
@@ -47,7 +51,7 @@ namespace Hsiaye.Web.Controllers
                 _database.Insert(member);
             }
         }
-        [HttpGet]
+        [HttpPost]
         public MemberToken Login(LoginDto input)
         {
             string value = _cache.Get<string>(input.VerifyKey);
@@ -67,18 +71,32 @@ namespace Hsiaye.Web.Controllers
                 throw new UserFriendlyException("账号或密码错误");
             var member = list[0];
             string providerKey = Guid.NewGuid().ToString("N");
-            MemberToken memberToken = new MemberToken
+            List<MemberToken> memberTokens = _database.GetList<MemberToken>(Predicates.Field<MemberToken>(f => f.MemberId, Operator.Eq, member.Id)).ToList();
+            MemberToken memberToken;
+            if (memberTokens.Any())
             {
-                TenantId = member.TenantId,
-                MemberId = member.Id,
-                LoginProvider = "PC",
-                ProviderKey = providerKey,
-                ExpireDate = DateTime.Now.AddHours(6),
-            };
-            _database.Insert(memberToken);
+                memberToken = memberTokens[0];
+                memberToken.TenantId = member.TenantId;
+                memberToken.ProviderKey = providerKey;
+                memberToken.ExpireDate = DateTime.Now.AddHours(6);
+                _database.Update(memberToken);
+            }
+            else
+            {
+                memberToken = new MemberToken
+                {
+                    TenantId = member.TenantId,
+                    MemberId = member.Id,
+                    LoginProvider = "PC",
+                    ProviderKey = providerKey,
+                    ExpireDate = DateTime.Now.AddHours(6),
+                };
+                _database.Insert(memberToken);
+            }
             _cache.Remove(input.VerifyKey);
 
-            //todo 将Member信息映射为MemberDto缓存到内存
+            MemberDto memberDto = _memberService.Get(member.Id);
+            _cache.Set(providerKey, memberDto, memberToken.ExpireDate);
 
             return memberToken;
         }
