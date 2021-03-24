@@ -15,19 +15,19 @@ namespace Hsiaye.Web.Extensions.Filters
 
             if (context.Result is ObjectResult objectResult)
             {
-                context.Result = new JsonResult(new ApiResult { Code = 200, Message = "success", Data = objectResult.Value });
+                context.Result = new JsonResult(new ApiResult { Success = true, ErrorCode = 200, ErrorMessage = "success", Data = objectResult.Value });
                 return;
             }
 
             if (context.Result is JsonResult jsonResult)
             {
-                context.Result = new JsonResult(new ApiResult { Code = 200, Message = "success", Data = jsonResult.Value });
+                context.Result = new JsonResult(new ApiResult { Success = true, ErrorCode = 200, ErrorMessage = "success", Data = jsonResult.Value });
                 return;
             }
 
             if (context.Result is StatusCodeResult statusCodeResult)
             {
-                context.Result = new JsonResult(new ApiResult { Code = statusCodeResult.StatusCode, Message = "success", });
+                context.Result = new JsonResult(new ApiResult { Success = true, ErrorCode = statusCodeResult.StatusCode, ErrorMessage = "success", });
                 return;
             }
         }

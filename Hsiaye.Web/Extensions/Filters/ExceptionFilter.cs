@@ -15,11 +15,15 @@ namespace Hsiaye.Web.Extensions.Filters
             ApiResult result;
             if (context.Exception is UserFriendlyException userFriendly)
             {
-                result = new ApiResult { Code = userFriendly.Code, Message = userFriendly.Message };
+                result = new ApiResult { Success = true, ErrorCode = userFriendly.Code, ErrorMessage = userFriendly.Message };
             }
             else
             {
-                result = new ApiResult { Code = 500, Message = "服务器内部错误" };
+#if DEBUG
+                result = new ApiResult { Success = true, ErrorCode = 500, ErrorMessage = context.Exception.Message };
+#else
+                result = new ApiResult { Success = false, ErrorCode = 500, ErrorMessage = "服务器内部错误" };
+#endif
             }
             context.Result = new JsonResult(result);
             context.ExceptionHandled = true;
