@@ -6,6 +6,7 @@ namespace Hsiaye.Domain.Members
 {
     public class Member_Role
     {
+        public int Id { get; set; }
         public long CreatorMemberId { get; set; }
         public int RoleId { get; set; }
         public long MemberId { get; set; }

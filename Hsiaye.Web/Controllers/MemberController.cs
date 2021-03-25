@@ -54,22 +54,27 @@ namespace Hsiaye.Web.Controllers
         [HttpPost]
         public MemberToken Login(LoginDto input)
         {
-            string value = _cache.Get<string>(input.VerifyKey);
-            if (string.IsNullOrEmpty(value))
-                throw new UserFriendlyException("图形验证码已过期");
-            if (!value.Equals(input.VerifyCode, StringComparison.OrdinalIgnoreCase))
-                throw new UserFriendlyException("图形验证码错误");
-            input.Password = DESHelper.EncryptByGeneric(input.Password);
-            List<IPredicate> predicates = new List<IPredicate>
-            {
-                Predicates.Field<Member>(f => f.UserName, Operator.Eq, input.UserName),
-                Predicates.Field<Member>(f => f.Password, Operator.Eq, input.Password)
-            };
+            //string value = _cache.Get<string>(input.VerifyKey);
+            //if (string.IsNullOrEmpty(value))
+            //    throw new UserFriendlyException("图形验证码已过期");
+            //if (!value.Equals(input.VerifyCode, StringComparison.OrdinalIgnoreCase))
+            //    throw new UserFriendlyException("图形验证码错误");
 
-            var list = _database.GetList<Member>(Predicates.Group(GroupOperator.And, predicates.ToArray())).ToList();
+            var list = _database.GetList<Member>(Predicates.Field<Member>(f => f.UserName, Operator.Eq, input.UserName)).ToList();
             if (!list.Any())
                 throw new UserFriendlyException("账号或密码错误");
             var member = list[0];
+
+            if (member.AccessFailedCount >= 5)
+                throw new UserFriendlyException("密码连续5次错误，账户已被锁定");
+
+            if (member.Password != DESHelper.EncryptByGeneric(input.Password))
+            {
+                //登录失败次数累加1
+                member.AccessFailedCount += 1;
+                _database.Update(member);
+                throw new UserFriendlyException("密码错误");
+            }
             string providerKey = Guid.NewGuid().ToString("N");
             List<MemberToken> memberTokens = _database.GetList<MemberToken>(Predicates.Field<MemberToken>(f => f.MemberId, Operator.Eq, member.Id)).ToList();
             MemberToken memberToken;
@@ -93,10 +98,16 @@ namespace Hsiaye.Web.Controllers
                 };
                 _database.Insert(memberToken);
             }
-            _cache.Remove(input.VerifyKey);
+            //_cache.Remove(input.VerifyKey);
 
             MemberDto memberDto = _memberService.Get(member.Id);
             _cache.Set(providerKey, memberDto, memberToken.ExpireDate);
+
+            //记录最后一次登录时间
+            member.LastLoginTime = DateTime.Now;
+            //登录失败次数清零
+            member.AccessFailedCount = 0;
+            _database.Update(member);
 
             return memberToken;
         }

@@ -104,6 +104,7 @@ namespace Hsiaye.Application.Members
             }
             var memberDto = ExpressionGenericMapper<CreateMemberDto, MemberDto>.MapperTo(input);
             memberDto.CreateTime = model.CreateTime;
+            memberDto.LastLoginTime = model.LastLoginTime;
             return memberDto;
         }
 
@@ -129,7 +130,8 @@ namespace Hsiaye.Application.Members
             var model = _database.Get<Member>(id);
             var memberDto = ExpressionGenericMapper<Member, MemberDto>.MapperTo(model);
             var roleIds = _database.GetList<Member_Role>(Predicates.Field<Member_Role>(f => f.MemberId, Operator.Eq, id)).Select(r => r.RoleId);
-            memberDto.RoleNames = _database.GetList<Role>(Predicates.Field<Role>(f => f.Id, Operator.Eq, roleIds)).Select(x => x.Name).ToArray();
+            if (roleIds.Any())
+                memberDto.RoleNames = _database.GetList<Role>(Predicates.Field<Role>(f => f.Id, Operator.Eq, roleIds)).Select(x => x.Name).ToArray();
             return memberDto;
         }
 

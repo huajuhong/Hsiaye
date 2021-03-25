@@ -66,8 +66,6 @@ declare namespace API {
     password?: string;
     autoLogin?: boolean;
     type?: string;
-    VerifyKey?: string;
-    VerifyCode?: string;
   };
 
   type ErrorResponse = {

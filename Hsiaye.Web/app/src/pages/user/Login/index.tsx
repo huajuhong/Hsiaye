@@ -59,11 +59,9 @@ const Login: React.FC = () => {
 
   const handleSubmit = async (values: API.LoginParams) => {
     setSubmitting(true);
-    var VerifyKey = '1';
-    var VerifyCode = '1';
     try {
       // 登录
-      const msg = await login({ ...values, type, VerifyKey, VerifyCode });
+      const msg = await login({ ...values, type});
       if (msg.ErrorCode === 200) {
         message.success('登录成功！');
         await fetchUserInfo();
