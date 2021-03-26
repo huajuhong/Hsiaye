@@ -49,7 +49,7 @@ namespace Hsiaye.Web
             {
                 options.Filters.Add<AuthorizationFilter>();
                 options.Filters.Add<ActionFilter>();
-                options.Filters.Add(new ExceptionFilter());
+                options.Filters.Add<ExceptionFilter>();
             }).AddJsonOptions(options =>
             {
                 options.JsonSerializerOptions.PropertyNamingPolicy = null;//默认大驼峰命名规则
@@ -74,8 +74,8 @@ namespace Hsiaye.Web
             services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
             services.AddScoped<IMemberService, MemberService>();
             services.AddScoped<IAccessor, Accessor>();
-            services.AddScoped<IRoleService, RoleService>(); 
-            services.AddScoped<IPermissionChecker, PermissionChecker>(); 
+            services.AddScoped<IRoleService, RoleService>();
+            services.AddScoped<IPermissionChecker, PermissionChecker>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

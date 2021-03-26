@@ -1,4 +1,6 @@
-﻿using Hsiaye.Application.Contracts.Members;
+﻿using Hsiaye.Application.Authorization;
+using Hsiaye.Application.Contracts.Authorization;
+using Hsiaye.Application.Contracts.Members;
 using Hsiaye.Application.Contracts.Members.Dto;
 using Hsiaye.Dapper;
 using Hsiaye.Domain.Members;
@@ -20,12 +22,14 @@ namespace Hsiaye.Web.Controllers
         private readonly IMemberService _memberService;
         private readonly IMemoryCache _cache;
         private readonly IDatabase _database;
+        private readonly IAccessor _accessor;
 
-        public MemberController(IMemoryCache cache, IDatabase database, IMemberService memberService)
+        public MemberController(IMemoryCache cache, IDatabase database, IMemberService memberService, IAccessor accessor)
         {
             _cache = cache;
             _database = database;
             _memberService = memberService;
+            _accessor = accessor;
             //创建管理员账户
             if (_database.Count<Member>(Predicates.Field<Member>(f => f.UserName, Operator.Eq, "admin")) < 1)
             {
@@ -51,6 +55,7 @@ namespace Hsiaye.Web.Controllers
                 _database.Insert(member);
             }
         }
+
         [HttpPost]
         public MemberToken Login(LoginDto input)
         {
@@ -110,6 +115,14 @@ namespace Hsiaye.Web.Controllers
             _database.Update(member);
 
             return memberToken;
+        }
+
+        [HttpGet]
+        [Authorize]
+        public MemberDto Current()
+        {
+            var dto = Hsiaye.Extensions.Mapper.ExpressionGenericMapper<Member, MemberDto>.MapperTo(_accessor.Member);
+            return dto;
         }
 
         //1.当前用户列表（包含拥有的角色数组）
