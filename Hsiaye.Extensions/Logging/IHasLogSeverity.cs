@@ -1,4 +1,4 @@
-namespace Abp.Logging
+namespace Hsiaye.Extensions
 {
     /// <summary>
     /// Interface to define a <see cref="Severity"/> property (see <see cref="LogSeverity"/>).

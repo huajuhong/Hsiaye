@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 
-namespace Abp.Collections.Extensions
+namespace Hsiaye.Extensions
 {
     /// <summary>
     /// Extension methods for Collections.

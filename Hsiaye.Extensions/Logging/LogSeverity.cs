@@ -1,4 +1,4 @@
-namespace Abp.Logging
+namespace Hsiaye.Extensions
 {
     /// <summary>
     /// Indicates severity for log.

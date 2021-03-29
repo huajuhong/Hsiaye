@@ -1,6 +1,6 @@
 ﻿using System.IO;
 
-namespace Abp.IO.Extensions
+namespace Hsiaye.Extensions
 {
     public static class StreamExtensions
     {

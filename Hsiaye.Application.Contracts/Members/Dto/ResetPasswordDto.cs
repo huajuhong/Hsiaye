@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace Hsiaye.Application.Contracts.Members.Dto
+namespace Hsiaye.Application.Contracts
 {
     public class ResetPasswordDto
     {

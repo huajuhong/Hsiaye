@@ -1,7 +1,7 @@
 using System;
 using Castle.Core.Logging;
 
-namespace Abp.Logging
+namespace Hsiaye.Extensions
 {
     /// <summary>
     /// Extensions for <see cref="ILogger"/>.

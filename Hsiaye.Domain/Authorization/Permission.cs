@@ -3,7 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 
-namespace Hsiaye.Domain.Authorization
+namespace Hsiaye.Domain
 {
     /// <summary>
     /// 角色和用户权限表

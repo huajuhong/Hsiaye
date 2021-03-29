@@ -7,6 +7,7 @@ using NUnit.Framework;
 using System.Collections.Generic;
 using System.Data.SqlClient;
 using System.Reflection;
+using Dapper;
 
 namespace Hsiaye.NUnitTest
 {
@@ -90,9 +91,9 @@ namespace Hsiaye.NUnitTest
             //列表：页码：1，分页大小：2
             //var page1 = Db.GetPage<Demo>(null, new List<ISort> { sort }, 0, 2);
             //列表：页码：2，分页大小：2
-            var page2 = Db.GetPage<Demo>(null, new List<ISort> { sort }, 1, 2);
+            //var page2 = Db.GetPage<Demo>(null, new List<ISort> { sort }, 1, 2);
 
-            var pageSet1 = Db.GetSet<Demo>(null, new List<ISort> { sort }, 2, 2, 1000, true);
+            //var pageSet1 = Db.GetSet<Demo>(null, new List<ISort> { sort }, 2, 2, 1000, true);
         }
     }
 }

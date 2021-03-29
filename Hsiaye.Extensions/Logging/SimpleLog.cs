@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Text;
 
-namespace Hsiaye.Extensions.Logging
+namespace Hsiaye.Extensions
 {
     public class SimpleLog
     {

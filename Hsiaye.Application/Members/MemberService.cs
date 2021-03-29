@@ -1,21 +1,15 @@
-﻿using Hsiaye.Application.Contracts.Authorization;
-using Hsiaye.Application.Contracts.Members;
-using Hsiaye.Application.Contracts.Members.Dto;
-using Hsiaye.Application.Contracts.Roles;
-using Hsiaye.Application.Contracts.Roles.Dto;
+﻿using Hsiaye.Application.Contracts;
 using Hsiaye.Dapper;
-using Hsiaye.Domain.Members;
-using Hsiaye.Domain.Roles;
+using Hsiaye.Domain;
 using Hsiaye.Domain.Shared;
-using Hsiaye.Extensions.Crypto;
-using Hsiaye.Extensions.Mapper;
+using Hsiaye.Extensions;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Hsiaye.Application.Members
+namespace Hsiaye.Application
 {
     public class MemberService : IMemberService
     {
@@ -31,27 +25,6 @@ namespace Hsiaye.Application.Members
             _roleService = roleService;
         }
 
-        public void Activate(long id)
-        {
-            var model = _database.Get<Member>(id);
-            if (model == null)
-                return;
-            if (model.IsActive)
-                return;
-            model.IsActive = true;
-            _database.Update(model);
-        }
-
-        public bool ChangePassword(ChangePasswordDto input)
-        {
-            var model = _database.Get<Member>(_accessor.MemberId);
-            if (model.Password != DESHelper.EncryptByGeneric(input.CurrentPassword))
-            {
-                throw new UserFriendlyException("当前密码不正确");
-            }
-            model.Password = DESHelper.EncryptByGeneric(input.NewPassword);
-            return _database.Update(model);
-        }
 
         public MemberDto Create(CreateMemberDto input)
         {
@@ -108,61 +81,6 @@ namespace Hsiaye.Application.Members
             return memberDto;
         }
 
-        public void DeActivate(long id)
-        {
-            var model = _database.Get<Member>(id);
-            if (model == null)
-                return;
-            if (!model.IsActive)
-                return;
-            model.IsActive = false;
-            _database.Update(model);
-        }
-
-        public void Delete(long id)
-        {
-            var model = _database.Get<Member>(id);
-            _database.Delete(model);
-        }
-
-        public MemberDto Get(long id)
-        {
-            var model = _database.Get<Member>(id);
-            var memberDto = ExpressionGenericMapper<Member, MemberDto>.MapperTo(model);
-            var roleIds = _database.GetList<Member_Role>(Predicates.Field<Member_Role>(f => f.MemberId, Operator.Eq, id)).Select(r => r.RoleId);
-            if (roleIds.Any())
-                memberDto.RoleNames = _database.GetList<Role>(Predicates.Field<Role>(f => f.Id, Operator.Eq, roleIds)).Select(x => x.Name).ToArray();
-            return memberDto;
-        }
-
-        public List<RoleDto> GetRoles()
-        {
-            var roleIds = _database.GetList<Member_Role>(Predicates.Field<Member_Role>(f => f.MemberId, Operator.Eq, _accessor.MemberId)).Select(r => r.RoleId);
-            var result = new List<RoleDto>();
-            foreach (var roleId in roleIds)
-            {
-                result.Add(_roleService.Get(roleId));
-            }
-            return result;
-        }
-
-        public bool ResetPassword(ResetPasswordDto input)
-        {
-            List<IPredicate> predicates = new List<IPredicate>
-            {
-                 Predicates.Field<Member>(f => f.UserName, Operator.Eq, AdminUserName),
-                 Predicates.Field<Member>(f => f.TenantId, Operator.Eq, _accessor.TenantId)
-            };
-            var admin = _database.GetList<Member>(Predicates.Group(GroupOperator.And, predicates.ToArray())).FirstOrDefault();
-            if (admin == null)
-                throw new UserFriendlyException("当前用户无权限");
-            if (admin.Password != DESHelper.EncryptByGeneric(input.AdminPassword))
-                throw new UserFriendlyException("超管密码错误");
-            var model = _database.Get<Member>(input.MemberId);
-            model.Password = DESHelper.EncryptByGeneric(input.NewPassword);
-            return _database.Update(model);
-        }
-
         public MemberDto Update(MemberDto input)
         {
             _accessor.RoleAuthorize(input.RoleNames);
@@ -204,5 +122,86 @@ namespace Hsiaye.Application.Members
             memberDto.RoleNames = input.RoleNames;
             return memberDto;
         }
+
+        public void Activate(long id)
+        {
+            var model = _database.Get<Member>(id);
+            if (model == null)
+                return;
+            if (model.IsActive)
+                return;
+            model.IsActive = true;
+            _database.Update(model);
+        }
+
+        public void DeActivate(long id)
+        {
+            var model = _database.Get<Member>(id);
+            if (model == null)
+                return;
+            if (!model.IsActive)
+                return;
+            model.IsActive = false;
+            _database.Update(model);
+        }
+
+        public void Delete(long id)
+        {
+            var model = _database.Get<Member>(id);
+            _database.Delete(model);
+        }
+
+        public MemberDto Get(long id)
+        {
+            var model = _database.Get<Member>(id);
+            var memberDto = ExpressionGenericMapper<Member, MemberDto>.MapperTo(model);
+            var roleIds = _database.GetList<Member_Role>(Predicates.Field<Member_Role>(f => f.MemberId, Operator.Eq, id)).Select(r => r.RoleId);
+            if (roleIds.Any())
+                memberDto.RoleNames = _database.GetList<Role>(Predicates.Field<Role>(f => f.Id, Operator.Eq, roleIds)).Select(x => x.Name).ToArray();
+            return memberDto;
+        }
+        public List<MemberDto> GetPaged(string keyword, bool isActive, int page, int limit)
+        {
+            throw new NotImplementedException();
+        }
+
+        public List<RoleDto> GetRoles()
+        {
+            var roleIds = _database.GetList<Member_Role>(Predicates.Field<Member_Role>(f => f.MemberId, Operator.Eq, _accessor.MemberId)).Select(r => r.RoleId);
+            var result = new List<RoleDto>();
+            foreach (var roleId in roleIds)
+            {
+                result.Add(_roleService.Get(roleId));
+            }
+            return result;
+        }
+
+        public bool ChangePassword(ChangePasswordDto input)
+        {
+            var model = _database.Get<Member>(_accessor.MemberId);
+            if (model.Password != DESHelper.EncryptByGeneric(input.CurrentPassword))
+            {
+                throw new UserFriendlyException("当前密码不正确");
+            }
+            model.Password = DESHelper.EncryptByGeneric(input.NewPassword);
+            return _database.Update(model);
+        }
+        public bool ResetPassword(ResetPasswordDto input)
+        {
+            List<IPredicate> predicates = new List<IPredicate>
+            {
+                 Predicates.Field<Member>(f => f.UserName, Operator.Eq, AdminUserName),
+                 Predicates.Field<Member>(f => f.TenantId, Operator.Eq, _accessor.TenantId)
+            };
+            var admin = _database.GetList<Member>(Predicates.Group(GroupOperator.And, predicates.ToArray())).FirstOrDefault();
+            if (admin == null)
+                throw new UserFriendlyException("当前用户无权限");
+            if (admin.Password != DESHelper.EncryptByGeneric(input.AdminPassword))
+                throw new UserFriendlyException("超管密码错误");
+            var model = _database.Get<Member>(input.MemberId);
+            model.Password = DESHelper.EncryptByGeneric(input.NewPassword);
+            return _database.Update(model);
+        }
+
     }
 }

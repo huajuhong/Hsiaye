@@ -1,6 +1,6 @@
 using System.IO;
 
-namespace Abp.IO
+namespace Hsiaye.Extensions
 {
     /// <summary>
     /// A helper class for Directory operations.

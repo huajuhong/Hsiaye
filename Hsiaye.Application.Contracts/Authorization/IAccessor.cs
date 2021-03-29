@@ -4,11 +4,8 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Hsiaye.Domain;
-using Hsiaye.Domain.Authorization;
-using Hsiaye.Domain.Members;
-using Hsiaye.Domain.Roles;
 
-namespace Hsiaye.Application.Contracts.Authorization
+namespace Hsiaye.Application.Contracts
 {
     public interface IAccessor
     {

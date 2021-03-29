@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Hsiaye.Domain.Members
+namespace Hsiaye.Domain
 {
     public class OrganizationUnit
     {

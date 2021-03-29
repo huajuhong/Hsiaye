@@ -1,14 +1,10 @@
-﻿using System;
+﻿using Hsiaye.Application.Contracts;
+using Hsiaye.Dapper;
+using Hsiaye.Domain;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Hsiaye.Application.Contracts.Authorization;
-using Hsiaye.Dapper;
-using Hsiaye.Domain.Authorization;
-using Hsiaye.Domain.Members;
 
-namespace Hsiaye.Application.Authorization
+namespace Hsiaye.Application
 {
     public class PermissionChecker : IPermissionChecker
     {

@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Hsiaye.Domain.Roles
+namespace Hsiaye.Domain
 {
     public class OrganizationUnitRole
     {

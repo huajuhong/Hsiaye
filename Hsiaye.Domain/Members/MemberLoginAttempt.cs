@@ -3,7 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 
-namespace Hsiaye.Domain.Members
+namespace Hsiaye.Domain
 {
     /// <summary>
     /// 登录尝试

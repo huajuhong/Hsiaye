@@ -28,7 +28,7 @@ namespace Hsiaye.Extensions
             {
                 str.Append(input[i].ToString("X2"));
                 if (isSpace)
-                    str.Append(" ");
+                    str.Append(' ');
             }
             return str.ToString();
         }

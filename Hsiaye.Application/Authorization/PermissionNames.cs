@@ -1,4 +1,4 @@
-﻿namespace Hsiaye.Application.Authorization
+﻿namespace Hsiaye.Application
 {
     public static class PermissionNames
     {

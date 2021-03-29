@@ -6,7 +6,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace Hsiaye.Web.Extensions.Filters
+namespace Hsiaye.Web.Extensions
 {
     public class ActionFilter : IActionFilter
     {
@@ -16,12 +16,6 @@ namespace Hsiaye.Web.Extensions.Filters
             if (context.Result is ObjectResult objectResult)
             {
                 context.Result = new JsonResult(new ApiResult { Success = true, ErrorCode = 200, ErrorMessage = "success", Data = objectResult.Value });
-                return;
-            }
-
-            if (context.Result is JsonResult jsonResult)
-            {
-                context.Result = new JsonResult(new ApiResult { Success = true, ErrorCode = 200, ErrorMessage = "success", Data = jsonResult.Value });
                 return;
             }
 

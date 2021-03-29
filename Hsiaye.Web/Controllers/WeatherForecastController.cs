@@ -8,7 +8,8 @@ using System.Threading.Tasks;
 
 namespace Hsiaye.Web.Controllers
 {
-    [Route("[controller]/[action]")]
+    [ApiController]
+    [Route("api/[controller]/[action]")]
     public class WeatherForecastController : ControllerBase
     {
         private static readonly string[] Summaries = new[]

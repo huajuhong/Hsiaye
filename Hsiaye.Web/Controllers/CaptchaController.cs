@@ -14,8 +14,9 @@ using System.Threading.Tasks;
 namespace Hsiaye.Web.Controllers
 {
     //验证码生成
-    [Route("[controller]/[action]")]
-    public class CaptchaController : Controller
+    [ApiController]
+    [Route("api/[controller]/[action]")]
+    public class CaptchaController : ControllerBase
     {
         private readonly IMemoryCache _cache;
 
@@ -33,7 +34,7 @@ namespace Hsiaye.Web.Controllers
 
             string key = "CaptchaImage" + Guid.NewGuid().ToString("N");
             _cache.Set(key, code, new TimeSpan(0, 3, 0));
-            return Json(new { key, image });
+            return Ok(new { key, image });
             //return File(fileContents, "image/png");
         }
         private static byte[] GetVerifyCode(string code)

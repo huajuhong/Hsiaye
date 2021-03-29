@@ -4,7 +4,7 @@ using System.Linq.Expressions;
 using System.Reflection;
 using System.Text;
 
-namespace Hsiaye.Extensions.Mapper
+namespace Hsiaye.Extensions
 {
     public static class ExpressionGenericMapper<TIn, TOut>
     {

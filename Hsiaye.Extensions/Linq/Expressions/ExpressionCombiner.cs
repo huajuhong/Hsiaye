@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Linq.Expressions;
 
-namespace Abp.Linq.Expressions
+namespace Hsiaye.Extensions
 {
     internal static class ExpressionCombiner
     {

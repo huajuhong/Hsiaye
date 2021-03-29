@@ -3,9 +3,9 @@ using System.Globalization;
 using System.Security.Cryptography;
 using System.Text;
 using System.Text.RegularExpressions;
-using Abp.Collections.Extensions;
+using Hsiaye.Extensions;
 
-namespace Abp.Extensions
+namespace Hsiaye.Extensions
 {
     /// <summary>
     /// Extension methods for String class.

@@ -1,9 +1,8 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using Abp.Collections.Extensions;
 
-namespace Abp
+namespace Hsiaye.Extensions
 {
     /// <summary>
     /// A shortcut to use <see cref="Random"/> class.

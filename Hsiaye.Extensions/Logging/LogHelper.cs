@@ -1,11 +1,11 @@
 ﻿//using System;
 //using System.Linq;
-//using Abp.Collections.Extensions;
+//using Hsiaye.Extensions;
 //using Abp.Dependency;
 //using Abp.Runtime.Validation;
 //using Castle.Core.Logging;
 
-//namespace Abp.Logging
+//namespace Hsiaye.Extensions
 //{
 //    /// <summary>
 //    /// This class can be used to write logs from somewhere where it's a hard to get a reference to the <see cref="ILogger"/>.

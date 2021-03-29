@@ -6,7 +6,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace Hsiaye.Web.Extensions.Filters
+namespace Hsiaye.Web.Extensions
 {
     public class ExceptionFilter : IExceptionFilter
     {

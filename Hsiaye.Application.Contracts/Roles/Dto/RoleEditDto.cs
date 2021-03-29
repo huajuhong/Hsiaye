@@ -3,7 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 
-namespace Hsiaye.Application.Contracts.Roles.Dto
+namespace Hsiaye.Application.Contracts
 {
     public class RoleEditDto
     {

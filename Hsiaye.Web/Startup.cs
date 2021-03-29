@@ -1,31 +1,20 @@
+using Hsiaye.Application;
+using Hsiaye.Application.Contracts;
+using Hsiaye.Dapper;
+using Hsiaye.Dapper.Mapper;
+using Hsiaye.Dapper.Sql;
+using Hsiaye.Web.Extensions;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using Microsoft.Extensions.Logging;
 using Microsoft.OpenApi.Models;
-using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text.Json;
-using System.Threading.Tasks;
-using Hsiaye.Web.Extensions;
-using Hsiaye.Dapper;
-using Hsiaye.Dapper.Mapper;
 using System.Reflection;
-using Hsiaye.Dapper.Sql;
-using Microsoft.AspNetCore.Http;
-using Hsiaye.Web.Extensions.Filters;
 using System.Text.Encodings.Web;
-using System.Text.Unicode;
-using Hsiaye.Application.Contracts.Members;
-using Hsiaye.Application.Members;
-using Hsiaye.Application.Authorization;
-using Hsiaye.Application.Contracts.Authorization;
-using Hsiaye.Application.Roles;
-using Hsiaye.Application.Contracts.Roles;
 
 namespace Hsiaye.Web
 {
@@ -60,7 +49,19 @@ namespace Hsiaye.Web
 
             services.AddSwaggerGen(c =>
             {
-                c.SwaggerDoc("v1", new OpenApiInfo { Title = "Hsiaye.Web", Version = "v1", Description = "新的开始", });
+                c.SwaggerDoc("v1", new OpenApiInfo
+                {
+                    Title = "Hsiaye.Web",
+                    Version = "v1",
+                    Description = "新的开始",
+                });
+                c.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
+                {
+                    Type = SecuritySchemeType.ApiKey,
+                    Name = "token",
+                    Description = "登录后返回的token",
+                    In = ParameterLocation.Header,
+                });
             });
 
             services.AddTransient(serviceProvider =>
@@ -84,9 +85,14 @@ namespace Hsiaye.Web
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
-                app.UseSwagger();
-                app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "Hsiaye.Web v1"));
             }
+
+            app.UseSwagger();
+            app.UseSwaggerUI(c =>
+            {
+                c.SwaggerEndpoint("/swagger/v1/swagger.json", "Hsiaye.Web v1");
+                c.RoutePrefix = string.Empty;
+            });
 
             app.UseRouting();
 

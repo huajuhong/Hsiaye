@@ -1,4 +1,4 @@
-﻿using Hsiaye.Application.Contracts.Authorization;
+﻿using Hsiaye.Application.Contracts;
 using Hsiaye.Domain;
 using Microsoft.AspNetCore.Http;
 using System;
@@ -7,7 +7,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Hsiaye.Application.Authorization
+namespace Hsiaye.Application
 {
     public static class HttpContextAccessorExtensions
     {

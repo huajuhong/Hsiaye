@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 
-namespace Abp.Extensions
+namespace Hsiaye.Extensions
 {
     /// <summary>
     /// Extension methods for <see cref="DateTime"/>.

@@ -1,10 +1,8 @@
-﻿using Hsiaye.Application.Contracts.Members.Dto;
-using Hsiaye.Application.Contracts.Roles.Dto;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Text;
 
-namespace Hsiaye.Application.Contracts.Members
+namespace Hsiaye.Application.Contracts
 {
     public interface IMemberService
     {
@@ -18,6 +16,7 @@ namespace Hsiaye.Application.Contracts.Members
         void DeActivate(long id);
         List<RoleDto> GetRoles();
         MemberDto Get(long id);
+        List<MemberDto> GetPaged(string keyword, bool isActive, int page, int limit);
         bool ChangePassword(ChangePasswordDto input);
         bool ResetPassword(ResetPasswordDto input);
     }

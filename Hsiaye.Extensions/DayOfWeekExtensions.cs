@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Linq;
 
-namespace Abp.Extensions
+namespace Hsiaye.Extensions
 {
     /// <summary>
     /// Extension methods for <see cref="DayOfWeekExtensions"/>.

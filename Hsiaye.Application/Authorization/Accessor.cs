@@ -1,13 +1,11 @@
-﻿using Hsiaye.Application.Contracts.Authorization;
+﻿using Hsiaye.Application.Contracts;
 using Hsiaye.Dapper;
-using Hsiaye.Domain.Authorization;
-using Hsiaye.Domain.Members;
-using Hsiaye.Domain.Roles;
+using Hsiaye.Domain;
 using Hsiaye.Domain.Shared;
 using Microsoft.AspNetCore.Http;
 using System.Linq;
 
-namespace Hsiaye.Application.Authorization
+namespace Hsiaye.Application
 {
     public class Accessor : IAccessor
     {

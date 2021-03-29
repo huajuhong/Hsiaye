@@ -6,7 +6,7 @@ using System.Linq.Expressions;
 using System.Reflection.Emit;
 using System.Runtime.CompilerServices;
 
-namespace Abp.Linq.Expressions
+namespace Hsiaye.Extensions
 {
     // Codes below are taken from https://github.com/scottksmith95/LINQKit project.
 

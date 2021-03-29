@@ -1,11 +1,9 @@
-﻿using Hsiaye.Application.Authorization;
-using Hsiaye.Application.Contracts.Authorization;
-using Hsiaye.Application.Contracts.Members;
-using Hsiaye.Application.Contracts.Members.Dto;
+﻿using Hsiaye.Application;
+using Hsiaye.Application.Contracts;
 using Hsiaye.Dapper;
-using Hsiaye.Domain.Members;
+using Hsiaye.Domain;
 using Hsiaye.Domain.Shared;
-using Hsiaye.Extensions.Crypto;
+using Hsiaye.Extensions;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Caching.Memory;
 using System;
@@ -121,7 +119,7 @@ namespace Hsiaye.Web.Controllers
         [Authorize]
         public MemberDto Current()
         {
-            var dto = Hsiaye.Extensions.Mapper.ExpressionGenericMapper<Member, MemberDto>.MapperTo(_accessor.Member);
+            var dto = ExpressionGenericMapper<Member, MemberDto>.MapperTo(_accessor.Member);
             return dto;
         }
 

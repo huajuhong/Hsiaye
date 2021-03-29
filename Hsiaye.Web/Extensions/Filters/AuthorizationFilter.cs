@@ -1,30 +1,22 @@
-﻿using Hsiaye.Application.Authorization;
+﻿using Hsiaye.Application;
+using Hsiaye.Application.Contracts;
 using Hsiaye.Dapper;
 using Hsiaye.Domain.Shared;
-using Microsoft.AspNetCore.Mvc.Controllers;
-using Microsoft.AspNetCore.Mvc.Filters;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Hsiaye.Web.Extensions.Mvc;
 using Microsoft.AspNetCore.Mvc;
-using Hsiaye.Domain;
-using Hsiaye.Domain.Members;
+using Microsoft.AspNetCore.Mvc.Filters;
 using Microsoft.Extensions.Caching.Memory;
-using Hsiaye.Application.Contracts.Members.Dto;
 using Microsoft.Extensions.Primitives;
 
-namespace Hsiaye.Web.Extensions.Filters
+namespace Hsiaye.Web.Extensions
 {
     public class AuthorizationFilter : IAuthorizationFilter
     {
         private readonly IMemoryCache _cache;
-        private readonly IDatabase _database;
+        //private readonly IDatabase _database;
 
-        public AuthorizationFilter(IDatabase database, IMemoryCache cache)
+        public AuthorizationFilter(/*IDatabase database, */IMemoryCache cache)
         {
-            _database = database;
+            //_database = database;
             _cache = cache;
         }
 

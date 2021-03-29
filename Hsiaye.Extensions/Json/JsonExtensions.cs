@@ -3,7 +3,7 @@ using Newtonsoft.Json.Serialization;
 using System;
 using System.Diagnostics.CodeAnalysis;
 
-namespace Abp.Json
+namespace Hsiaye.Extensions
 {
     public static class JsonExtensions
     {

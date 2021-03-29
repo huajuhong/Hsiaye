@@ -3,11 +3,11 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using Abp.Collections.Extensions;
-using Hsiaye.Application.Contracts.Authorization;
+using Hsiaye.Extensions;
+using Hsiaye.Application.Contracts;
 using Hsiaye.Domain.Shared;
 
-namespace Hsiaye.Application.Authorization
+namespace Hsiaye.Application
 {
     public static class PermissionCheckerExtensions
     {

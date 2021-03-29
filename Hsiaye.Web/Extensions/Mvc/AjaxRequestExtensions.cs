@@ -2,7 +2,7 @@ using System;
 using System.Text.RegularExpressions;
 using Microsoft.AspNetCore.Http;
 
-namespace Hsiaye.Web.Extensions.Mvc
+namespace Hsiaye.Web.Extensions
 {
     public static class AjaxRequestExtensions
     {

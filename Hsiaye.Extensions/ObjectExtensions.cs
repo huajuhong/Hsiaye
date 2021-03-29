@@ -3,7 +3,7 @@ using System.Globalization;
 using System.Linq;
 using System.ComponentModel;
 
-namespace Abp.Extensions
+namespace Hsiaye.Extensions
 {
     /// <summary>
     /// Extension methods for all objects.

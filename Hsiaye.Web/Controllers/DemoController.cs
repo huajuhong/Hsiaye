@@ -1,4 +1,4 @@
-﻿using Hsiaye.Application.Authorization;
+﻿using Hsiaye.Application;
 using Hsiaye.Dapper;
 using Hsiaye.Domain;
 using Hsiaye.Domain.Shared;
@@ -13,7 +13,8 @@ using System.Threading.Tasks;
 
 namespace Hsiaye.Web.Controllers
 {
-    [Route("[controller]/[action]")]
+    [ApiController]
+    [Route("api/[controller]/[action]")]
     public class DemoController : ControllerBase
     {
         private readonly IDatabase _database;

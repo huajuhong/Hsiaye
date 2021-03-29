@@ -1,9 +1,8 @@
-﻿using Hsiaye.Application.Contracts.Roles.Dto;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Text;
 
-namespace Hsiaye.Application.Contracts.Roles
+namespace Hsiaye.Application.Contracts
 {
     public interface IRoleService
     {
@@ -11,7 +10,6 @@ namespace Hsiaye.Application.Contracts.Roles
         bool Update(RoleDto input);
         void Delete(int id);
         RoleDto Get(int id);
-
         List<RoleDto> GetAll(string keyword, int page, int limit);
 
         /// <summary>
@@ -19,13 +17,6 @@ namespace Hsiaye.Application.Contracts.Roles
         /// </summary>
         /// <returns></returns>
         public List<PermissionDto> GetAllPermissions();
-
-        /// <summary>
-        /// 当前用户拥有的角色
-        /// </summary>
-        /// <returns></returns>
-
-        public List<RoleDto> GetAll();
 
         /// <summary>
         /// 编辑角色时的角色数据

@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Security.Cryptography;
 using System.Text;
 
-namespace Hsiaye.Extensions.Crypto
+namespace Hsiaye.Extensions
 {
     public class SHAHelper
     {
