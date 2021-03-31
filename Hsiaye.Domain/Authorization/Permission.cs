@@ -11,6 +11,7 @@ namespace Hsiaye.Domain
     /// </summary>
     public class Permission
     {
+        public int Id { get; set; }
         public long CreatorMemberId { get; set; }
         public bool IsGranted { get; set; }
         public string Name { get; set; }

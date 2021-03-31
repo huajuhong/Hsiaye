@@ -7,13 +7,21 @@ using NUnit.Framework;
 using System.Collections.Generic;
 using System.Data.SqlClient;
 using System.Reflection;
-using Dapper;
+//using Dapper;
+using SqlKata;
+using SqlKata.Extensions;
 
 namespace Hsiaye.NUnitTest
 {
     public class Tests
-    {
-        protected IDatabase Db;
+    { 
+        protected IDatabase db;
+        public Tests()
+        {
+            var config = new DapperExtensionsConfiguration(typeof(AutoClassMapper<>), new List<Assembly>(), new SqlServerDialect());
+            var sqlGenerator = new SqlGeneratorImpl(config);
+            db = new Database(Table.connection, sqlGenerator);
+        }
         [SetUp]
         public void Setup()
         {
@@ -23,10 +31,6 @@ namespace Hsiaye.NUnitTest
         [Test]
         public void Test1()
         {
-            var connection = new SqlConnection("Password=sn668;Persist Security Info=True;User ID=sa;Initial Catalog=Hsiaye;Data Source=.");
-            var config = new DapperExtensionsConfiguration(typeof(AutoClassMapper<>), new List<Assembly>(), new SqlServerDialect());
-            var sqlGenerator = new SqlGeneratorImpl(config);
-            Db = new Database(connection, sqlGenerator);
             //Db.Insert(new Demo
             //{
             //    Name = "Q",
@@ -94,6 +98,13 @@ namespace Hsiaye.NUnitTest
             //var page2 = Db.GetPage<Demo>(null, new List<ISort> { sort }, 1, 2);
 
             //var pageSet1 = Db.GetSet<Demo>(null, new List<ISort> { sort }, 2, 2, 1000, true);
+        }
+
+
+        [Test]
+        public void MyTestMethod()
+        {
+           
         }
     }
 }

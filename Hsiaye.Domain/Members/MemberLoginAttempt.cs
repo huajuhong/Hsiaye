@@ -14,13 +14,8 @@ namespace Hsiaye.Domain
         public string BrowserInfo { get; set; }
         public string ClientIpAddress { get; set; }
         public string ClientName { get; set; }
-        public MemberLoginAttemptResult Result { get; set; }
+        public bool Success { get; set; }
         public long MemberId { get; set; }
-        public string UserNameOrEmailAddress { get; set; }
-    }
-    public enum MemberLoginAttemptResult
-    {
-        成功 = 1,
-        失败 = 2,
+        public string UserName { get; set; }
     }
 }
