@@ -16,15 +16,12 @@ namespace Hsiaye.Application
         internal static readonly string AdminUserName = "hsiaye";
         private readonly IDatabase _database;
         private readonly IAccessor _accessor;
-        private readonly IRoleService _roleService;
 
-        public MemberService(IDatabase database, IAccessor accessor, IRoleService roleService)
+        public MemberService(IDatabase database, IAccessor accessor)
         {
             _database = database;
             _accessor = accessor;
-            _roleService = roleService;
         }
-
 
         public MemberDto Create(CreateMemberDto input)
         {
@@ -160,21 +157,6 @@ namespace Hsiaye.Application
                 memberDto.RoleNames = _database.GetList<Role>(Predicates.Field<Role>(f => f.Id, Operator.Eq, roleIds)).Select(x => x.Name).ToArray();
             return memberDto;
         }
-        public List<MemberDto> GetPaged(string keyword, bool isActive, int page, int limit)
-        {
-            throw new NotImplementedException();
-        }
-
-        public List<RoleDto> GetRoles()
-        {
-            var roleIds = _database.GetList<Member_Role>(Predicates.Field<Member_Role>(f => f.MemberId, Operator.Eq, _accessor.MemberId)).Select(r => r.RoleId);
-            var result = new List<RoleDto>();
-            foreach (var roleId in roleIds)
-            {
-                result.Add(_roleService.Get(roleId));
-            }
-            return result;
-        }
 
         public bool ChangePassword(ChangePasswordDto input)
         {
@@ -202,6 +184,5 @@ namespace Hsiaye.Application
             model.Password = DESHelper.EncryptByGeneric(input.NewPassword);
             return _database.Update(model);
         }
-
     }
 }

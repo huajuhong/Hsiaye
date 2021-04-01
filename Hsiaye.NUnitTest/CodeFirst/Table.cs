@@ -1,4 +1,5 @@
-﻿using Microsoft.EntityFrameworkCore.Infrastructure;
+﻿using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Storage;
 using NUnit.Framework;
 using System;
@@ -15,17 +16,25 @@ namespace Hsiaye.NUnitTest
     {
         public static readonly string connectionString = "Password=222222;Persist Security Info=True;User ID=sa;Initial Catalog=Hsiaye;Data Source=.";
         public static readonly IDbConnection connection = new SqlConnection(connectionString);
+        public static readonly HsiayeContext hsiayeContext = new HsiayeContext(connectionString);
+
         [Test]
         public void Create()
         {
-            HsiayeContext hsiayeContext = new HsiayeContext(connectionString);
+            
+
+            //删除数据库
+            //var result = hsiayeContext.Database.EnsureDeleted();
+
             //如果数据库不存在，EnsureCreated 将创建数据库并初始化数据库架构。 如果存在任何表(包括其他 DbContext 类) 的表，则不会初始化该架构。
             //hsiayeContext.Database.EnsureCreated();
             //若要获取 EnsureCreated 使用的 SQL，可以使用 GenerateCreateScript 方法。
-            //var sql = dbContext.Database.GenerateCreateScript();
+            var sql = hsiayeContext.Database.GenerateCreateScript()
+                .Replace("datetime2", "datetime");//修改时间精度
+
             //EnsureCreated 仅在数据库中不存在任何表时有效。 如果需要，您可以编写自己的检查来查看是否需要初始化架构，并使用基础 IRelationalDatabaseCreator 服务来初始化架构。
-            var databaseCreator = hsiayeContext.GetService<IRelationalDatabaseCreator>();
-            databaseCreator.CreateTables();
+            //var databaseCreator = hsiayeContext.GetService<IRelationalDatabaseCreator>();
+            //databaseCreator.CreateTables();
         }
     }
 }

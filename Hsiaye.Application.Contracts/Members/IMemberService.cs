@@ -14,10 +14,9 @@ namespace Hsiaye.Application.Contracts
         void Activate(long id);
         //[AbpAuthorize(PermissionNames.Pages_Users_Activation)]
         void DeActivate(long id);
-        List<RoleDto> GetRoles();
         MemberDto Get(long id);
-        List<MemberDto> GetPaged(string keyword, bool isActive, int page, int limit);
         bool ChangePassword(ChangePasswordDto input);
         bool ResetPassword(ResetPasswordDto input);
+
     }
 }

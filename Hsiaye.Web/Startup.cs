@@ -47,22 +47,6 @@ namespace Hsiaye.Web
                 options.JsonSerializerOptions.Encoder = JavaScriptEncoder.UnsafeRelaxedJsonEscaping;//字符串中有Unicode字符时需要此设置转义
             }).SetCompatibilityVersion(CompatibilityVersion.Version_3_0);
 
-            services.AddSwaggerGen(c =>
-            {
-                c.SwaggerDoc("v1", new OpenApiInfo
-                {
-                    Title = "Hsiaye.Web",
-                    Version = "v1",
-                    Description = "新的开始",
-                });
-                c.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
-                {
-                    Type = SecuritySchemeType.ApiKey,
-                    Name = "token",
-                    Description = "登录后返回的token",
-                    In = ParameterLocation.Header,
-                });
-            });
 
             services.AddTransient(serviceProvider =>
             {
@@ -77,6 +61,23 @@ namespace Hsiaye.Web
             services.AddScoped<IAccessor, Accessor>();
             services.AddScoped<IRoleService, RoleService>();
             services.AddScoped<IPermissionChecker, PermissionChecker>();
+
+            services.AddSwaggerGen(c =>
+            {
+                c.SwaggerDoc("v1", new OpenApiInfo
+                {
+                    Title = "Hsiaye.Web",
+                    Version = "v1",
+                    Description = "新的开始",
+                });
+                c.AddSecurityDefinition("API Key认证", new OpenApiSecurityScheme
+                {
+                    Type = SecuritySchemeType.ApiKey,
+                    Name = "token",
+                    Description = "登录成功后数据中的ProviderKey",
+                    In = ParameterLocation.Header,
+                });
+            });
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -91,7 +92,6 @@ namespace Hsiaye.Web
             app.UseSwaggerUI(c =>
             {
                 c.SwaggerEndpoint("/swagger/v1/swagger.json", "Hsiaye.Web v1");
-                c.RoutePrefix = string.Empty;
             });
 
             app.UseRouting();

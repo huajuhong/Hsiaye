@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.Text;
 
 namespace Hsiaye.Domain
@@ -9,11 +10,14 @@ namespace Hsiaye.Domain
         public int Id { get; set; }
         public long CreatorId { get; set; }//创建者id
         public DateTime CreateTime { get; set; }
+        [StringLength(64)]
         public string DisplayName { get; set; }//显示名称
         public bool IsDefault { get; set; }
         public bool IsStatic { get; set; }//是否内置
+        [StringLength(64)]
         public string Name { get; set; }//名称
         public int TenantId { get; set; }
+        [StringLength(1024)]
         public string Description { get; set; }//描述
     }
 }

@@ -18,7 +18,8 @@ namespace Hsiaye.Application
             _httpContextAccessor = httpContextAccessor;
         }
 
-        public long MemberId => _database.GetList<MemberToken>(Predicates.Field<MemberToken>(f => f.ProviderKey, Operator.Eq, _httpContextAccessor.GetToken())).FirstOrDefault().MemberId;
+        public string ProviderKey => _httpContextAccessor.GetProviderKey();
+        public long MemberId => _database.GetList<MemberToken>(Predicates.Field<MemberToken>(f => f.ProviderKey, Operator.Eq, _httpContextAccessor.GetProviderKey())).FirstOrDefault().MemberId;
         public Member Member => _database.Get<Member>(MemberId);
         public int TenantId => Member.TenantId;
         public Permission[] Permissions => _database.GetList<Permission>(Predicates.Field<Permission>(f => f.MemberId, Operator.Eq, MemberId)).ToArray();

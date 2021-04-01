@@ -24,6 +24,17 @@ namespace Hsiaye.Application
             _permissionChecker = permissionChecker;
         }
 
+        public List<RoleDto> Current()
+        {
+            var roleIds = _database.GetList<Member_Role>(Predicates.Field<Member_Role>(f => f.MemberId, Operator.Eq, _accessor.MemberId)).Select(r => r.RoleId);
+            var result = new List<RoleDto>();
+            foreach (var roleId in roleIds)
+            {
+                result.Add(Get(roleId));
+            }
+            return result;
+        }
+
         public bool Create(CreateRoleDto input)
         {
             List<IPredicate> predicates = new List<IPredicate>
@@ -138,41 +149,15 @@ namespace Hsiaye.Application
             return roleDto;
         }
 
-        public List<RoleDto> GetAll(string keyword, int page, int limit)
-        {
-            var predicates = new List<IPredicate>
-            {
-                Predicates.Field<Role>(e => e.Name, Operator.Like, keyword),
-                Predicates.Field<Role>(e => e.DisplayName, Operator.Like, keyword),
-                Predicates.Field<Role>(e => e.Description, Operator.Like, keyword),
-            };
-            var sort = new List<ISort> { Predicates.Sort<Role>(x => x.CreateTime) };
-            var roles = _database.GetPage<Role>(Predicates.Group(GroupOperator.And, predicates.ToArray()), sort, page, limit).ToList();
-            var roleDtos = ExpressionGenericMapper<Role, RoleDto>.MapperTo(roles);
-            foreach (var roleDto in roleDtos)
-            {
-                var permissions = _database.GetList<Permission>(Predicates.Field<Permission>(f => f.RoleId, Operator.Eq, roleDto.Id));
-                roleDto.GrantedPermissions = permissions.ToList().FindAll(x => x.IsGranted).Select(x => x.Name).ToList();
-            }
-            return roleDtos;
-        } 
+        //public List<PermissionDto> Permissions()
+        //{
+        //    int[] roleIds = _accessor.RoleIds;
+        //    var permissions = _database.GetList<Permission>(Predicates.Field<Permission>(f => f.RoleId, Operator.Eq, roleIds));
+        //    var permissionDtos = ExpressionGenericMapper<List<Permission>, List<PermissionDto>>.MapperTo(permissions.Distinct().ToList());
+        //    return permissionDtos;
+        //}
 
-        public List<PermissionDto> GetAllPermissions()
-        {
-            var predicate = Predicates.Field<Member_Role>(f => f.MemberId, Operator.Eq, _accessor.MemberId);
-            var member_Roles = _database.GetList<Member_Role>(predicate);
-
-            List<int> roleIds = new List<int>();
-            foreach (var item in member_Roles)
-            {
-                roleIds.Add(item.RoleId);
-            }
-            var permissions = _database.GetList<Permission>(Predicates.Field<Permission>(f => f.RoleId, Operator.Eq, roleIds));
-            var permissionDtos = ExpressionGenericMapper<List<Permission>, List<PermissionDto>>.MapperTo(permissions.Distinct().ToList());
-            return permissionDtos;
-        }
-
-        public GetRoleForEditOutput GetRoleForEdit(int id)
+        public GetRoleForEditOutput GetForEdit(int id)
         {
             var role = _database.Get<Role>(id);
             var roleEditDto = ExpressionGenericMapper<Role, RoleEditDto>.MapperTo(role);
@@ -189,19 +174,15 @@ namespace Hsiaye.Application
             return output;
         }
 
-        public List<RoleListDto> GetRoles(string permission)
+        public List<RoleListDto> GetList(string permission)
         {
-            var predicate = Predicates.Field<Member_Role>(f => f.MemberId, Operator.Eq, _accessor.MemberId);
-            var member_Roles = _database.GetList<Member_Role>(predicate);
-            List<RoleDto> roleDtos = new List<RoleDto>();
-            RoleDto roleDto;
-            foreach (var item in member_Roles)
+            var permissions = _database.GetList<Permission>(Predicates.Field<Permission>(f => f.Name, Operator.Eq, permission));
+            if (!permissions.Any())
             {
-                roleDto = Get(item.RoleId);
-                roleDtos.Add(roleDto);
+                return null;
             }
-            var roles = roleDtos.FindAll(r => r.GrantedPermissions.Any(p => p == permission));
-            var dtos = ExpressionGenericMapper<List<RoleDto>, List<RoleListDto>>.MapperTo(roles);
+            var roles = _database.GetList<Role>(Predicates.Field<Role>(f => f.Id, Operator.Eq, permissions.Select(x => x.RoleId))).ToList();
+            var dtos = ExpressionGenericMapper<Role, RoleListDto>.MapperTo(roles);
             return dtos;
         }
     }

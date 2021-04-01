@@ -1,6 +1,7 @@
 ﻿using Hsiaye.Domain.Shared;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.Text;
 
 namespace Hsiaye.Domain
@@ -14,6 +15,7 @@ namespace Hsiaye.Domain
         public int Id { get; set; }
         public long CreatorMemberId { get; set; }
         public bool IsGranted { get; set; }
+        [StringLength(64)]
         public string Name { get; set; }
         public int TenantId { get; set; }
         public int RoleId { get; set; }

@@ -17,41 +17,17 @@ namespace Hsiaye.Web.Controllers
     [Route("api/[controller]/[action]")]
     public class MemberController : ControllerBase
     {
-        private readonly IMemberService _memberService;
         private readonly IMemoryCache _cache;
-        private readonly IDatabase _database;
         private readonly IAccessor _accessor;
+        private readonly IDatabase _database;
+        private readonly IMemberService _memberService;
 
-        public MemberController(IMemoryCache cache, IDatabase database, IMemberService memberService, IAccessor accessor)
+        public MemberController(IMemoryCache cache, IAccessor accessor, IDatabase database, IMemberService memberService)
         {
             _cache = cache;
+            _accessor = accessor;
             _database = database;
             _memberService = memberService;
-            _accessor = accessor;
-            //创建管理员账户
-            if (_database.Count<Member>(Predicates.Field<Member>(f => f.UserName, Operator.Eq, "admin")) < 1)
-            {
-                Member member = new Member
-                {
-                    CreateTime = DateTime.Now,
-                    AccessFailedCount = 0,
-                    AuthenticationSource = "系统初始创建",
-                    Avatar = "",
-                    UserName = "admin",
-                    Name = "yuebole",
-                    PhoneNumber = "18140340282",
-                    IsPhoneNumberConfirmed = true,
-                    Password = DESHelper.EncryptByGeneric("101010"),
-                    PasswordResetCode = "",
-                    EmailAddress = "891424065@qq.com",
-                    IsEmailConfirmed = true,
-                    EmailConfirmationCode = "",
-                    IsActive = true,
-                    TenantId = 1,
-                    LastLoginTime = DateTime.Now,
-                };
-                _database.Insert(member);
-            }
         }
 
         [HttpPost]
@@ -116,17 +92,85 @@ namespace Hsiaye.Web.Controllers
         }
 
         [HttpGet]
-        [Authorize]
         public MemberDto Current()
         {
-            var dto = ExpressionGenericMapper<Member, MemberDto>.MapperTo(_accessor.Member);
+            MemberDto dto = _cache.Get<MemberDto>(_accessor.ProviderKey);
             return dto;
         }
 
-        //1.当前用户列表（包含拥有的角色数组）
-        //  当前用户可管理的角色
 
-        //2.当前角色列表（包含拥有的权限数组）
-        //  
+        [HttpPost]
+        [Authorize(PermissionNames.成员_新建)]
+        public MemberDto Create(CreateMemberDto input)
+        {
+            var dto = _memberService.Create(input);
+            return dto;
+        }
+
+        [HttpGet]
+        [Authorize(PermissionNames.成员_列表)]
+        public List<MemberDto> List(string keyword, bool? isActive, int page, int limit)
+        {
+            var predicates = new List<IPredicate>();
+            if (!string.IsNullOrEmpty(keyword))
+            {
+                predicates.Add(Predicates.Field<Member>(f => f.UserName, Operator.Like, keyword));
+                predicates.Add(Predicates.Field<Member>(f => f.Name, Operator.Like, keyword));
+                predicates.Add(Predicates.Field<Member>(f => f.PhoneNumber, Operator.Like, keyword));
+                predicates.Add(Predicates.Field<Member>(f => f.EmailAddress, Operator.Like, keyword));
+            }
+            if (isActive.HasValue)
+            {
+                predicates.Add(Predicates.Field<Member>(f => f.IsActive, Operator.Eq, isActive.Value));
+            }
+            var list = _database.GetPage<Member>(Predicates.Group(GroupOperator.Or, predicates.ToArray()), null, page, limit).ToList();
+            return ExpressionGenericMapper<Member, MemberDto>.MapperTo(list);
+        }
+
+        [HttpGet]
+        [Authorize(PermissionNames.成员_详情)]
+        public MemberDto Get(long id)
+        {
+            return _memberService.Get(id);
+        }
+
+        [HttpPost]
+        [Authorize(PermissionNames.成员_编辑)]
+        public MemberDto Update(MemberDto input)
+        {
+            var dto = _memberService.Update(input);
+            return dto;
+        }
+
+        [HttpPost]
+        [Authorize(PermissionNames.成员_编辑)]
+        public bool Activate(long id)
+        {
+            _memberService.Activate(id);
+            return true;
+        }
+
+        [HttpPost]
+        [Authorize(PermissionNames.成员_编辑)]
+        public bool DeActivate(long id)
+        {
+            _memberService.DeActivate(id);
+            return true;
+        }
+
+        //修改密码
+        [HttpPost]
+        public bool ChangePassword(ChangePasswordDto input)
+        {
+            return _memberService.ChangePassword(input);
+        }
+
+        [HttpPost]
+        [Authorize(PermissionNames.成员_重置密码)]
+        //管理员重置密码
+        public bool ResetPassword(ResetPasswordDto input)
+        {
+            return _memberService.ResetPassword(input);
+        }
     }
 }

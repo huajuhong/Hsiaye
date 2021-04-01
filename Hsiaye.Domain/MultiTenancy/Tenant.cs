@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.Text;
 
 namespace Hsiaye.Domain
@@ -19,7 +20,7 @@ namespace Hsiaye.Domain
 
         // 租赁名称。此属性是此租户的唯一名称。
         //[Required]
-        //[StringLength(64)]
+        [StringLength(64)]
         public string TenancyName { get; set; }
         // Display name of the Tenant.
         //[Required]

@@ -6,9 +6,13 @@
 
   <ItemGroup>
     <Compile Remove="%2a%2a\**" />
+    <Compile Remove="app\**" />
     <Content Remove="%2a%2a\**" />
+    <Content Remove="app\**" />
     <EmbeddedResource Remove="%2a%2a\**" />
+    <EmbeddedResource Remove="app\**" />
     <None Remove="%2a%2a\**" />
+    <None Remove="app\**" />
   </ItemGroup>
 
   <ItemGroup>
@@ -28,28 +32,6 @@
 
   <ItemGroup>
     <None Remove="%2a%2a/%2a" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <Compile Include="Controllers\CaptchaController.cs" />
-    <Compile Include="Controllers\DemoController.cs" />
-    <Compile Include="Controllers\MemberController.cs" />
-    <Compile Include="Controllers\WeatherForecastController.cs" />
-    <Compile Include="Extensions\Filters\ActionFilter.cs" />
-    <Compile Include="Extensions\Filters\AuthorizationFilter.cs" />
-    <Compile Include="Extensions\Filters\ExceptionFilter.cs" />
-    <Compile Include="Extensions\JsonSerializerDateTimeConverter.cs" />
-    <Compile Include="Extensions\Mvc\ActionDescriptorExtensions.cs" />
-    <Compile Include="Extensions\Mvc\AjaxRequestExtensions.cs" />
-    <Compile Include="Models\Member.cs" />
-    <Compile Include="Program.cs" />
-    <Compile Include="Startup.cs" />
-    <Compile Include="WeatherForecast.cs" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <Content Include="appsettings.Development.json" />
-    <Content Include="appsettings.json" />
   </ItemGroup>
 
   <ItemGroup>

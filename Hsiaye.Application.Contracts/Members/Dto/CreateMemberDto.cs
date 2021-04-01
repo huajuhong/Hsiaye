@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.Text;
 
 namespace Hsiaye.Application.Contracts
@@ -7,27 +8,21 @@ namespace Hsiaye.Application.Contracts
 
     public class CreateMemberDto
     {
+        [Required]
         public string UserName { get; set; }
 
+        [Required]
         public string Name { get; set; }
 
-        //[Required]
-        //[EmailAddress]
+        [Required]
         public string EmailAddress { get; set; }
 
         public bool IsActive { get; set; }
 
+        [Required]
         public string[] RoleNames { get; set; }
 
-        //[Required]
+        [Required]
         public string Password { get; set; }
-
-        public void Normalize()
-        {
-            if (RoleNames == null)
-            {
-                RoleNames = Array.Empty<string>();
-            }
-        }
     }
 }
