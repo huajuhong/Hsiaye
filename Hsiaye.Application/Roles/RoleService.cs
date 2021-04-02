@@ -149,14 +149,6 @@ namespace Hsiaye.Application
             return roleDto;
         }
 
-        //public List<PermissionDto> Permissions()
-        //{
-        //    int[] roleIds = _accessor.RoleIds;
-        //    var permissions = _database.GetList<Permission>(Predicates.Field<Permission>(f => f.RoleId, Operator.Eq, roleIds));
-        //    var permissionDtos = ExpressionGenericMapper<List<Permission>, List<PermissionDto>>.MapperTo(permissions.Distinct().ToList());
-        //    return permissionDtos;
-        //}
-
         public GetRoleForEditOutput GetForEdit(int id)
         {
             var role = _database.Get<Role>(id);
