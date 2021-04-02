@@ -155,12 +155,11 @@ namespace Hsiaye.Application
             var roleEditDto = ExpressionGenericMapper<Role, RoleEditDto>.MapperTo(role);
 
             var permissions = _database.GetList<Permission>(Predicates.Field<Permission>(f => f.RoleId, Operator.Eq, id));
-            var permissionDtos = ExpressionGenericMapper<List<Permission>, List<PermissionDto>>.MapperTo(permissions.ToList());
 
             var output = new GetRoleForEditOutput
             {
                 Role = roleEditDto,
-                Permissions = permissionDtos,
+                Permissions = ExpressionGenericMapper<List<Permission>, List<PermissionDto>>.MapperTo(_accessor.Permissions.ToList()),
                 GrantedPermissionNames = permissions.Where(x => x.IsGranted).Select(p => p.Name).ToList(),
             };
             return output;
