@@ -15,6 +15,7 @@
     <PackageReference Include="System.Data.SqlClient" Version="4.8.2" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\Hsiaye.Application\Hsiaye.Application.csproj" />
     <ProjectReference Include="..\Hsiaye.Dapper\Hsiaye.Dapper.csproj" />
     <ProjectReference Include="..\Hsiaye.Domain\Hsiaye.Domain.csproj" />
     <ProjectReference Include="..\Hsiaye.Extensions\Hsiaye.Extensions.csproj" />

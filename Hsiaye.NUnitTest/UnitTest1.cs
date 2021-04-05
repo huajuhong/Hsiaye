@@ -15,13 +15,7 @@ namespace Hsiaye.NUnitTest
 {
     public class Tests
     { 
-        protected IDatabase db;
-        public Tests()
-        {
-            var config = new DapperExtensionsConfiguration(typeof(AutoClassMapper<>), new List<Assembly>(), new SqlServerDialect());
-            var sqlGenerator = new SqlGeneratorImpl(config);
-            db = new Database(Table.connection, sqlGenerator);
-        }
+       
         [SetUp]
         public void Setup()
         {
