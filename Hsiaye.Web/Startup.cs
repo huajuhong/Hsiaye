@@ -50,7 +50,7 @@ namespace Hsiaye.Web
 
             services.AddTransient(serviceProvider =>
             {
-                var connection = new System.Data.SqlClient.SqlConnection("Password=sn668;Persist Security Info=True;User ID=sa;Initial Catalog=Hsiaye;Data Source=.");
+                var connection = new System.Data.SqlClient.SqlConnection("Password=222222;Persist Security Info=True;User ID=sa;Initial Catalog=Hsiaye;Data Source=.");
                 var config = new DapperExtensionsConfiguration(typeof(AutoClassMapper<>), new List<Assembly>(), new SqlServerDialect());
                 var sqlGenerator = new SqlGeneratorImpl(config);
                 IDatabase database = new Database(connection, sqlGenerator);
@@ -70,12 +70,23 @@ namespace Hsiaye.Web
                     Version = "v1",
                     Description = "新的开始",
                 });
-                c.AddSecurityDefinition("API Key认证", new OpenApiSecurityScheme
+                c.AddSecurityDefinition("ProviderKey", new OpenApiSecurityScheme
                 {
                     Type = SecuritySchemeType.ApiKey,
                     Name = "token",
-                    Description = "登录成功后数据中的ProviderKey",
+                    Description = "登录成功后数据中的 ProviderKey",
                     In = ParameterLocation.Header,
+                });
+
+                //声明一个Scheme，注意下面的Id要和上面AddSecurityDefinition中的参数name一致
+                var scheme = new OpenApiSecurityScheme()
+                {
+                    Reference = new OpenApiReference() { Type = ReferenceType.SecurityScheme, Id = "ProviderKey" }
+                };
+                //注册全局认证（所有的接口都可以使用认证）
+                c.AddSecurityRequirement(new OpenApiSecurityRequirement()
+                {
+                    [scheme] = System.Array.Empty<string>()
                 });
             });
         }
