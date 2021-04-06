@@ -49,6 +49,8 @@ namespace Hsiaye.Application
             }
             var entity = new Role
             {
+                CreateTime = DateTime.Now,
+                CreatorId = _accessor.MemberId,
                 Description = input.Description,
                 DisplayName = input.DisplayName,
                 IsDefault = false,
@@ -69,6 +71,7 @@ namespace Hsiaye.Application
                     {
                         CreatorMemberId = _accessor.MemberId,
                         IsGranted = true,
+                        TenantId = _accessor.TenantId,
                         MemberId = 0,
                         RoleId = id,
                         Name = permission,
