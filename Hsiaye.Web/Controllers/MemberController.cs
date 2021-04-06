@@ -92,6 +92,7 @@ namespace Hsiaye.Web.Controllers
         }
 
         [HttpGet]
+        [Authorize(PermissionNames.成员_详情)]
         public MemberDto Current()
         {
             MemberDto dto = _cache.Get<MemberDto>(_accessor.ProviderKey);
