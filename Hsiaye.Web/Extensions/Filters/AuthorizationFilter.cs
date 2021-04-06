@@ -30,8 +30,7 @@ namespace Hsiaye.Web.Extensions
                 context.Result = new JsonResult(new ApiResult { Success = false, ErrorCode = 402, ErrorMessage = "token缺失" });
                 return;
             }
-
-            var memberDto = _cache.Get<MemberDto>(token);
+            var memberDto = _cache.Get<MemberDto>(token.ToString());
             if (memberDto == null)
             {
                 context.Result = new JsonResult(new ApiResult { Success = false, ErrorCode = 402, ErrorMessage = "token无效" });
