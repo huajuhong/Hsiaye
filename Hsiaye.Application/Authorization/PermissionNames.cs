@@ -1,4 +1,8 @@
-﻿namespace Hsiaye.Application
+﻿using Hsiaye.Dapper;
+using Hsiaye.Domain;
+using System.Collections.Generic;
+
+namespace Hsiaye.Application
 {
     public static class PermissionNames
     {
@@ -17,5 +21,28 @@
         public const string 角色_编辑 = "角色.编辑";
 
 
+        public static List<Permission> Permissions
+        {
+            get
+            {
+                var fieldInfos = typeof(PermissionNames).GetFields();
+                List<Permission> permissions = new List<Permission>();
+                foreach (var item in fieldInfos)
+                {
+                    var value = item.GetValue(item);
+                    
+                    permissions.Add(new Permission
+                    {
+                        CreatorMemberId = 0,
+                        Name = value.ToString(),
+                        MemberId = 0,
+                        RoleId = 0,
+                        TenantId = 0,
+                        IsGranted = true,
+                    });
+                }
+                return permissions;
+            }
+        }
     }
 }
