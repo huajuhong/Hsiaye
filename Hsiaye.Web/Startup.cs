@@ -61,7 +61,7 @@ namespace Hsiaye.Web
             services.AddScoped<IAccessor, Accessor>();
             services.AddScoped<IRoleService, RoleService>();
             services.AddScoped<IPermissionChecker, PermissionChecker>();
-
+            services.AddSingleton<IStartupFilter, StartupFilter>();
             services.AddSwaggerGen(c =>
             {
                 c.SwaggerDoc("v1", new OpenApiInfo

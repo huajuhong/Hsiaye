@@ -48,13 +48,11 @@ namespace Hsiaye.NUnitTest
             }
 
             //管理员权限写入
-            var fieldInfos = typeof(PermissionNames).GetFields();
-            List<Permission> permissions = new List<Permission>();
-            foreach (var item in fieldInfos)
+            List<Permission> permissions = PermissionNames.Permissions;
+            foreach (var item in permissions)
             {
-                var value = item.GetValue(item);
                 var predicate = Predicates.Group(GroupOperator.And,
-                    Predicates.Field<Permission>(f => f.Name, Operator.Eq, value),
+                    Predicates.Field<Permission>(f => f.Name, Operator.Eq, item.Name),
                     Predicates.Field<Permission>(f => f.MemberId, Operator.Eq, member.Id)
                     );
                 int count = Table.database.Count<Permission>(predicate);
@@ -62,8 +60,8 @@ namespace Hsiaye.NUnitTest
                     continue;
                 permissions.Add(new Permission
                 {
-                    CreatorMemberId = 0,
-                    Name = value.ToString(),
+                    CreatorMemberId = member.Id,
+                    Name = item.Name,
                     MemberId = member.Id,
                     RoleId = 0,
                     TenantId = 0,
