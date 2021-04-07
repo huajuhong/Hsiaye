@@ -17,6 +17,8 @@ namespace Hsiaye.Domain
         public bool IsGranted { get; set; }
         [StringLength(64)]
         public string Name { get; set; }
+        public string DisplayName { get; set; }
+        public string Description { get; set; }
         public int TenantId { get; set; }
         public int RoleId { get; set; }
         public long MemberId { get; set; }
