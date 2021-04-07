@@ -77,7 +77,7 @@ namespace Hsiaye.Application
                         Name = permission,
                     });
                 }
-                _database.Insert(permissions);
+                _database.Insert(permissions.AsEnumerable());
                 _database.Commit();
                 var dto = ExpressionGenericMapper<CreateRoleDto, RoleDto>.MapperTo(input);
                 dto.Id = id;
@@ -96,15 +96,24 @@ namespace Hsiaye.Application
             role.Name = input.Name;
             role.DisplayName = input.DisplayName;
             role.Description = input.Description;
-            if (!_accessor.RoleIds.Any(rid => rid == role.Id))
-                throw new UserFriendlyException($"无权限操作角色：{role.Name}");
-            _database.BeginTransaction();
+            //if (!_accessor.RoleIds.Any(rid => rid == role.Id))
+            //    throw new UserFriendlyException($"无权限操作角色：{role.Name}");
+            foreach (var item in input.GrantedPermissions)
+            {
+                if (!PermissionNames.Permissions.Exists(x => x.Name == item))
+                {
+                    throw new UserFriendlyException($"系统内置权限中没有[{item}]");
+                }
+            }
+
             try
             {
+                _database.BeginTransaction();
                 _database.Update(role);
-                var permissions = _database.GetList<Permission>(Predicates.Field<Permission>(f => f.RoleId, Operator.Eq, role.Id)).ToList();
+                var predicate = Predicates.Field<Permission>(f => f.RoleId, Operator.Eq, role.Id);
+                var permissions = _database.GetList<Permission>(predicate).ToList();
                 if (permissions.Any())
-                    _database.Delete(permissions);
+                    _database.Delete<Permission>(predicate);
                 permissions = new List<Permission>();
                 foreach (var permissionName in input.GrantedPermissions)
                 {
@@ -118,7 +127,7 @@ namespace Hsiaye.Application
                         MemberId = 0
                     });
                 }
-                _database.Insert(permissions);
+                _database.Insert(permissions.AsEnumerable());
                 _database.Commit();
                 return true;
             }
@@ -126,6 +135,10 @@ namespace Hsiaye.Application
             {
                 _database.Rollback();
                 throw new UserFriendlyException(ex);
+            }
+            finally
+            {
+                _database.Dispose();
             }
         }
 
@@ -146,6 +159,8 @@ namespace Hsiaye.Application
         public RoleDto Get(int id)
         {
             var role = _database.Get<Role>(id);
+            if (role == null)
+                throw new UserFriendlyException("该记录不存在");
             var permissions = _database.GetList<Permission>(Predicates.Field<Permission>(f => f.RoleId, Operator.Eq, role.Id));
             var roleDto = ExpressionGenericMapper<Role, RoleDto>.MapperTo(role);
             roleDto.GrantedPermissions = permissions.ToList().FindAll(x => x.IsGranted).Select(x => x.Name).ToList();
@@ -162,7 +177,7 @@ namespace Hsiaye.Application
             var output = new GetRoleForEditOutput
             {
                 Role = roleEditDto,
-                Permissions = ExpressionGenericMapper<List<Permission>, List<PermissionDto>>.MapperTo(_accessor.Permissions.ToList()),
+                Permissions = ExpressionGenericMapper<Permission, PermissionDto>.MapperTo(_accessor.Permissions.ToList()),
                 GrantedPermissionNames = permissions.Where(x => x.IsGranted).Select(p => p.Name).ToList(),
             };
             return output;
