@@ -72,7 +72,7 @@ namespace Hsiaye.Extensions
         public static List<TOut> MapperTo(List<TIn> list)
         {
             if (list == null || list.Count < 1)
-                return null;
+                return default;
             List<TOut> temp = new List<TOut>();
             list.ForEach(obj =>
             {
