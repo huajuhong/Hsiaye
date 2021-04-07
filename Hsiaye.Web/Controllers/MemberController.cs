@@ -124,7 +124,7 @@ namespace Hsiaye.Web.Controllers
             {
                 predicates.Add(Predicates.Field<Member>(f => f.IsActive, Operator.Eq, isActive.Value));
             }
-            var list = _database.GetPage<Member>(Predicates.Group(GroupOperator.Or, predicates.ToArray()), null, page, limit).ToList();
+            var list = _database.GetPage<Member>(Predicates.Group(GroupOperator.And, predicates.ToArray()), new List<ISort> { Predicates.Sort<Member>(f => f.Id, false) }, page, limit).ToList();
             return ExpressionGenericMapper<Member, MemberDto>.MapperTo(list);
         }
 
