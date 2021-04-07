@@ -40,17 +40,21 @@ namespace Hsiaye.Web.Controllers
 
         [HttpGet]
         [Authorize(PermissionNames.角色_列表)]
-        public List<RoleDto> GetPage(string keyword, int page, int limit)
+        public List<RoleDto> List(string keyword, int page, int limit)
         {
-            var predicates = new List<IPredicate>
+            var predicates = new List<IPredicate>();
+            if (!string.IsNullOrEmpty(keyword))
             {
-                Predicates.Field<Role>(e => e.Name, Operator.Like, keyword),
-                Predicates.Field<Role>(e => e.DisplayName, Operator.Like, keyword),
-                Predicates.Field<Role>(e => e.Description, Operator.Like, keyword),
-            };
+                predicates.Add(Predicates.Field<Role>(e => e.Name, Operator.Like, keyword));
+                predicates.Add(Predicates.Field<Role>(e => e.DisplayName, Operator.Like, keyword));
+                predicates.Add(Predicates.Field<Role>(e => e.Description, Operator.Like, keyword));
+            }
             var sort = new List<ISort> { Predicates.Sort<Role>(x => x.CreateTime) };
-            var roles = _database.GetPage<Role>(Predicates.Group(GroupOperator.And, predicates.ToArray()), sort, page, limit).ToList();
+            var roles = _database.GetPage<Role>(Predicates.Group(GroupOperator.Or, predicates.ToArray()), sort, page, limit).ToList();
+
             var roleDtos = ExpressionGenericMapper<Role, RoleDto>.MapperTo(roles);
+            if (roleDtos == null)
+                return null;
             foreach (var roleDto in roleDtos)
             {
                 var permissions = _database.GetList<Permission>(Predicates.Field<Permission>(f => f.RoleId, Operator.Eq, roleDto.Id));
