@@ -99,7 +99,6 @@ namespace Hsiaye.Web.Controllers
             return dto;
         }
 
-
         [HttpPost]
         [Authorize(PermissionNames.成员_新建)]
         public MemberDto Create(CreateMemberDto input)
