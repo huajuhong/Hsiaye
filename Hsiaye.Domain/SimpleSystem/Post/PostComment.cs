@@ -10,9 +10,15 @@ namespace Hsiaye.Domain
     {
         public int Id { get; set; }
         public DateTime CreateTime { get; set; }
+        /// <summary>
+        /// 评论者Id
+        /// </summary>
         public int MemberId { get; set; }
-        public string MemberName { get; set; }
         public int PostId { get; set; }
+        /// <summary>
+        /// 父级评论Id
+        /// </summary>
+        public int ParentCommentId { get; set; }
         public string Content { get; set; }
     }
 }

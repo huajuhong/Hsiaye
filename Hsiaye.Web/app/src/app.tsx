@@ -28,6 +28,7 @@ export async function getInitialState(): Promise<{
   const fetchUserInfo = async () => {
     try {
       const currentUser = await queryCurrentUser();
+      console.log(currentUser)
       return currentUser;
     } catch (error) {
       history.push(loginPath);

@@ -48,6 +48,7 @@ const Login: React.FC = () => {
   const intl = useIntl();
 
   const fetchUserInfo = async () => {
+    // https://beta-pro.ant.design/docs/initial-state-cn
     const userInfo = await initialState?.fetchUserInfo?.();
     if (userInfo) {
       setInitialState({

@@ -10,6 +10,7 @@ namespace Hsiaye.Domain
     public class Answer
     {
         public int Id { get; set; }
+        public int OrganizationUnitId { get; set; }
         public DateTime CreateTime { get; set; }
         public int QuestionId { get; set; }
         public int AuthorId { get; set; }//MemberId
