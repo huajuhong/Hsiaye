@@ -29,10 +29,14 @@ namespace Hsiaye.Domain.SimpleSystem.Post
         public PostState State { get; set; }
         public int CommentCount { get; set; }//评论量
         public int ViewCount { get; set; }//浏览量
+        //page.comments	留言是否开启
+        //page.excerpt 页面摘要
+        //page.link 文章的外部链接（用于链接文章）
     }
     public enum PostState : byte
     {
-        Draft = 0,//草稿
-        Published = 1//已发布
+        草稿 = 0,
+        待审 = 1,
+        已发布 = 2
     }
 }

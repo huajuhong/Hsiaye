@@ -19,7 +19,6 @@ namespace Hsiaye.NUnitTest
         [SetUp]
         public void Setup()
         {
-
         }
 
         [Test]

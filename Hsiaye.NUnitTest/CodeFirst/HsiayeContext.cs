@@ -9,6 +9,7 @@ using System.Threading.Tasks;
 
 namespace Hsiaye.NUnitTest
 {
+    //生成表结构示例：https://docs.aspnetzero.com/en/aspnet-core-angular/latest/Extending-Existing-Entities#extending-non-abstract-entities
     public class HsiayeContext : DbContext
     {
         [Column]

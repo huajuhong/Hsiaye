@@ -16,6 +16,8 @@ namespace Hsiaye.Domain
         public WorkOrderType Type { get; set; }//业务性质
         public string Title { get; set; }
         public string Description { get; set; }
+        public byte ProgressPercent { get; set; }//进度百分比：0-100，100表示已完成
+        public string ProgressContent { get; set; }//进度内容，每次提交会自动在提交内容后加换行符 \n 追加在该字段后面
         public int SubmitMemberId { get; set; }//提交人员Id
         public int AcceptMemberId { get; set; }//受理人员Id
         public WorkOrderState State { get; set; }
@@ -29,6 +31,7 @@ namespace Hsiaye.Domain
     }
     public enum WorkOrderState : byte
     {
+        关闭 = 0,
         激活 = 1,
         处理中 = 2,
         已处理 = 3,
