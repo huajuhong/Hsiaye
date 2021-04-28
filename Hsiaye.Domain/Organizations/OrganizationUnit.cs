@@ -20,5 +20,6 @@ namespace Hsiaye.Domain
         public long LastModifierUserId { get; set; }
         public int ParentId { get; set; }
         public int TenantId { get; set; }
+        public decimal Balance { get; set; }
     }
 }
