@@ -11,6 +11,7 @@ namespace Hsiaye.Domain
     {
         public int Id { get; set; }
         public DateTime CreateTime { get; set; }
+        public int OrganizationUnitId { get; set; }
         public string Name { get; set; }
         public int Sex { get; set; }
         public string Phone { get; set; }
