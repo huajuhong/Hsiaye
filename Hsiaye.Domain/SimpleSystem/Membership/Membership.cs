@@ -6,43 +6,17 @@ using System.Threading.Tasks;
 
 namespace Hsiaye.Domain
 {
-    //会员
+    //机构成员
     public class Membership
     {
         public int Id { get; set; }
         public DateTime CreateTime { get; set; }
         public int OrganizationUnitId { get; set; }
+        public string Number { get; set; }//编号，组织机构中成员数量+1，用于快捷查询。例：通过该编号查询工时、流水等。
         public string Name { get; set; }
-        public int Sex { get; set; }
+        public Shared.Sex Sex { get; set; }
         public string Phone { get; set; }
         public string IDCard { get; set; }
         public decimal Balance { get; set; }
-    }
-
-    //资金流水
-    public class Fundsflow
-    {
-        public int Id { get; set; }
-        public int MembershipId { get; set; }
-        public int ProductId { get; set; }
-        public int PromotionDiscountsId { get; set; }
-        public int Type { get; set; }//业务类型
-        public string Title { get; set; }//标题
-        public decimal Amount { get; set; }//金额
-        public decimal IncomeAmount { get; set; }//收入金额
-        public decimal DisburseAmount { get; set; }//支出金额
-        public decimal Balance { get; set; }//该账单成交后的余额
-        public int State { get; set; }//状态
-        public int PayType { get; set; }
-        public string Description { get; set; }//说明
-        public DateTime CreateTime { get; set; }
-        public string OrderNumber { get; set; }
-    }
-
-    //促销活动
-    public class PromotionDiscounts
-    {
-        //名称/状态/费用承担/活动时间开始-结束/审核状态
-        //活动规则：满减、满返、满折、直降
     }
 }
