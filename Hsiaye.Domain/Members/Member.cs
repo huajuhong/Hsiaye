@@ -19,7 +19,7 @@ namespace Hsiaye.Domain
         public string UserName { get; set; }//用户名
         [StringLength(64)]
         public string Name { get; set; }//姓名
-        public Shared.Sex Sex { get; set; }
+        public Shared.Gender Gender { get; set; }
         [StringLength(64)]
         public string PhoneNumber { get; set; }
         public bool IsPhoneNumberConfirmed { get; set; }

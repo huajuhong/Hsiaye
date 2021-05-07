@@ -19,7 +19,7 @@ namespace Hsiaye.Domain
         public bool Approved { get; set; }//是否已审
         public PromotionDiscountsRule Rule { get; set; }
         public decimal RuleAmount { get; set; }
-        public decimal Discount { get; set; }//折扣，5折=5
+        public decimal Discount { get; set; }//折扣，5.5折=5.5
 
     }
     public enum PromotionDiscountsState

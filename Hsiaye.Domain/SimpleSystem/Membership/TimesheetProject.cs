@@ -14,5 +14,15 @@ namespace Hsiaye.Domain
         public DateTime CreateTime { get; set; }
         public int OrganizationUnitId { get; set; }
         public string Name { get; set; }
+        public string Description { get; set; }
+        public TimesheetProjectState State { get; set; }
+        public DateTime StartTime { get; set; }
+        public DateTime EndTime { get; set; }
+    }
+    public enum TimesheetProjectState
+    {
+        待开工,
+        已开工,
+        已完工,
     }
 }

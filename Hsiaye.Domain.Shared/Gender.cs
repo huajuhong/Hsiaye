@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Hsiaye.Domain.Shared
 {
-    public enum Sex
+    public enum Gender
     {
         未知,
         男,
