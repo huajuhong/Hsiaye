@@ -28,7 +28,7 @@ namespace Hsiaye.NUnitTest
         {
             modelBuilder.Entity<Member>();
             modelBuilder.Entity<Role>();
-            modelBuilder.Entity<Member_Role>();
+            modelBuilder.Entity<MemberRole>();
             modelBuilder.Entity<Permission>();
             modelBuilder.Entity<MemberLoginAttempt>();
             modelBuilder.Entity<MemberToken>();
@@ -37,7 +37,7 @@ namespace Hsiaye.NUnitTest
         }
         public DbSet<Member> Member { get; set; }
         public DbSet<Role> Role { get; set; }
-        public DbSet<Member_Role> Member_Role { get; set; }
+        public DbSet<MemberRole> memberRole { get; set; }
         public DbSet<Permission> Permission { get; set; }
         public DbSet<MemberLoginAttempt> MemberLoginAttempt { get; set; }
         public DbSet<MemberToken> MemberToken { get; set; }

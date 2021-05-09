@@ -11,6 +11,7 @@ namespace Hsiaye.Domain
     {
         public int Id { get; set; }
         public DateTime CreateTime { get; set; }
+        public int CreateMemberId { get; set; }
         public int OrganizationUnitId { get; set; }
         public string Name { get; set; }
         public string Title { get; set; }
@@ -33,6 +34,7 @@ namespace Hsiaye.Domain
     }
     public enum ProductState
     {
+        未知 = 0,
         上架 = 1,
         下架 = 2
     }

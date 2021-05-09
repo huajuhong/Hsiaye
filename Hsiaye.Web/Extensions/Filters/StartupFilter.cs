@@ -40,7 +40,7 @@ namespace Hsiaye.Web.Extensions
 
                         var model = _database.Get<Member>(memberToken.MemberId);
                         var memberDto = ExpressionGenericMapper<Member, MemberDto>.MapperTo(model);
-                        var roleIds = _database.GetList<Member_Role>(Predicates.Field<Member_Role>(f => f.MemberId, Operator.Eq, memberToken.MemberId)).Select(r => r.RoleId);
+                        var roleIds = _database.GetList<MemberRole>(Predicates.Field<MemberRole>(f => f.MemberId, Operator.Eq, memberToken.MemberId)).Select(r => r.RoleId);
                         if (roleIds.Any())
                             memberDto.RoleNames = _database.GetList<Role>(Predicates.Field<Role>(f => f.Id, Operator.Eq, roleIds)).Select(x => x.Name).ToArray();
 

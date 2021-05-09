@@ -32,15 +32,14 @@ namespace Hsiaye.NUnitTest
                     Avatar = "帅",
                     UserName = "admin",
                     Name = "yuebole",
-                    PhoneNumber = "18140340282",
-                    IsPhoneNumberConfirmed = true,
+                    Phone = "18140340282",
+                    IsPhoneConfirmed = true,
                     Password = DESHelper.EncryptByGeneric("qwe123"),
                     PasswordResetCode = "",
                     EmailAddress = "891424065@qq.com",
                     IsEmailConfirmed = true,
                     EmailConfirmationCode = "",
                     IsActive = true,
-                    TenantId = 1,
                     LastLoginTime = DateTime.Now,
                 };
                 Table.hsiayeContext.Member.Add(member);
@@ -64,7 +63,6 @@ namespace Hsiaye.NUnitTest
                     Name = item.Name,
                     MemberId = member.Id,
                     RoleId = 0,
-                    TenantId = 0,
                     IsGranted = true,
                 });
             }
