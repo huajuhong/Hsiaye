@@ -41,7 +41,7 @@ namespace Hsiaye.Extensions
                     stringBuilder.Append("字段").Append(propertyInfo.Name).Append("类型不一致：");
                     stringBuilder.Append("输入类型：").Append(propertyInfo.Name);
                     stringBuilder.Append("输出类型：").Append(outPropertyInfo.Name);
-                    throw ex;
+                    throw;
                 }
                 memberBindingList.Add(memberBinding);
             }
