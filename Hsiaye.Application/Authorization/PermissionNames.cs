@@ -36,6 +36,12 @@ namespace Hsiaye.Application
         public const string 商品_详情 = "商品.详情";
         public const string 商品_编辑 = "商品.编辑";
 
+        public const string 促销活动 = "促销活动";
+        public const string 促销活动_新建 = "促销活动.新建";
+        public const string 促销活动_列表 = "促销活动.列表";
+        public const string 促销活动_详情 = "促销活动.详情";
+        public const string 促销活动_编辑 = "促销活动.编辑";
+
 
         public static List<Permission> Permissions
         {

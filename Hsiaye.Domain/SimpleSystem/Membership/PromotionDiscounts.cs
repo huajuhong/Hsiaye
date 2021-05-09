@@ -24,16 +24,18 @@ namespace Hsiaye.Domain
     }
     public enum PromotionDiscountsState
     {
-        未开始 = 0,
-        进行中 = 1,
-        已结束 = 2,
+        未知 = 0,
+        未开始 = 1,
+        进行中 = 2,
+        已结束 = 3,
     }
     public enum PromotionDiscountsRule
     {
-        无折扣 = 0,
+        未知 = 0,
         满减 = 1,
         满返 = 2,
         满折 = 3,
-        直降 = 4
+        直降 = 4,
+        无折扣 = 5,
     }
 }
