@@ -1,5 +1,6 @@
 ﻿using Hsiaye.Application;
 using Hsiaye.Application.Contracts;
+using Dapper;
 using Hsiaye.Dapper;
 using Hsiaye.Domain;
 using Hsiaye.Domain.Shared;
@@ -120,5 +121,102 @@ namespace Hsiaye.Web.Controllers
             _database.Update(entity);
             return true;
         }
+
+        [HttpPost]
+        [Authorize(PermissionNames.会员_充值)]
+        public bool Recharge(MembershipRechargeInput input)
+        {
+            string sql = "select * from Membership with (updlock) where Id=" + input.Id;
+            var entity = _database.Connection.QueryFirst<Membership>(sql);
+            entity.Balance += input.Amount;
+
+            try
+            {
+                _database.BeginTransaction();
+                DateTime now = DateTime.Now;
+                MembershipFundsflow membershipFundsflow = new MembershipFundsflow
+                {
+                    CreateTime = now,
+                    MembershipId = input.Id,
+                    ProductId = 0,
+                    PromotionDiscountsId = 0,
+                    Type = MembershipFundsflowType.充值,
+                    Title = "充值-" + entity.Name,
+                    Amount = input.Amount,
+                    IncomeAmount = input.Amount,
+                    DisburseAmount = 0,
+                    Balance = entity.Balance,
+                    PayState = PayState.支付成功,
+                    PayType = input.PayType,
+                    Description = $"后台充值（{entity.Name}-{entity.Phone}）",
+                    OrderNumber = now.ToString("yyyyMMddHHmmss") + input.Id.ToString().PadLeft(8, '0'),
+                };
+                _database.Insert(membershipFundsflow);
+
+                _database.Update(entity);
+                _database.Commit();
+            }
+            catch (Exception)
+            {
+                _database.Rollback();
+                throw;
+            }
+            finally
+            {
+                _database.Dispose();
+            }
+            return true;
+        }
+
+        [HttpPost]
+        [Authorize(PermissionNames.会员_提现)]
+        public bool Withdrawal(MembershipWithdrawalInput input)
+        {
+            string sql = "select * from Membership with (updlock) where Id=" + input.Id;
+            var entity = _database.Connection.QueryFirst<Membership>(sql);
+            if (entity.Balance < input.Amount)
+            {
+                throw new UserFriendlyException("余额不足");
+            }
+            entity.Balance -= input.Amount;
+
+            try
+            {
+                _database.BeginTransaction();
+                DateTime now = DateTime.Now;
+                MembershipFundsflow membershipFundsflow = new MembershipFundsflow
+                {
+                    CreateTime = now,
+                    MembershipId = input.Id,
+                    ProductId = 0,
+                    PromotionDiscountsId = 0,
+                    Type = MembershipFundsflowType.提现,
+                    Title = "提现-" + entity.Name,
+                    Amount = input.Amount,
+                    IncomeAmount = 0,
+                    DisburseAmount = input.Amount,
+                    Balance = entity.Balance,
+                    PayState = PayState.支付成功,
+                    PayType = input.PayType,
+                    Description = $"后台提现（{entity.Name}-{entity.Phone}）",
+                    OrderNumber = now.ToString("yyyyMMddHHmmss") + input.Id.ToString().PadLeft(8, '0'),
+                };
+                _database.Insert(membershipFundsflow);
+
+                _database.Update(entity);
+                _database.Commit();
+            }
+            catch (Exception)
+            {
+                _database.Rollback();
+                throw;
+            }
+            finally
+            {
+                _database.Dispose();
+            }
+            return true;
+        }
+        //Consume
     }
 }

@@ -28,6 +28,9 @@ namespace Hsiaye.Application
         public const string 会员_列表 = "会员.列表";
         public const string 会员_详情 = "会员.详情";
         public const string 会员_编辑 = "会员.编辑";
+        public const string 会员_充值 = "会员.充值";
+        public const string 会员_消费 = "会员.消费";
+        public const string 会员_提现 = "会员.提现";
 
 
         public const string 商品 = "商品";

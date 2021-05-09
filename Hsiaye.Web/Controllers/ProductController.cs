@@ -45,12 +45,12 @@ namespace Hsiaye.Web.Controllers
                 PromotionDiscountsId = input.PromotionDiscountsId,
             };
 
-            var entityPromotionDiscounts = _database.Get<PromotionDiscounts>(input.PromotionDiscountsId);
-            if (entityPromotionDiscounts.OrganizationUnitId != _accessor.OrganizationUnitId)
+            var promotionDiscounts = _database.Get<PromotionDiscounts>(input.PromotionDiscountsId);
+            if (promotionDiscounts.OrganizationUnitId != _accessor.OrganizationUnitId)
             {
                 throw new UserFriendlyException("该促销活动不存在");
             }
-            if (!entityPromotionDiscounts.Approved)
+            if (!promotionDiscounts.Approved)
             {
                 throw new UserFriendlyException("该促销活动还未审核，请先审核");
             }
@@ -111,12 +111,12 @@ namespace Hsiaye.Web.Controllers
         [Authorize(PermissionNames.商品_编辑)]
         public bool Update(ProductEditInput input)
         {
-            var entityPromotionDiscounts = _database.Get<PromotionDiscounts>(input.PromotionDiscountsId);
-            if (entityPromotionDiscounts.OrganizationUnitId != _accessor.OrganizationUnitId)
+            var promotionDiscounts = _database.Get<PromotionDiscounts>(input.PromotionDiscountsId);
+            if (promotionDiscounts.OrganizationUnitId != _accessor.OrganizationUnitId)
             {
                 throw new UserFriendlyException("该促销活动不存在");
             }
-            if (!entityPromotionDiscounts.Approved)
+            if (!promotionDiscounts.Approved)
             {
                 throw new UserFriendlyException("该促销活动还未审核，请先审核");
             }
