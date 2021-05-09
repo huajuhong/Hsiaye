@@ -13,7 +13,6 @@ namespace Hsiaye.Application
 {
     public class MemberService : IMemberService
     {
-        internal static readonly string AdminUserName = "hsiaye";
         private readonly IDatabase _database;
         private readonly IAccessor _accessor;
 
@@ -36,8 +35,7 @@ namespace Hsiaye.Application
                 Password = DESHelper.EncryptByGeneric(input.Password),
                 EmailConfirmationCode = string.Empty,
                 PasswordResetCode = string.Empty,
-                PhoneNumber = string.Empty,
-                TenantId = _accessor.TenantId,
+                Phone = string.Empty,
             };
             try
             {
@@ -46,24 +44,23 @@ namespace Hsiaye.Application
                 List<IPredicate> predicates = new List<IPredicate>
                 {
                     Predicates.Field<Role>(f => f.Name, Operator.Eq, input.RoleNames),
-                    Predicates.Field<Role>(f => f.TenantId, Operator.Eq, _accessor.TenantId)
                 };
 
                 var createRoles = _database.GetList<Role>(Predicates.Group(GroupOperator.And, predicates.ToArray()));
 
                 if (createRoles != null)
                 {
-                    List<Member_Role> member_Roles = new List<Member_Role>();
+                    List<MemberRole> memberRoles = new List<MemberRole>();
                     foreach (var createRole in createRoles)
                     {
-                        member_Roles.Add(new Member_Role
+                        memberRoles.Add(new MemberRole
                         {
                             CreatorMemberId = _accessor.MemberId,
                             MemberId = id,
                             RoleId = createRole.Id,
                         });
                     }
-                    _database.Insert(member_Roles);
+                    _database.Insert(memberRoles);
                 }
                 _database.Commit();
             }
@@ -91,24 +88,23 @@ namespace Hsiaye.Application
             {
                 _database.BeginTransaction();
                 _database.Update(model);
-                List<Member_Role> member_Roles = _database.GetList<Member_Role>(Predicates.Field<Member_Role>(f => f.MemberId, Operator.Eq, input.Id)).ToList();
-                _database.Delete(member_Roles);
-                member_Roles = new List<Member_Role>();
+                List<MemberRole> memberRoles = _database.GetList<MemberRole>(Predicates.Field<MemberRole>(f => f.MemberId, Operator.Eq, input.Id)).ToList();
+                _database.Delete(memberRoles);
+                memberRoles = new List<MemberRole>();
 
                 var predicate = new List<IPredicate>();
                 predicate.Add(Predicates.Field<Role>(f => f.Name, Operator.Eq, input.RoleNames));
-                predicate.Add(Predicates.Field<Role>(f => f.TenantId, Operator.Eq, _accessor.TenantId));
                 var roles = _database.GetList<Role>(predicate);
                 foreach (var role in roles)
                 {
-                    member_Roles.Add(new Member_Role
+                    memberRoles.Add(new MemberRole
                     {
                         CreatorMemberId = _accessor.MemberId,
                         MemberId = input.Id,
                         RoleId = role.Id,
                     });
                 }
-                _database.Insert(member_Roles);
+                _database.Insert(memberRoles);
                 _database.Commit();
             }
             catch
@@ -152,7 +148,7 @@ namespace Hsiaye.Application
         {
             var model = _database.Get<Member>(id);
             var memberDto = ExpressionGenericMapper<Member, MemberDto>.MapperTo(model);
-            var roleIds = _database.GetList<Member_Role>(Predicates.Field<Member_Role>(f => f.MemberId, Operator.Eq, id)).Select(r => r.RoleId);
+            var roleIds = _database.GetList<MemberRole>(Predicates.Field<MemberRole>(f => f.MemberId, Operator.Eq, id)).Select(r => r.RoleId);
             if (roleIds.Any())
                 memberDto.RoleNames = _database.GetList<Role>(Predicates.Field<Role>(f => f.Id, Operator.Eq, roleIds)).Select(x => x.Name).ToArray();
             return memberDto;
@@ -172,8 +168,7 @@ namespace Hsiaye.Application
         {
             List<IPredicate> predicates = new List<IPredicate>
             {
-                 Predicates.Field<Member>(f => f.UserName, Operator.Eq, AdminUserName),
-                 Predicates.Field<Member>(f => f.TenantId, Operator.Eq, _accessor.TenantId)
+                 Predicates.Field<Member>(f => f.UserName, Operator.Eq,PermissionNames.AdminUserName),
             };
             var admin = _database.GetList<Member>(Predicates.Group(GroupOperator.And, predicates.ToArray())).FirstOrDefault();
             if (admin == null)

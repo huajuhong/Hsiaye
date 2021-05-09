@@ -16,7 +16,6 @@ namespace Hsiaye.Domain
         public bool IsStatic { get; set; }//是否是静态角色，静态角色为系统内置不可删除，只可修改显示名称
         [StringLength(64)]
         public string Name { get; set; }//名称
-        public int TenantId { get; set; }
         [StringLength(1024)]
         public string Description { get; set; }//描述
     }

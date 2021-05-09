@@ -4,7 +4,7 @@ using System.Text;
 
 namespace Hsiaye.Domain
 {
-    public class Member_Role
+    public class MemberRole
     {
         public int Id { get; set; }
         public long CreatorMemberId { get; set; }

@@ -19,7 +19,6 @@ namespace Hsiaye.Domain
         public DateTime LastModificationTime { get; set; }
         public long LastModifierUserId { get; set; }
         public int ParentId { get; set; }
-        public int TenantId { get; set; }
         public decimal Balance { get; set; }
     }
 }

@@ -11,7 +11,7 @@ namespace Hsiaye.Application
 {
     public static class PermissionCheckerExtensions
     {
-        public static bool IsGranted(this IPermissionChecker permissionChecker, long memberId, bool requiresAll, params string[] permissionNames)
+        public static bool IsGranted(this IPermissionChecker permissionChecker, int memberId, bool requiresAll, params string[] permissionNames)
         {
             if (permissionNames.IsNullOrEmpty())
             {

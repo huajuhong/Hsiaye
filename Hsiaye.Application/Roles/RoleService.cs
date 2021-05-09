@@ -26,7 +26,7 @@ namespace Hsiaye.Application
 
         public List<RoleDto> Current()
         {
-            var roleIds = _database.GetList<Member_Role>(Predicates.Field<Member_Role>(f => f.MemberId, Operator.Eq, _accessor.MemberId)).Select(r => r.RoleId);
+            var roleIds = _database.GetList<MemberRole>(Predicates.Field<MemberRole>(f => f.MemberId, Operator.Eq, _accessor.MemberId)).Select(r => r.RoleId);
             var result = new List<RoleDto>();
             foreach (var roleId in roleIds)
             {
@@ -40,7 +40,6 @@ namespace Hsiaye.Application
             List<IPredicate> predicates = new List<IPredicate>
             {
                 Predicates.Field<Role>(f => f.Name, Operator.Eq, input.Name),
-                Predicates.Field<Role>(f => f.TenantId, Operator.Eq, _accessor.TenantId)
             };
             int count = _database.Count<Role>(Predicates.Group(GroupOperator.And, predicates.ToArray()));
             if (count > 0)
@@ -56,7 +55,6 @@ namespace Hsiaye.Application
                 IsDefault = false,
                 IsStatic = false,
                 Name = input.Name,
-                TenantId = _accessor.TenantId,
             };
             try
             {
@@ -71,7 +69,6 @@ namespace Hsiaye.Application
                     {
                         CreatorMemberId = _accessor.MemberId,
                         IsGranted = true,
-                        TenantId = _accessor.TenantId,
                         MemberId = 0,
                         RoleId = id,
                         Name = permission,
@@ -122,7 +119,6 @@ namespace Hsiaye.Application
                         CreatorMemberId = _accessor.MemberId,
                         IsGranted = true,
                         Name = permissionName,
-                        TenantId = _accessor.TenantId,
                         RoleId = role.Id,
                         MemberId = 0
                     });
@@ -150,8 +146,6 @@ namespace Hsiaye.Application
             if (role.IsDefault)
                 return;
             if (role.IsStatic)
-                return;
-            if (role.TenantId != _accessor.TenantId)
                 return;
             _database.Delete(role);
         }

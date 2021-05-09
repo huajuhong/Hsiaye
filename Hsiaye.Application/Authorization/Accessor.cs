@@ -20,9 +20,9 @@ namespace Hsiaye.Application
         }
 
         public string ProviderKey => _httpContextAccessor.GetProviderKey();
-        public long MemberId => _database.GetList<MemberToken>(Predicates.Field<MemberToken>(f => f.ProviderKey, Operator.Eq, _httpContextAccessor.GetProviderKey())).FirstOrDefault().MemberId;
+        public int MemberId => _database.GetList<MemberToken>(Predicates.Field<MemberToken>(f => f.ProviderKey, Operator.Eq, ProviderKey)).FirstOrDefault().MemberId;
         public Member Member => _database.Get<Member>(MemberId);
-        public int TenantId => Member.TenantId;
+        public int OrganizationUnitId => _database.GetList<MemberOrganizationUnit>(Predicates.Field<MemberOrganizationUnit>(f => f.MemberId, Operator.Eq, MemberId)).FirstOrDefault().OrganizationUnitId;
         public Permission[] Permissions
         {
             get
@@ -55,7 +55,7 @@ namespace Hsiaye.Application
                 return permissions.ToArray();
             }
         }
-        public int[] RoleIds => _database.GetList<Member_Role>(Predicates.Field<Member_Role>(f => f.MemberId, Operator.Eq, MemberId)).Select(x => x.RoleId).ToArray();
+        public int[] RoleIds => _database.GetList<MemberRole>(Predicates.Field<MemberRole>(f => f.MemberId, Operator.Eq, MemberId)).Select(x => x.RoleId).ToArray();
         public Role[] Roles => _database.GetList<Role>(Predicates.Field<Role>(f => f.Id, Operator.Eq, RoleIds)).ToArray();
         public void RoleAuthorize(params string[] roleNames)
         {

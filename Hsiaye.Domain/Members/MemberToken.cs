@@ -8,8 +8,7 @@ namespace Hsiaye.Domain
     public class MemberToken
     {
         public int Id { get; set; }
-        public int TenantId { get; set; }
-        public long MemberId { get; set; }
+        public int MemberId { get; set; }
         //登录提供程序
         [StringLength(64)]
         public string LoginProvider { get; set; }

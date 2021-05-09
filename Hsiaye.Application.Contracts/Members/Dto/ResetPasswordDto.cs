@@ -8,7 +8,7 @@ namespace Hsiaye.Application.Contracts
     {
         public string AdminPassword { get; set; }
 
-        public long MemberId { get; set; }
+        public int MemberId { get; set; }
 
         public string NewPassword { get; set; }
     }

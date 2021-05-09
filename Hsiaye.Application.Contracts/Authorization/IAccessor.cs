@@ -10,9 +10,9 @@ namespace Hsiaye.Application.Contracts
     public interface IAccessor
     {
         string ProviderKey { get; }
-        int TenantId { get; }
-        long MemberId { get; }
+        int MemberId { get; }
         Member Member { get; }
+        int OrganizationUnitId { get; }
         Permission[] Permissions { get; }
         int[] RoleIds { get; }
         Role[] Roles { get; }

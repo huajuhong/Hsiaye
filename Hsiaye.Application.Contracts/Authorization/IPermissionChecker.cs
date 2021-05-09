@@ -20,6 +20,6 @@ namespace Hsiaye.Application.Contracts
         /// </summary>
         /// <param name="memberId">User to check</param>
         /// <param name="permissionName">Name of the permission</param>
-        bool IsGranted(long memberId, string permissionName);
+        bool IsGranted(int memberId, string permissionName);
     }
 }

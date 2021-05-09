@@ -8,7 +8,7 @@ namespace Hsiaye.Domain
 {
     public class Member
     {
-        public long Id { get; set; }
+        public int Id { get; set; }
         public DateTime CreateTime { get; set; }
         public int AccessFailedCount { get; set; }//登录失败次数
         [StringLength(64)]
@@ -21,8 +21,8 @@ namespace Hsiaye.Domain
         public string Name { get; set; }//姓名
         public Shared.Gender Gender { get; set; }
         [StringLength(64)]
-        public string PhoneNumber { get; set; }
-        public bool IsPhoneNumberConfirmed { get; set; }
+        public string Phone { get; set; }
+        public bool IsPhoneConfirmed { get; set; }
         [StringLength(64)]
         public string Password { get; set; }
         [StringLength(64)]
@@ -33,7 +33,6 @@ namespace Hsiaye.Domain
         [StringLength(64)]
         public string EmailConfirmationCode { get; set; }
         public bool IsActive { get; set; }
-        public int TenantId { get; set; }
         public DateTime LastLoginTime { get; set; }
     }
 }

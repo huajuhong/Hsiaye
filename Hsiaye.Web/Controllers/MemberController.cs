@@ -60,7 +60,6 @@ namespace Hsiaye.Web.Controllers
             if (memberTokens.Any())
             {
                 memberToken = memberTokens[0];
-                memberToken.TenantId = member.TenantId;
                 memberToken.ProviderKey = providerKey;
                 memberToken.ExpireDate = DateTime.Now.AddHours(6);
                 _database.Update(memberToken);
@@ -69,7 +68,6 @@ namespace Hsiaye.Web.Controllers
             {
                 memberToken = new MemberToken
                 {
-                    TenantId = member.TenantId,
                     MemberId = member.Id,
                     LoginProvider = "PC",
                     ProviderKey = providerKey,
@@ -116,7 +114,7 @@ namespace Hsiaye.Web.Controllers
             {
                 predicates.Add(Predicates.Field<Member>(f => f.UserName, Operator.Like, keyword));
                 predicates.Add(Predicates.Field<Member>(f => f.Name, Operator.Like, keyword));
-                predicates.Add(Predicates.Field<Member>(f => f.PhoneNumber, Operator.Like, keyword));
+                predicates.Add(Predicates.Field<Member>(f => f.Phone, Operator.Like, keyword));
                 predicates.Add(Predicates.Field<Member>(f => f.EmailAddress, Operator.Like, keyword));
             }
             if (isActive.HasValue)

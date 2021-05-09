@@ -22,13 +22,13 @@ namespace Hsiaye.Application
             return IsGranted(_accessor.MemberId, permissionName);
         }
 
-        public bool IsGranted(long memberId, string permissionName)
+        public bool IsGranted(int memberId, string permissionName)
         {
             var memberPermissions = _database.GetList<Permission>(Predicates.Field<Permission>(f => f.MemberId, Operator.Eq, memberId));
-            var member_Roles = _database.GetList<Member_Role>(Predicates.Field<Member_Role>(f => f.MemberId, Operator.Eq, memberId));
+            var memberRoles = _database.GetList<MemberRole>(Predicates.Field<MemberRole>(f => f.MemberId, Operator.Eq, memberId));
 
             List<IPredicate> predicates = new List<IPredicate>();
-            foreach (var role in member_Roles)
+            foreach (var role in memberRoles)
             {
                 predicates.Add(Predicates.Field<Permission>(f => f.RoleId, Operator.Eq, role.RoleId));
             }
