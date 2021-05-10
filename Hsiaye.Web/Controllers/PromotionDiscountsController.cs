@@ -36,11 +36,13 @@ namespace Hsiaye.Web.Controllers
                 CreateTime = DateTime.Now,
                 OrganizationUnitId = _accessor.OrganizationUnitId,
                 Name = input.Name,
-                State = input.State,
                 Approved = input.Approved,
                 Rule = input.Rule,
                 RuleAmount = input.RuleAmount,
-                Discount = input.Discount,
+                RuleDiscount = input.RuleDiscount,
+                RuleDiscountAmount = input.RuleDiscountAmount,
+                StartTime = input.StartTime,
+                EndTime = input.EndTime,
             };
 
             var predicates = new IPredicate[]
@@ -61,7 +63,7 @@ namespace Hsiaye.Web.Controllers
 
         [HttpGet]
         [Authorize(PermissionNames.促销活动_列表)]
-        public List<PromotionDiscounts> List(string keyword, PromotionDiscountsState state, PromotionDiscountsRule rule, int page, int limit)
+        public List<PromotionDiscounts> List(string keyword, PromotionDiscountsRule rule, int page, int limit)
         {
             var predicates = new List<IPredicate>();
             if (_accessor.Member.UserName != PermissionNames.AdminUserName)
@@ -71,10 +73,6 @@ namespace Hsiaye.Web.Controllers
             if (!string.IsNullOrEmpty(keyword))
             {
                 predicates.Add(Predicates.Field<PromotionDiscounts>(f => f.Name, Operator.Like, keyword));
-            }
-            if (state != PromotionDiscountsState.未知)
-            {
-                predicates.Add(Predicates.Field<PromotionDiscounts>(f => f.State, Operator.Eq, state));
             }
             if (rule != PromotionDiscountsRule.未知)
             {
@@ -105,15 +103,17 @@ namespace Hsiaye.Web.Controllers
             PromotionDiscounts entity = _database.Get<PromotionDiscounts>(input.Id);
 
             entity.Name = input.Name;
-            entity.State = input.State;
             entity.Approved = input.Approved;
             entity.Rule = input.Rule;
             entity.RuleAmount = input.RuleAmount;
-            entity.Discount = input.Discount;
+            entity.RuleDiscount = input.RuleDiscount;
+            entity.RuleDiscountAmount = input.RuleDiscountAmount;
+            entity.StartTime = input.StartTime;
+            entity.EndTime = input.EndTime;
 
             var predicates = new IPredicate[]
             {
-                Predicates.Field<PromotionDiscounts>(f => f.Id, Operator.Eq, entity.Id,true),
+                Predicates.Field<PromotionDiscounts>(f => f.Id, Operator.Eq, entity.Id, true),
                 Predicates.Field<PromotionDiscounts>(f => f.OrganizationUnitId, Operator.Eq, entity.OrganizationUnitId),
                 Predicates.Field<PromotionDiscounts>(f => f.Name, Operator.Eq, entity.Name),
             };

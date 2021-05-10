@@ -15,19 +15,13 @@ namespace Hsiaye.Domain
         public DateTime CreateTime { get; set; }
         public int OrganizationUnitId { get; set; }
         public string Name { get; set; }
-        public PromotionDiscountsState State { get; set; }
-        public bool Approved { get; set; }//是否已审
         public PromotionDiscountsRule Rule { get; set; }
         public decimal RuleAmount { get; set; }
-        public decimal Discount { get; set; }//折扣或已优惠的金额。折扣：5.5折=5.5，满减（满100减20）/直降（直降20）=20
-
-    }
-    public enum PromotionDiscountsState
-    {
-        未知 = 0,
-        未开始 = 1,
-        进行中 = 2,
-        已结束 = 3,
+        public decimal RuleDiscount { get; set; }//促销活动规则的折扣。例如：5.5折，则值为5.5，取值范围0-10
+        public decimal RuleDiscountAmount { get; set; }//促销活动规则的优惠金额。例如：满减（满100减20）、直降（直降20），则值为20
+        public bool Approved { get; set; }//是否已审
+        public DateTime StartTime { get; set; }
+        public DateTime EndTime { get; set; }
     }
     public enum PromotionDiscountsRule
     {

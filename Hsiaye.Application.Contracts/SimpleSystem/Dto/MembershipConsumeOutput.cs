@@ -14,5 +14,6 @@ namespace Hsiaye.Application.Contracts
         public int Id { get; set; }
         public decimal Amount { get; set; }
         public PayState PayState { get; set; }
+        public string Description { get; set; }//说明
     }
 }

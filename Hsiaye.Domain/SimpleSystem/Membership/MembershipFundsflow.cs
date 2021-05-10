@@ -8,14 +8,12 @@ namespace Hsiaye.Domain
 {
 
     //资金流水
-    //todo Description字段参考支付宝交话费订单详情
     public class MembershipFundsflow
     {
         public int Id { get; set; }
         public DateTime CreateTime { get; set; }
         public int MembershipId { get; set; }
         public int ProductId { get; set; }
-        public int PromotionDiscountsId { get; set; }
         public MembershipFundsflowType Type { get; set; }//业务类型
         public string Title { get; set; }//标题
         public decimal Amount { get; set; }//流水金额
@@ -24,6 +22,7 @@ namespace Hsiaye.Domain
         public decimal Balance { get; set; }//该账单成交后的余额
         public Shared.PayState PayState { get; set; }
         public Shared.PayType PayType { get; set; }
+        public DateTime PayTime { get; set; }
         public string Description { get; set; }//说明
         public string OrderNumber { get; set; }
     }

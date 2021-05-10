@@ -143,7 +143,6 @@ namespace Hsiaye.Web.Controllers
                     CreateTime = now,
                     MembershipId = input.Id,
                     ProductId = 0,
-                    PromotionDiscountsId = 0,
                     Type = MembershipFundsflowType.充值,
                     Title = "充值-" + entity.Name,
                     Amount = input.Amount,
@@ -152,7 +151,8 @@ namespace Hsiaye.Web.Controllers
                     Balance = entity.Balance,
                     PayState = PayState.支付成功,
                     PayType = input.PayType,
-                    Description = $"（{entity.Name}-{entity.Phone}）",
+                    PayTime = now,
+                    Description = $"充值：{input.Amount}元，客户：{entity.Name}（{entity.Phone}）。",
                     OrderNumber = now.ToString("yyyyMMddHHmmss") + input.Id.ToString().PadLeft(8, '0'),
                 };
                 _database.Insert(membershipFundsflow);
@@ -197,7 +197,6 @@ namespace Hsiaye.Web.Controllers
                     CreateTime = now,
                     MembershipId = input.Id,
                     ProductId = 0,
-                    PromotionDiscountsId = 0,
                     Type = MembershipFundsflowType.提现,
                     Title = "提现-" + entity.Name,
                     Amount = input.Amount,
@@ -206,7 +205,8 @@ namespace Hsiaye.Web.Controllers
                     Balance = entity.Balance,
                     PayState = PayState.支付成功,
                     PayType = input.PayType,
-                    Description = $"（{entity.Name}-{entity.Phone}）",
+                    PayTime = now,
+                    Description = $"提现：{input.Amount}元，客户：{entity.Name}（{entity.Phone}）。",
                     OrderNumber = now.ToString("yyyyMMddHHmmss") + input.Id.ToString().PadLeft(8, '0'),
                 };
                 _database.Insert(membershipFundsflow);
@@ -239,43 +239,57 @@ namespace Hsiaye.Web.Controllers
             var promotionDiscounts = _database.Get<PromotionDiscounts>(product.PromotionDiscountsId);
             if (promotionDiscounts == null)
             {
-                throw new UserFriendlyException("该促销活动不存在");
+                throw new UserFriendlyException("该商品的促销活动不存在");
             }
             if (!promotionDiscounts.Approved)
             {
-                throw new UserFriendlyException("该促销活动还未审核");
+                throw new UserFriendlyException("该商品的促销活动还未审核");
+            }
+            if (DateTime.Now < promotionDiscounts.StartTime)
+            {
+                throw new UserFriendlyException("该商品的促销活动还未开始");
+            }
+            if (DateTime.Now > promotionDiscounts.EndTime)
+            {
+                throw new UserFriendlyException("该商品的促销活动还已结束");
             }
             string sql = "select * from Membership with (updlock) where Id=" + input.Id;
             var entity = _database.Connection.QueryFirst<Membership>(sql);
-            decimal amount = 0;
+            decimal discountAmount = 0;//优惠金额
+            string ruleDescription = promotionDiscounts.Rule.ToString();
             switch (promotionDiscounts.Rule)
             {
-                case PromotionDiscountsRule.未知:
-                    break;
                 case PromotionDiscountsRule.满减:
                     if (product.Price >= promotionDiscounts.RuleAmount)
                     {
-                        amount = product.Price - promotionDiscounts.Discount;
+                        discountAmount = promotionDiscounts.RuleDiscountAmount;
+                        ruleDescription += $"（满{promotionDiscounts.RuleAmount}减{promotionDiscounts.RuleDiscountAmount}）";
                     }
                     break;
                 case PromotionDiscountsRule.满折:
                     if (product.Price >= promotionDiscounts.RuleAmount)
                     {
-                        amount = product.Price * (promotionDiscounts.Discount / 10M);
+                        discountAmount = product.Price * (1 - promotionDiscounts.RuleDiscount / 10M);
+                        ruleDescription += $"（满{promotionDiscounts.RuleAmount}打{promotionDiscounts.RuleDiscount}折）";
                     }
                     break;
                 case PromotionDiscountsRule.直降:
-                    amount = product.Price - promotionDiscounts.Discount;
+                    discountAmount = product.Price - promotionDiscounts.RuleDiscountAmount;
+                    ruleDescription += $"（{promotionDiscounts.RuleDiscountAmount}）";
                     break;
                 case PromotionDiscountsRule.无折扣:
                     break;
                 default:
-                    break;
+                    throw new UserFriendlyException("该商品的促销活动规则无效");
             }
-            if (amount <= 0)
+            decimal amount = product.Price - discountAmount;
+            if (amount < 0)
             {
-                throw new UserFriendlyException("商品/优惠活动异常");
+                throw new UserFriendlyException("商品/促销活动异常");
             }
+
+            string description = $"消费：{amount}元，商品：{product.Name} 原价{product.Price}元，活动：{ruleDescription}，优惠金额：{discountAmount}元，客户：{entity.Name}（{entity.Phone}）。";
+
             if (input.PreviewAmount)
             {
                 return new MembershipConsumeOutput
@@ -283,6 +297,7 @@ namespace Hsiaye.Web.Controllers
                     Id = input.Id,
                     Amount = amount,
                     PayState = PayState.待支付,
+                    Description = description,
                 };
             }
             if (entity.Balance < amount)
@@ -290,7 +305,6 @@ namespace Hsiaye.Web.Controllers
                 throw new UserFriendlyException("余额不足");
             }
             entity.Balance -= amount;
-
             try
             {
                 _database.BeginTransaction();
@@ -300,7 +314,6 @@ namespace Hsiaye.Web.Controllers
                     CreateTime = now,
                     MembershipId = input.Id,
                     ProductId = input.ProductId,
-                    PromotionDiscountsId = product.PromotionDiscountsId,
                     Type = MembershipFundsflowType.消费,
                     Title = "消费-" + entity.Name,
                     Amount = amount,
@@ -309,7 +322,8 @@ namespace Hsiaye.Web.Controllers
                     Balance = entity.Balance,
                     PayState = PayState.支付成功,
                     PayType = input.PayType,
-                    Description = $"{product.Title}（{entity.Name}-{entity.Phone}）",
+                    PayTime = now,
+                    Description = description,
                     OrderNumber = now.ToString("yyyyMMddHHmmss") + input.Id.ToString().PadLeft(8, '0'),
                 };
                 _database.Insert(membershipFundsflow);
