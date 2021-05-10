@@ -8,6 +8,7 @@ namespace Hsiaye.Domain
 {
 
     //资金流水
+    //todo Description字段参考支付宝交话费订单详情
     public class MembershipFundsflow
     {
         public int Id { get; set; }

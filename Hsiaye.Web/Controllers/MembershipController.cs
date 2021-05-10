@@ -126,6 +126,10 @@ namespace Hsiaye.Web.Controllers
         [Authorize(PermissionNames.会员_充值)]
         public bool Recharge(MembershipRechargeInput input)
         {
+            if (input.Amount <= 0)
+            {
+                throw new UserFriendlyException("金额不正确");
+            }
             string sql = "select * from Membership with (updlock) where Id=" + input.Id;
             var entity = _database.Connection.QueryFirst<Membership>(sql);
             entity.Balance += input.Amount;
@@ -148,7 +152,7 @@ namespace Hsiaye.Web.Controllers
                     Balance = entity.Balance,
                     PayState = PayState.支付成功,
                     PayType = input.PayType,
-                    Description = $"后台充值（{entity.Name}-{entity.Phone}）",
+                    Description = $"（{entity.Name}-{entity.Phone}）",
                     OrderNumber = now.ToString("yyyyMMddHHmmss") + input.Id.ToString().PadLeft(8, '0'),
                 };
                 _database.Insert(membershipFundsflow);
@@ -172,6 +176,10 @@ namespace Hsiaye.Web.Controllers
         [Authorize(PermissionNames.会员_提现)]
         public bool Withdrawal(MembershipWithdrawalInput input)
         {
+            if (input.Amount <= 0)
+            {
+                throw new UserFriendlyException("金额不正确");
+            }
             string sql = "select * from Membership with (updlock) where Id=" + input.Id;
             var entity = _database.Connection.QueryFirst<Membership>(sql);
             if (entity.Balance < input.Amount)
@@ -198,7 +206,7 @@ namespace Hsiaye.Web.Controllers
                     Balance = entity.Balance,
                     PayState = PayState.支付成功,
                     PayType = input.PayType,
-                    Description = $"后台提现（{entity.Name}-{entity.Phone}）",
+                    Description = $"（{entity.Name}-{entity.Phone}）",
                     OrderNumber = now.ToString("yyyyMMddHHmmss") + input.Id.ToString().PadLeft(8, '0'),
                 };
                 _database.Insert(membershipFundsflow);
@@ -217,6 +225,113 @@ namespace Hsiaye.Web.Controllers
             }
             return true;
         }
-        //Consume
+
+        [HttpPost]
+        [Authorize(PermissionNames.会员_消费)]
+        public MembershipConsumeOutput Consume(MembershipConsumeInput input)
+        {
+            var product = _database.Get<Product>(input.ProductId);
+            if (product == null || product.OrganizationUnitId != _accessor.OrganizationUnitId)
+            {
+                throw new UserFriendlyException("该商品不存在");
+            }
+
+            var promotionDiscounts = _database.Get<PromotionDiscounts>(product.PromotionDiscountsId);
+            if (promotionDiscounts == null)
+            {
+                throw new UserFriendlyException("该促销活动不存在");
+            }
+            if (!promotionDiscounts.Approved)
+            {
+                throw new UserFriendlyException("该促销活动还未审核");
+            }
+            string sql = "select * from Membership with (updlock) where Id=" + input.Id;
+            var entity = _database.Connection.QueryFirst<Membership>(sql);
+            decimal amount = 0;
+            switch (promotionDiscounts.Rule)
+            {
+                case PromotionDiscountsRule.未知:
+                    break;
+                case PromotionDiscountsRule.满减:
+                    if (product.Price >= promotionDiscounts.RuleAmount)
+                    {
+                        amount = product.Price - promotionDiscounts.Discount;
+                    }
+                    break;
+                case PromotionDiscountsRule.满折:
+                    if (product.Price >= promotionDiscounts.RuleAmount)
+                    {
+                        amount = product.Price * (promotionDiscounts.Discount / 10M);
+                    }
+                    break;
+                case PromotionDiscountsRule.直降:
+                    amount = product.Price - promotionDiscounts.Discount;
+                    break;
+                case PromotionDiscountsRule.无折扣:
+                    break;
+                default:
+                    break;
+            }
+            if (amount <= 0)
+            {
+                throw new UserFriendlyException("商品/优惠活动异常");
+            }
+            if (input.PreviewAmount)
+            {
+                return new MembershipConsumeOutput
+                {
+                    Id = input.Id,
+                    Amount = amount,
+                    PayState = PayState.待支付,
+                };
+            }
+            if (entity.Balance < amount)
+            {
+                throw new UserFriendlyException("余额不足");
+            }
+            entity.Balance -= amount;
+
+            try
+            {
+                _database.BeginTransaction();
+                DateTime now = DateTime.Now;
+                MembershipFundsflow membershipFundsflow = new MembershipFundsflow
+                {
+                    CreateTime = now,
+                    MembershipId = input.Id,
+                    ProductId = input.ProductId,
+                    PromotionDiscountsId = product.PromotionDiscountsId,
+                    Type = MembershipFundsflowType.消费,
+                    Title = "消费-" + entity.Name,
+                    Amount = amount,
+                    IncomeAmount = 0,
+                    DisburseAmount = amount,
+                    Balance = entity.Balance,
+                    PayState = PayState.支付成功,
+                    PayType = input.PayType,
+                    Description = $"{product.Title}（{entity.Name}-{entity.Phone}）",
+                    OrderNumber = now.ToString("yyyyMMddHHmmss") + input.Id.ToString().PadLeft(8, '0'),
+                };
+                _database.Insert(membershipFundsflow);
+
+                _database.Update(entity);
+                _database.Commit();
+            }
+            catch (Exception)
+            {
+                _database.Rollback();
+                throw;
+            }
+            finally
+            {
+                _database.Dispose();
+            }
+            return new MembershipConsumeOutput
+            {
+                Id = input.Id,
+                Amount = amount,
+                PayState = PayState.支付成功,
+            };
+        }
     }
 }

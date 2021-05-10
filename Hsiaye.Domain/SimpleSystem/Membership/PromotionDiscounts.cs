@@ -19,7 +19,7 @@ namespace Hsiaye.Domain
         public bool Approved { get; set; }//是否已审
         public PromotionDiscountsRule Rule { get; set; }
         public decimal RuleAmount { get; set; }
-        public decimal Discount { get; set; }//折扣，5.5折=5.5
+        public decimal Discount { get; set; }//折扣或已优惠的金额。折扣：5.5折=5.5，满减（满100减20）/直降（直降20）=20
 
     }
     public enum PromotionDiscountsState
@@ -33,9 +33,8 @@ namespace Hsiaye.Domain
     {
         未知 = 0,
         满减 = 1,
-        满返 = 2,
-        满折 = 3,
-        直降 = 4,
-        无折扣 = 5,
+        满折 = 2,
+        直降 = 3,
+        无折扣 = 4,
     }
 }

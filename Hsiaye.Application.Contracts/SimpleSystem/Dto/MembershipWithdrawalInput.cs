@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 
 namespace Hsiaye.Application.Contracts
 {
+    //提现
     public class MembershipWithdrawalInput
     {
         public int Id { get; set; }

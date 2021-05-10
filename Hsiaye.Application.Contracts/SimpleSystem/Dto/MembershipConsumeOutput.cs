@@ -1,4 +1,5 @@
-﻿using Hsiaye.Domain.Shared;
+﻿using Hsiaye.Domain;
+using Hsiaye.Domain.Shared;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -7,11 +8,11 @@ using System.Threading.Tasks;
 
 namespace Hsiaye.Application.Contracts
 {
-    //充值
-    public class MembershipRechargeInput
+    //消费
+    public class MembershipConsumeOutput
     {
         public int Id { get; set; }
         public decimal Amount { get; set; }
-        public PayType PayType { get; set; }
+        public PayState PayState { get; set; }
     }
 }
