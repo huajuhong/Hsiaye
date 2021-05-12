@@ -78,7 +78,7 @@ namespace Hsiaye.Web.Controllers
             {
                 predicates.Add(Predicates.Field<PromotionDiscounts>(f => f.Rule, Operator.Eq, rule));
             }
-            var list = _database.GetPage<PromotionDiscounts>(Predicates.Group(GroupOperator.And, predicates.ToArray()),
+            var list = _database.GetPage<PromotionDiscounts>(Predicates.Group(GroupOperator.And, predicates),
                 new List<ISort> { Predicates.Sort<PromotionDiscounts>(f => f.Id, false) }, page, limit).ToList();
             return list;
         }

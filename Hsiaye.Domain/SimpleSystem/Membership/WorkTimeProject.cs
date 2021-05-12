@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 namespace Hsiaye.Domain
 {
     //工时表项目
-    public class TimesheetProject
+    public class WorkTimeProject
     {
         public int Id { get; set; }
         public int CreateMemberId { get; set; }
@@ -21,6 +21,7 @@ namespace Hsiaye.Domain
     }
     public enum TimesheetProjectState
     {
+        未知,
         待开工,
         已开工,
         已完工,

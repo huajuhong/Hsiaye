@@ -40,6 +40,7 @@ namespace Hsiaye.Dapper
         IMultipleResultReader GetMultiple(GetMultiplePredicate predicate, IDbTransaction transaction, int? commandTimeout = null);
         IMultipleResultReader GetMultiple(GetMultiplePredicate predicate, int? commandTimeout = null);
         void ClearCache();
+        T Get<T>(object id);
         Guid GetNextGuid();
         IClassMapper GetMap<T>() where T : class;
     }

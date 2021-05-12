@@ -45,6 +45,8 @@ namespace Hsiaye.Application
         public const string 促销活动_详情 = "促销活动.详情";
         public const string 促销活动_编辑 = "促销活动.编辑";
 
+        public const string 工时 = "工时";
+
 
         public static List<Permission> Permissions
         {
