@@ -34,10 +34,29 @@ namespace Hsiaye.NUnitTest
             modelBuilder.Entity<MemberToken>();
             modelBuilder.Entity<Demo>();
 
+            modelBuilder.Entity<OrganizationUnit>();
+            modelBuilder.Entity<OrganizationUnitRole>();
+
+            modelBuilder.Entity<Membership>();
+            modelBuilder.Entity<MembershipFundsflow>();
+            modelBuilder.Entity<Product>();
+            modelBuilder.Entity<PromotionDiscounts>();
+            modelBuilder.Entity<WorkTime>();
+            modelBuilder.Entity<WorkTimeProject>();
+            modelBuilder.Entity<WorkTimeSalary>();
+
+            modelBuilder.Entity<Post>();
+            modelBuilder.Entity<PostCategory>();
+            modelBuilder.Entity<PostComment>();
+
+            modelBuilder.Entity<Answer>();
+            modelBuilder.Entity<Question>();
+
+            modelBuilder.Entity<Todo>();
         }
         public DbSet<Member> Member { get; set; }
         public DbSet<Role> Role { get; set; }
-        public DbSet<MemberRole> memberRole { get; set; }
+        public DbSet<MemberRole> MemberRole { get; set; }
         public DbSet<Permission> Permission { get; set; }
         public DbSet<MemberLoginAttempt> MemberLoginAttempt { get; set; }
         public DbSet<MemberToken> MemberToken { get; set; }
