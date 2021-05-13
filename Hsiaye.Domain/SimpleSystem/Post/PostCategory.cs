@@ -9,6 +9,9 @@ namespace Hsiaye.Domain
     public class PostCategory
     {
         public int Id { get; set; }
+        public DateTime CreateTime { get; set; }
+        public int OrganizationUnitId { get; set; }
         public string Name { get; set; }
+        public int SortIndex { get; set; }
     }
 }

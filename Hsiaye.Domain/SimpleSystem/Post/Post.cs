@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Hsiaye.Domain.SimpleSystem.Post
+namespace Hsiaye.Domain
 {
     // 帖子
     public class Post
