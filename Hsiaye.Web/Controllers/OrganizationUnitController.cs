@@ -38,9 +38,18 @@ namespace Hsiaye.Web.Controllers
             if (PermissionNames.AdminUserName != _accessor.Member.UserName)
             {
                 predicate = Predicates.Field<MemberOrganizationUnit>(f => f.OrganizationUnitId, Operator.Eq, _accessor.OrganizationUnitId);
+
+                var list = _database.GetList<MemberOrganizationUnit>(predicate);
+                if (list.Any())
+                {
+                    predicate = Predicates.Field<OrganizationUnit>(f => f.Id, Operator.Eq, list.Select(x => x.OrganizationUnitId));
+                }
             }
-            var list = _database.GetList<MemberOrganizationUnit>(predicate);
-            var organizationUnits = _database.GetList<OrganizationUnit>(Predicates.Field<OrganizationUnit>(f => f.Id, Operator.Eq, list.Select(x => x.OrganizationUnitId))).ToList();
+            else
+            {
+                predicate = Predicates.Field<OrganizationUnit>(f => f.ParentId, Operator.Eq, 0);
+            }
+            var organizationUnits = _database.GetList<OrganizationUnit>(predicate).ToList();
             var parents = ExpressionGenericMapper<OrganizationUnit, OrganizationUnitTree>.MapperTo(organizationUnits);
             var tree = GetTree(parents);
             return parents;
