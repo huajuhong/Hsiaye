@@ -15,6 +15,7 @@ namespace Hsiaye.Web.Controllers
 {
     [ApiController]
     [Route("api/[controller]/[action]")]
+    [ApiExplorerSettings(IgnoreApi = true)]
     public class DemoController : ControllerBase
     {
         private readonly IDatabase _database;

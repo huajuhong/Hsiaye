@@ -24,7 +24,10 @@ namespace Hsiaye.Web.Controllers
             _roleService = roleService;
         }
 
-        //当前用户的角色列表
+        /// <summary>
+        /// 当前用户的所有角色
+        /// </summary>
+        /// <returns></returns>
         [HttpGet]
         public List<RoleDto> Current()
         {

@@ -13,6 +13,9 @@ using System.Threading.Tasks;
 
 namespace Hsiaye.Web.Controllers
 {
+    /// <summary>
+    /// 系统成员
+    /// </summary>
     [ApiController]
     [Route("api/[controller]/[action]")]
     public class MemberController : ControllerBase
@@ -29,15 +32,19 @@ namespace Hsiaye.Web.Controllers
             _database = database;
             _memberService = memberService;
         }
-
+        /// <summary>
+        /// 登录
+        /// </summary>
+        /// <param name="input"></param>
+        /// <returns></returns>
         [HttpPost]
         public MemberToken Login(LoginDto input)
         {
-            //string value = _cache.Get<string>(input.VerifyKey);
-            //if (string.IsNullOrEmpty(value))
-            //    throw new UserFriendlyException("图形验证码已过期");
-            //if (!value.Equals(input.VerifyCode, StringComparison.OrdinalIgnoreCase))
-            //    throw new UserFriendlyException("图形验证码错误");
+            string value = _cache.Get<string>(input.VerifyKey);
+            if (string.IsNullOrEmpty(value))
+                throw new UserFriendlyException("图形验证码已过期");
+            if (!value.Equals(input.VerifyCode, StringComparison.OrdinalIgnoreCase))
+                throw new UserFriendlyException("图形验证码错误");
 
             var list = _database.GetList<Member>(Predicates.Field<Member>(f => f.UserName, Operator.Eq, input.UserName)).ToList();
             if (!list.Any())
@@ -75,7 +82,7 @@ namespace Hsiaye.Web.Controllers
                 };
                 _database.Insert(memberToken);
             }
-            //_cache.Remove(input.VerifyKey);
+            _cache.Remove(input.VerifyKey);
 
             MemberDto memberDto = _memberService.Get(member.Id);
             _cache.Set(providerKey, memberDto, memberToken.ExpireDate);
@@ -88,9 +95,11 @@ namespace Hsiaye.Web.Controllers
 
             return memberToken;
         }
-
+        /// <summary>
+        /// 当前用户信息
+        /// </summary>
+        /// <returns></returns>
         [HttpGet]
-        [Authorize(PermissionNames.成员_详情)]
         public MemberDto Current()
         {
             MemberDto dto = _cache.Get<MemberDto>(_accessor.ProviderKey);
@@ -139,7 +148,11 @@ namespace Hsiaye.Web.Controllers
             var dto = _memberService.Update(input);
             return dto;
         }
-
+        /// <summary>
+        /// 激活成员
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
         [HttpPost]
         [Authorize(PermissionNames.成员_编辑)]
         public bool Activate(long id)
@@ -147,7 +160,11 @@ namespace Hsiaye.Web.Controllers
             _memberService.Activate(id);
             return true;
         }
-
+        /// <summary>
+        /// 停用成员
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
         [HttpPost]
         [Authorize(PermissionNames.成员_编辑)]
         public bool DeActivate(long id)
@@ -156,16 +173,24 @@ namespace Hsiaye.Web.Controllers
             return true;
         }
 
-        //修改密码
+        /// <summary>
+        /// 修改密码
+        /// </summary>
+        /// <param name="input"></param>
+        /// <returns></returns>
         [HttpPost]
         public bool ChangePassword(ChangePasswordDto input)
         {
             return _memberService.ChangePassword(input);
         }
 
+        /// <summary>
+        /// 管理员重置密码
+        /// </summary>
+        /// <param name="input"></param>
+        /// <returns></returns>
         [HttpPost]
         [Authorize(PermissionNames.成员_重置密码)]
-        //管理员重置密码
         public bool ResetPassword(ResetPasswordDto input)
         {
             return _memberService.ResetPassword(input);

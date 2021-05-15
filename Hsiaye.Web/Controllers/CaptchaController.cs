@@ -24,7 +24,10 @@ namespace Hsiaye.Web.Controllers
         {
             _cache = cache;
         }
-
+        /// <summary>
+        /// 获取图形验证码
+        /// </summary>
+        /// <returns>返回结果中的code是为了方便调试接口，开发时使用image的实际内容</returns>
         [HttpGet]
         public IActionResult Get()
         {
@@ -34,7 +37,7 @@ namespace Hsiaye.Web.Controllers
 
             string key = "CaptchaImage" + Guid.NewGuid().ToString("N");
             _cache.Set(key, code, new TimeSpan(0, 3, 0));
-            return Ok(new { key, image });
+            return Ok(new { key, image, code });
             //return File(fileContents, "image/png");
         }
         private static byte[] GetVerifyCode(string code)
@@ -82,6 +85,7 @@ namespace Hsiaye.Web.Controllers
         }
 
         [HttpGet]
+        [ApiExplorerSettings(IgnoreApi = true)]
         public IActionResult Verify(string key, string code)
         {
             string value = _cache.Get<string>(key);

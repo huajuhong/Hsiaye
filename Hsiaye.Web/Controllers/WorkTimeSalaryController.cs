@@ -13,7 +13,9 @@ using System.Threading.Tasks;
 
 namespace Hsiaye.Web.Controllers
 {
-    //会员工时薪资
+    /// <summary>
+    /// 工时薪资单价
+    /// </summary>
     [ApiController]
     [Route("api/[controller]/[action]")]
     public class WorkTimeSalaryController : ControllerBase

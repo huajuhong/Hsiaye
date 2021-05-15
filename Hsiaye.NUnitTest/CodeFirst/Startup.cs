@@ -30,6 +30,7 @@ namespace Hsiaye.NUnitTest
                     AccessFailedCount = 0,
                     AuthenticationSource = "系统初始创建",
                     Avatar = "帅",
+                    Gender = Domain.Shared.Gender.男,
                     UserName = "admin",
                     Name = "yuebole",
                     Phone = "18140340282",

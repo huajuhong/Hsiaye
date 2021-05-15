@@ -11,7 +11,7 @@ namespace Hsiaye.Application.Contracts
     //消费
     public class MembershipConsumeInput
     {
-        public int Id { get; set; }
+        public int Id { get; set; }//会员Id
         public int ProductId { get; set; }
         public PayType PayType { get; set; }
         public bool PreviewAmount{ get; set; }//预览消费金额

@@ -14,7 +14,9 @@ using System.Threading.Tasks;
 
 namespace Hsiaye.Web.Controllers
 {
-    //组织机构会员管理（会员管理）
+    /// <summary>
+    /// 组织机构会员管理（会员管理）
+    /// </summary>
     [ApiController]
     [Route("api/[controller]/[action]")]
     public class MembershipController : ControllerBase
@@ -121,7 +123,11 @@ namespace Hsiaye.Web.Controllers
             _database.Update(entity);
             return true;
         }
-
+        /// <summary>
+        /// 会员充值
+        /// </summary>
+        /// <param name="input"></param>
+        /// <returns></returns>
         [HttpPost]
         [Authorize(PermissionNames.会员_充值)]
         public bool Recharge(MembershipRechargeInput input)
@@ -171,7 +177,11 @@ namespace Hsiaye.Web.Controllers
             }
             return true;
         }
-
+        /// <summary>
+        /// 会员提现
+        /// </summary>
+        /// <param name="input"></param>
+        /// <returns></returns>
         [HttpPost]
         [Authorize(PermissionNames.会员_提现)]
         public bool Withdrawal(MembershipWithdrawalInput input)
@@ -225,7 +235,11 @@ namespace Hsiaye.Web.Controllers
             }
             return true;
         }
-
+        /// <summary>
+        /// 会员消费
+        /// </summary>
+        /// <param name="input">PreviewAmount=true时返回消费详情</param>
+        /// <returns></returns>
         [HttpPost]
         [Authorize(PermissionNames.会员_消费)]
         public MembershipConsumeOutput Consume(MembershipConsumeInput input)

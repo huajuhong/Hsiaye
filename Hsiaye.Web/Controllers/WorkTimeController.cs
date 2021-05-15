@@ -13,7 +13,9 @@ using System.Threading.Tasks;
 
 namespace Hsiaye.Web.Controllers
 {
-    //会员工时
+    /// <summary>
+    /// 会员工时
+    /// </summary>
     [ApiController]
     [Route("api/[controller]/[action]")]
     public class WorkTimeController : ControllerBase

@@ -70,6 +70,7 @@ namespace Hsiaye.Web
                     Version = "v1",
                     Description = "新的开始",
                 });
+
                 c.AddSecurityDefinition("ProviderKey", new OpenApiSecurityScheme
                 {
                     Type = SecuritySchemeType.ApiKey,
@@ -88,6 +89,7 @@ namespace Hsiaye.Web
                 {
                     [scheme] = System.Array.Empty<string>()
                 });
+                c.IncludeXmlComments(System.IO.Path.Combine(System.AppContext.BaseDirectory,"Hsiaye.Web.xml"));
             });
         }
 

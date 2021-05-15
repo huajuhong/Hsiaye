@@ -1,0 +1,117 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>Hsiaye.Web</name>
+    </assembly>
+    <members>
+        <member name="M:Hsiaye.Web.Controllers.CaptchaController.Get">
+            <summary>
+            获取图形验证码
+            </summary>
+            <returns>返回结果中的code是为了方便调试接口，开发时使用image的实际内容</returns>
+        </member>
+        <member name="T:Hsiaye.Web.Controllers.MemberController">
+            <summary>
+            系统成员
+            </summary>
+        </member>
+        <member name="M:Hsiaye.Web.Controllers.MemberController.Login(Hsiaye.Application.Contracts.LoginDto)">
+            <summary>
+            登录
+            </summary>
+            <param name="input"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Hsiaye.Web.Controllers.MemberController.Current">
+            <summary>
+            当前用户信息
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:Hsiaye.Web.Controllers.MemberController.Activate(System.Int64)">
+            <summary>
+            激活成员
+            </summary>
+            <param name="id"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Hsiaye.Web.Controllers.MemberController.DeActivate(System.Int64)">
+            <summary>
+            停用成员
+            </summary>
+            <param name="id"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Hsiaye.Web.Controllers.MemberController.ChangePassword(Hsiaye.Application.Contracts.ChangePasswordDto)">
+            <summary>
+            修改密码
+            </summary>
+            <param name="input"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Hsiaye.Web.Controllers.MemberController.ResetPassword(Hsiaye.Application.Contracts.ResetPasswordDto)">
+            <summary>
+            管理员重置密码
+            </summary>
+            <param name="input"></param>
+            <returns></returns>
+        </member>
+        <member name="T:Hsiaye.Web.Controllers.MembershipController">
+            <summary>
+            组织机构会员管理（会员管理）
+            </summary>
+        </member>
+        <member name="M:Hsiaye.Web.Controllers.MembershipController.Recharge(Hsiaye.Application.Contracts.MembershipRechargeInput)">
+            <summary>
+            会员充值
+            </summary>
+            <param name="input"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Hsiaye.Web.Controllers.MembershipController.Withdrawal(Hsiaye.Application.Contracts.MembershipWithdrawalInput)">
+            <summary>
+            会员提现
+            </summary>
+            <param name="input"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Hsiaye.Web.Controllers.MembershipController.Consume(Hsiaye.Application.Contracts.MembershipConsumeInput)">
+            <summary>
+            会员消费
+            </summary>
+            <param name="input">PreviewAmount=true时返回消费详情</param>
+            <returns></returns>
+        </member>
+        <member name="T:Hsiaye.Web.Controllers.ProductController">
+            <summary>
+            组织机构商品管理（商品管理）
+            </summary>
+        </member>
+        <member name="M:Hsiaye.Web.Controllers.RoleController.Current">
+            <summary>
+            当前用户的所有角色
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="T:Hsiaye.Web.Controllers.WorkTimeController">
+            <summary>
+            会员工时
+            </summary>
+        </member>
+        <member name="T:Hsiaye.Web.Controllers.WorkTimeProjectController">
+            <summary>
+            会员工时项目
+            </summary>
+        </member>
+        <member name="T:Hsiaye.Web.Controllers.WorkTimeSalaryController">
+            <summary>
+            工时薪资单价
+            </summary>
+        </member>
+        <member name="T:Hsiaye.Web.Extensions.StartupFilter">
+            <summary>
+            程序启动后只执行一次
+            </summary>
+        </member>
+    </members>
+</doc>

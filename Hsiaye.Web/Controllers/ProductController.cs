@@ -13,7 +13,9 @@ using System.Threading.Tasks;
 
 namespace Hsiaye.Web.Controllers
 {
-    //组织机构商品管理（商品管理）
+    /// <summary>
+    /// 组织机构商品管理（商品管理）
+    /// </summary>
     [ApiController]
     [Route("api/[controller]/[action]")]
     public class ProductController : ControllerBase
