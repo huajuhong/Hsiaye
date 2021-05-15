@@ -89,7 +89,7 @@ namespace Hsiaye.Web
                 {
                     [scheme] = System.Array.Empty<string>()
                 });
-                c.IncludeXmlComments(System.IO.Path.Combine(System.AppContext.BaseDirectory,"Hsiaye.Web.xml"));
+                c.IncludeXmlComments(System.IO.Path.Combine(System.AppContext.BaseDirectory, "Hsiaye.Web.xml"));
             });
         }
 

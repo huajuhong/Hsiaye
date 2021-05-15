@@ -8,6 +8,8 @@ namespace Hsiaye.Application
     {
         public const string AdminUserName = "hsiaye";
 
+        public const string 组织机构 = "组织机构";
+
         public const string 成员 = "成员";
         public const string 成员_新建 = "成员.新建";
         public const string 成员_列表 = "成员.列表";
