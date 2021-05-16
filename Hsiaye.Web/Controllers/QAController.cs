@@ -91,6 +91,28 @@ namespace Hsiaye.Web.Controllers
             return true;
         }
         /// <summary>
+        /// 删除问题
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
+        [HttpPost]
+        [Authorize(PermissionNames.问答)]
+        public bool DeleteQuestion(long id)
+        {
+            Question entity = _database.Get<Question>(id);
+
+            if (entity.MemberId != _accessor.MemberId)
+            {
+                throw new UserFriendlyException("非法操作");
+            }
+
+            entity.Deleted = true;
+
+            _database.Update(entity);
+
+            return true;
+        }
+        /// <summary>
         /// 创建答案
         /// </summary>
         /// <param name="input"></param>
