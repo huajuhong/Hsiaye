@@ -29,7 +29,10 @@ namespace Hsiaye.Web.Controllers
             _database = database;
         }
 
-
+        /// <summary>
+        /// 组织机构树结构（用途：树结构列表、添加、编辑时可用）
+        /// </summary>
+        /// <returns></returns>
         [HttpPost]
         [Authorize(PermissionNames.组织机构)]
         public List<OrganizationUnitTree> Tree()
@@ -96,7 +99,13 @@ namespace Hsiaye.Web.Controllers
 
             return true;
         }
-
+        /// <summary>
+        /// 组织结构列表，用于后台管理列表
+        /// </summary>
+        /// <param name="keyword"></param>
+        /// <param name="page"></param>
+        /// <param name="limit"></param>
+        /// <returns></returns>
         [HttpGet]
         [Authorize(PermissionNames.组织机构)]
         public List<OrganizationUnit> List(string keyword, int page, int limit)
