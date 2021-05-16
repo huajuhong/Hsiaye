@@ -10,11 +10,13 @@ namespace Hsiaye.Domain
     public class Answer
     {
         public int Id { get; set; }
-        public int OrganizationUnitId { get; set; }
         public DateTime CreateTime { get; set; }
+        public int OrganizationUnitId { get; set; }
+        public int MemberId { get; set; }
         public int QuestionId { get; set; }
-        public int AuthorId { get; set; }//MemberId
-        public string AuthorName { get; set; }//MemberName
         public string Description { get; set; }//描述
+        public int LikeCount { get; set; }//点赞数（有多少人认可这个答案）
+        public bool Accepted { get; set; }
+        public bool Deleted { get; set; }
     }
 }
