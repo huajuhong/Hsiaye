@@ -111,9 +111,9 @@ namespace Hsiaye.Web
 
             app.UseCors(c =>
             {
-                c.AllowAnyHeader();
-                c.AllowAnyMethod();
-                c.AllowAnyOrigin();
+                c.WithHeaders("*");
+                c.WithMethods("*");
+                c.WithOrigins("*");
             });
 
             app.UseEndpoints(endpoints =>
