@@ -87,10 +87,95 @@
             组织机构管理
             </summary>
         </member>
+        <member name="M:Hsiaye.Web.Controllers.OrganizationUnitController.Tree">
+            <summary>
+            组织机构树结构（用途：树结构列表、添加、编辑时可用）
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:Hsiaye.Web.Controllers.OrganizationUnitController.List(System.String,System.Int32,System.Int32)">
+            <summary>
+            组织结构列表，用于后台管理列表
+            </summary>
+            <param name="keyword"></param>
+            <param name="page"></param>
+            <param name="limit"></param>
+            <returns></returns>
+        </member>
         <member name="T:Hsiaye.Web.Controllers.ProductController">
             <summary>
             组织机构商品管理（商品管理）
             </summary>
+        </member>
+        <member name="T:Hsiaye.Web.Controllers.QAController">
+            <summary>
+            问答
+            </summary>
+        </member>
+        <member name="M:Hsiaye.Web.Controllers.QAController.CreateQuestion(Hsiaye.Application.Contracts.QuestionInput)">
+            <summary>
+            创建问题
+            </summary>
+            <param name="input"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Hsiaye.Web.Controllers.QAController.GetQuestion(System.Int64)">
+            <summary>
+            获取问题
+            </summary>
+            <param name="id"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Hsiaye.Web.Controllers.QAController.UpdateQuestion(Hsiaye.Application.Contracts.QuestionEditInput)">
+            <summary>
+            修改问题
+            </summary>
+            <param name="input"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Hsiaye.Web.Controllers.QAController.DeleteQuestion(System.Int64)">
+            <summary>
+            删除问题
+            </summary>
+            <param name="id"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Hsiaye.Web.Controllers.QAController.CreateAnswer(Hsiaye.Application.Contracts.AnswerInput)">
+            <summary>
+            创建答案
+            </summary>
+            <param name="input"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Hsiaye.Web.Controllers.QAController.GetAnswer(System.Int64)">
+            <summary>
+            获取答案
+            </summary>
+            <param name="id">答案id</param>
+            <returns></returns>
+        </member>
+        <member name="M:Hsiaye.Web.Controllers.QAController.ListAnswer(System.Int64,System.Int32,System.Int32)">
+            <summary>
+            获取问题答案列表
+            </summary>
+            <param name="questionId"></param>
+            <param name="page"></param>
+            <param name="limit"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Hsiaye.Web.Controllers.QAController.UpdateAnswer(Hsiaye.Application.Contracts.AnswerEditInput)">
+            <summary>
+            修改答案
+            </summary>
+            <param name="input"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Hsiaye.Web.Controllers.QAController.DeleteAnswer(System.Int64)">
+            <summary>
+            删除答案
+            </summary>
+            <param name="id"></param>
+            <returns></returns>
         </member>
         <member name="M:Hsiaye.Web.Controllers.RoleController.Current">
             <summary>

@@ -109,6 +109,13 @@ namespace Hsiaye.Web
 
             app.UseRouting();
 
+            app.UseCors(c =>
+            {
+                c.AllowAnyHeader();
+                c.AllowAnyMethod();
+                c.AllowAnyOrigin();
+            });
+
             app.UseEndpoints(endpoints =>
             {
                 endpoints.MapControllers();

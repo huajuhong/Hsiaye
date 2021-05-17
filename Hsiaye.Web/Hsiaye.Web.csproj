@@ -9,7 +9,7 @@
     <TreatWarningsAsErrors>false</TreatWarningsAsErrors>
     <WarningsAsErrors>;NU1605</WarningsAsErrors>
     <OutputPath></OutputPath>
-    <NoWarn>1701;1702</NoWarn>
+    <NoWarn>1701;1702;1591</NoWarn>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
