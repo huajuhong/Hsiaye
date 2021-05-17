@@ -58,7 +58,7 @@ namespace Hsiaye.Web.Controllers
             return parents;
         }
 
-        public List<OrganizationUnitTree> GetTree(List<OrganizationUnitTree> parents)
+        private List<OrganizationUnitTree> GetTree(List<OrganizationUnitTree> parents)
         {
             foreach (var parent in parents)
             {
