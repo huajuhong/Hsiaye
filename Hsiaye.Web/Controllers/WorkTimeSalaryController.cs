@@ -28,7 +28,6 @@ namespace Hsiaye.Web.Controllers
             _accessor = accessor;
             _database = database;
         }
-
         [HttpPost]
         [Authorize(PermissionNames.工时)]
         public bool Create(WorkTimeSalaryInput input)

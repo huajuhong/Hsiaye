@@ -28,7 +28,11 @@ namespace Hsiaye.Web.Controllers
             _accessor = accessor;
             _database = database;
         }
-
+        /// <summary>
+        /// 工时添加：左侧显示组织下所有成员（名字+电话 含复选框）列表，右侧显示表单：选择项目/选择日期（默认今天）/选择时长/是否加班/说明
+        /// </summary>
+        /// <param name="input"></param>
+        /// <returns></returns>
         [HttpPost]
         [Authorize(PermissionNames.工时)]
         public bool Create(WorkTimeInput input)

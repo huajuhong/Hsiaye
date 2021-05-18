@@ -136,7 +136,6 @@ namespace Hsiaye.Web.Controllers
             entity.Name = input.Name;
             entity.Description = input.Description;
             entity.ParentId = input.ParentId;
-            entity.Balance = 0;
             entity.ModifyMemberId = _accessor.MemberId;
             entity.ModifyTime = DateTime.Now;
 

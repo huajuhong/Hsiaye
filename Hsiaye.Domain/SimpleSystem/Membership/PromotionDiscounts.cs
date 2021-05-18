@@ -9,8 +9,6 @@ namespace Hsiaye.Domain
     //促销活动
     public class PromotionDiscounts
     {
-        //名称/状态/活动时间开始-结束/审核状态
-        //活动规则：
         public int Id { get; set; }
         public DateTime CreateTime { get; set; }
         public int OrganizationUnitId { get; set; }

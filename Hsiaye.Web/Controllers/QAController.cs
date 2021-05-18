@@ -113,6 +113,25 @@ namespace Hsiaye.Web.Controllers
             return true;
         }
         /// <summary>
+        /// 获取问题答案列表
+        /// </summary>
+        /// <param name="questionId"></param>
+        /// <param name="page"></param>
+        /// <param name="limit"></param>
+        /// <returns></returns>
+        [HttpPost]
+        [Authorize(PermissionNames.问答)]
+        public List<Answer> ListAnswer(long questionId, int page, int limit)
+        {
+            var predicates = new List<IPredicate>();
+            predicates.Add(Predicates.Field<Answer>(f => f.QuestionId, Operator.Eq, questionId));
+            predicates.Add(Predicates.Field<Answer>(f => f.Deleted, Operator.Eq, false));
+
+            var list = _database.GetPage<Answer>(Predicates.Group(GroupOperator.And, predicates.ToArray()), new List<ISort> { Predicates.Sort<Answer>(f => f.Id, false) }, page, limit).ToList();
+
+            return list;
+        }
+        /// <summary>
         /// 创建答案
         /// </summary>
         /// <param name="input"></param>
@@ -146,26 +165,6 @@ namespace Hsiaye.Web.Controllers
         {
             var entity = _database.Get<Answer>(id);
             return entity;
-        }
-        /// <summary>
-        /// 获取问题答案列表
-        /// </summary>
-        /// <param name="questionId"></param>
-        /// <param name="page"></param>
-        /// <param name="limit"></param>
-        /// <returns></returns>
-        [HttpPost]
-        [Authorize(PermissionNames.问答)]
-        public List<Answer> ListAnswer(long questionId, int page, int limit)
-        {
-            var predicates = new List<IPredicate>();
-            predicates.Add(Predicates.Field<Answer>(f => f.QuestionId, Operator.Eq, questionId));
-            predicates.Add(Predicates.Field<Answer>(f => f.Deleted, Operator.Eq, false));
-
-            var list = _database.GetPage<Answer>(Predicates.Group(GroupOperator.And, predicates.ToArray())
-                , new List<ISort> { Predicates.Sort<Answer>(f => f.Id, false) }, page, limit).ToList();
-
-            return list;
         }
         /// <summary>
         /// 修改答案
