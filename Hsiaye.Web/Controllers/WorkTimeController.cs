@@ -29,7 +29,9 @@ namespace Hsiaye.Web.Controllers
             _database = database;
         }
         /// <summary>
-        /// 工时添加：左侧显示组织下所有成员（名字+电话 含复选框）列表，右侧显示表单：选择项目/选择日期（默认今天）/选择时长/是否加班/说明
+        /// 工时添加（记工时）
+        /// 左侧：穿梭框，获取当前组成成员列表（名字+电话）
+        /// 右侧：表单，选择项目/选择日期（默认今天）/选择时长/是否加班/说明
         /// </summary>
         /// <param name="input"></param>
         /// <returns></returns>
@@ -37,6 +39,7 @@ namespace Hsiaye.Web.Controllers
         [Authorize(PermissionNames.工时)]
         public bool Create(WorkTimeInput input)
         {
+            WorkTimeSalary workTimeSalary = _database.GetList<WorkTimeSalary>(Predicates.Field<WorkTimeSalary>(f => f.MembershipId, Operator.Eq, input.MembershipId)).FirstOrDefault();
             WorkTime entity = new WorkTime
             {
                 CreateMemberId = _accessor.MemberId,
@@ -46,6 +49,7 @@ namespace Hsiaye.Web.Controllers
                 Date = input.Date,
                 Duration = input.Duration,
                 IsOvertime = input.IsOvertime,
+                Salary = workTimeSalary.Amount,
                 Description = input.Description,
             };
 

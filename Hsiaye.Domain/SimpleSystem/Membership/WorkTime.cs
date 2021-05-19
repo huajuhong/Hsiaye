@@ -20,6 +20,7 @@ namespace Hsiaye.Domain
         public DateTime Date { get; set; }//日期，精确到天
         public TimeSpan Duration { get; set; }//时长，精确到分
         public bool IsOvertime { get; set; }//是否为加班
+        public decimal Salary { get; set; }//所得工资
         public string Description { get; set; }//说明
     }
 }
