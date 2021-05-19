@@ -75,7 +75,7 @@ namespace Hsiaye.Web.Controllers
 
         [HttpGet]
         [Authorize(PermissionNames.商品_列表)]
-        public List<Product> List(string keyword, ProductState state, int page, int limit)
+        public PageResult<Product> List(string keyword, ProductState state, int page, int limit)
         {
             var predicates = new List<IPredicate>();
             if (_accessor.Member.UserName != PermissionNames.AdminUserName)
@@ -91,9 +91,9 @@ namespace Hsiaye.Web.Controllers
             {
                 predicates.Add(Predicates.Field<Product>(f => f.State, Operator.Eq, state));
             }
-            var list = _database.GetPage<Product>(Predicates.Group(GroupOperator.And, predicates.ToArray()),
-                new List<ISort> { Predicates.Sort<Product>(f => f.Id, false) }, page, limit).ToList();
-            return list;
+            var pageResult = _database.GetPaged<Product>(Predicates.Group(GroupOperator.And, predicates.ToArray()),
+                new List<ISort> { Predicates.Sort<Product>(f => f.Id, false) }, page, limit);
+            return pageResult;
         }
 
         [HttpGet]

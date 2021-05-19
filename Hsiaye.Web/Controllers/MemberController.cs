@@ -116,7 +116,7 @@ namespace Hsiaye.Web.Controllers
 
         [HttpGet]
         [Authorize(PermissionNames.成员_列表)]
-        public List<MemberDto> List(string keyword, bool? isActive, int page, int limit)
+        public PageResult<Member> List(string keyword, bool? isActive, int page, int limit)
         {
             var predicates = new List<IPredicate>();
             if (!string.IsNullOrEmpty(keyword))
@@ -130,8 +130,8 @@ namespace Hsiaye.Web.Controllers
             {
                 predicates.Add(Predicates.Field<Member>(f => f.IsActive, Operator.Eq, isActive.Value));
             }
-            var list = _database.GetPage<Member>(Predicates.Group(GroupOperator.And, predicates.ToArray()), new List<ISort> { Predicates.Sort<Member>(f => f.Id, false) }, page, limit).ToList();
-            return ExpressionGenericMapper<Member, MemberDto>.MapperTo(list);
+            var pageResult = _database.GetPaged<Member>(Predicates.Group(GroupOperator.And, predicates.ToArray()), new List<ISort> { Predicates.Sort<Member>(f => f.Id, false) }, page, limit);
+            return pageResult;
         }
 
         [HttpGet]

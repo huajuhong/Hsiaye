@@ -54,7 +54,7 @@ namespace Hsiaye.Web.Controllers
 
         [HttpGet]
         [Authorize(PermissionNames.工时)]
-        public List<WorkTimeSalary> List(string keywords, int projectId, int membershipId, int page, int limit)
+        public PageResult<WorkTimeSalary> List(string keywords, int projectId, int membershipId, int page, int limit)
         {
             var predicates = new List<IPredicate>();
             if (!string.IsNullOrEmpty(keywords))
@@ -69,9 +69,9 @@ namespace Hsiaye.Web.Controllers
             {
                 predicates.Add(Predicates.Field<WorkTimeSalary>(f => f.MembershipId, Operator.Eq, membershipId));
             }
-            var list = _database.GetPage<WorkTimeSalary>(Predicates.Group(GroupOperator.And, predicates.ToArray()),
-                new List<ISort> { Predicates.Sort<WorkTimeSalary>(f => f.Id, false) }, page, limit).ToList();
-            return list;
+            var pageResult = _database.GetPaged<WorkTimeSalary>(Predicates.Group(GroupOperator.And, predicates.ToArray()),
+                new List<ISort> { Predicates.Sort<WorkTimeSalary>(f => f.Id, false) }, page, limit);
+            return pageResult;
         }
 
         [HttpGet]

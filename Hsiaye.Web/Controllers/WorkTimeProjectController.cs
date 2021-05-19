@@ -52,7 +52,7 @@ namespace Hsiaye.Web.Controllers
 
         [HttpGet]
         [Authorize(PermissionNames.工时)]
-        public List<WorkTimeProject> List(string keywords, TimesheetProjectState state, int page, int limit)
+        public PageResult<WorkTimeProject> List(string keywords, TimesheetProjectState state, int page, int limit)
         {
             var predicates = new List<IPredicate>();
             if (!string.IsNullOrEmpty(keywords))
@@ -63,9 +63,9 @@ namespace Hsiaye.Web.Controllers
             {
                 predicates.Add(Predicates.Field<WorkTimeProject>(f => f.State, Operator.Eq, state));
             }
-            var list = _database.GetPage<WorkTimeProject>(Predicates.Group(GroupOperator.And, predicates.ToArray()),
-                new List<ISort> { Predicates.Sort<WorkTimeProject>(f => f.Id, false) }, page, limit).ToList();
-            return list;
+            var pageResult = _database.GetPaged<WorkTimeProject>(Predicates.Group(GroupOperator.And, predicates.ToArray()),
+                new List<ISort> { Predicates.Sort<WorkTimeProject>(f => f.Id, false) }, page, limit);
+            return pageResult;
         }
 
         [HttpGet]

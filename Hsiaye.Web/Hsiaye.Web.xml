@@ -126,6 +126,16 @@
             <param name="id"></param>
             <returns></returns>
         </member>
+        <member name="M:Hsiaye.Web.Controllers.QAController.ListQuestion(System.String,System.String,System.Int32,System.Int32)">
+            <summary>
+            获取问题列表
+            </summary>
+            <param name="keywords"></param>
+            <param name="sortField"></param>
+            <param name="page"></param>
+            <param name="limit"></param>
+            <returns></returns>
+        </member>
         <member name="M:Hsiaye.Web.Controllers.QAController.UpdateQuestion(Hsiaye.Application.Contracts.QuestionEditInput)">
             <summary>
             修改问题

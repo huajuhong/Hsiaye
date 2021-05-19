@@ -64,7 +64,7 @@ namespace Hsiaye.Web.Controllers
 
         [HttpGet]
         [Authorize(PermissionNames.会员_列表)]
-        public List<Membership> List(string keyword, MembershipState state, int page, int limit)
+        public PageResult<Membership> List(string keyword, MembershipState state, int page, int limit)
         {
             var predicates = new List<IPredicate>();
             if (_accessor.Member.UserName != PermissionNames.AdminUserName)
@@ -81,9 +81,9 @@ namespace Hsiaye.Web.Controllers
             {
                 predicates.Add(Predicates.Field<Membership>(f => f.State, Operator.Eq, state));
             }
-            var list = _database.GetPage<Membership>(Predicates.Group(GroupOperator.And, predicates.ToArray()),
-                new List<ISort> { Predicates.Sort<Membership>(f => f.Id, false) }, page, limit).ToList();
-            return list;
+            var pageResult = _database.GetPaged<Membership>(Predicates.Group(GroupOperator.And, predicates.ToArray()),
+                new List<ISort> { Predicates.Sort<Membership>(f => f.Id, false) }, page, limit);
+            return pageResult;
         }
 
         [HttpGet]

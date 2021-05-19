@@ -67,6 +67,53 @@ namespace Hsiaye.Web.Controllers
             return entity;
         }
         /// <summary>
+        /// 获取问题列表
+        /// </summary>
+        /// <param name="keywords"></param>
+        /// <param name="sortField"></param>
+        /// <param name="page"></param>
+        /// <param name="limit"></param>
+        /// <returns></returns>
+        [HttpGet]
+        [Authorize(PermissionNames.问答)]
+        public PageResult<Question> ListQuestion(string keywords, string sortField, int page, int limit)
+        {
+            var predicates = new List<IPredicate>
+            {
+                Predicates.Field<Question>(f => f.Deleted, Operator.Eq, false),
+                Predicates.Field<Question>(f => f.OrganizationUnitId, Operator.Eq, _accessor.OrganizationUnitId),
+            };
+
+            if (!string.IsNullOrEmpty(keywords))
+            {
+                predicates.Add(Predicates.Field<Question>(f => f.Title, Operator.Like, keywords));
+                //predicates.Add(Predicates.Field<Question>(f => f.Description, Operator.Like, keywords));
+            }
+
+            List<ISort> sort = new List<ISort>();
+            switch (sortField)
+            {
+                case "Id":
+                    sort.Add(Predicates.Sort<Question>(f => f.Id, false));
+                    break;
+                case "VoteCount":
+                    sort.Add(Predicates.Sort<Question>(f => f.VoteCount, false));
+                    break;
+                case "AnswerCount":
+                    sort.Add(Predicates.Sort<Question>(f => f.AnswerCount, false));
+                    break;
+                case "ViewCount":
+                    sort.Add(Predicates.Sort<Question>(f => f.ViewCount, false));
+                    break;
+                default:
+                    break;
+            }
+
+            var pageResult = _database.GetPaged<Question>(Predicates.Group(GroupOperator.And, predicates.ToArray()), sort, page, limit);
+            return pageResult;
+        }
+
+        /// <summary>
         /// 修改问题
         /// </summary>
         /// <param name="input"></param>

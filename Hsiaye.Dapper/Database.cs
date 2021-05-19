@@ -34,9 +34,14 @@ namespace Hsiaye.Dapper
         IEnumerable<T> GetPage<T>(object predicate, IList<ISort> sort, int page, int resultsPerPage, IDbTransaction transaction, int? commandTimeout = null, bool buffered = true) where T : class;
         IEnumerable<T> GetPage<T>(object predicate, IList<ISort> sort, int page, int resultsPerPage, int? commandTimeout = null, bool buffered = true) where T : class;
         IEnumerable<T> GetSet<T>(object predicate, IList<ISort> sort, int firstResult, int maxResults, IDbTransaction transaction, int? commandTimeout, bool buffered) where T : class;
-        IEnumerable<T> GetSet<T>(object predicate, IList<ISort> sort, int firstResult, int maxResults, int? commandTimeout, bool buffered) where T : class;        
+        IEnumerable<T> GetSet<T>(object predicate, IList<ISort> sort, int firstResult, int maxResults, int? commandTimeout, bool buffered) where T : class;
         int Count<T>(object predicate, IDbTransaction transaction, int? commandTimeout = null) where T : class;
         int Count<T>(object predicate, int? commandTimeout = null) where T : class;
+
+        PageResult<T> GetPaged<T>(object predicate, IList<ISort> sort, int page, int resultsPerPage, IDbTransaction transaction, int? commandTimeout = null, bool buffered = true) where T : class;
+        PageResult<T> GetPaged<T>(object predicate, IList<ISort> sort, int page, int resultsPerPage, int? commandTimeout = null, bool buffered = true) where T : class;
+
+
         IMultipleResultReader GetMultiple(GetMultiplePredicate predicate, IDbTransaction transaction, int? commandTimeout = null);
         IMultipleResultReader GetMultiple(GetMultiplePredicate predicate, int? commandTimeout = null);
         void ClearCache();
@@ -54,7 +59,7 @@ namespace Hsiaye.Dapper
         {
             _dapper = new DapperImplementor(sqlGenerator);
             Connection = connection;
-            
+
             if (Connection.State != ConnectionState.Open)
             {
                 Connection.Open();
@@ -139,7 +144,7 @@ namespace Hsiaye.Dapper
                 throw ex;
             }
         }
-        
+
         public T Get<T>(dynamic id, IDbTransaction transaction, int? commandTimeout) where T : class
         {
             return (T)_dapper.Get<T>(Connection, id, transaction, commandTimeout);
@@ -240,6 +245,20 @@ namespace Hsiaye.Dapper
             return _dapper.Count<T>(Connection, predicate, _transaction, commandTimeout);
         }
 
+        public PageResult<T> GetPaged<T>(object predicate, IList<ISort> sort, int page, int resultsPerPage, IDbTransaction transaction, int? commandTimeout, bool buffered) where T : class
+        {
+            var list = _dapper.GetPage<T>(Connection, predicate, sort, page, resultsPerPage, transaction, commandTimeout, buffered);
+            var count = _dapper.Count<T>(Connection, predicate, transaction, commandTimeout);
+            return new PageResult<T>(list, count);
+        }
+
+        public PageResult<T> GetPaged<T>(object predicate, IList<ISort> sort, int page, int resultsPerPage, int? commandTimeout, bool buffered) where T : class
+        {
+            var list = _dapper.GetPage<T>(Connection, predicate, sort, page, resultsPerPage, _transaction, commandTimeout, buffered);
+            var count = _dapper.Count<T>(Connection, predicate, _transaction, commandTimeout);
+            return new PageResult<T>(list, count);
+        }
+
         public IMultipleResultReader GetMultiple(GetMultiplePredicate predicate, IDbTransaction transaction, int? commandTimeout)
         {
             return _dapper.GetMultiple(Connection, predicate, transaction, commandTimeout);
@@ -264,5 +283,16 @@ namespace Hsiaye.Dapper
         {
             return _dapper.SqlGenerator.Configuration.GetMap<T>();
         }
+    }
+
+    public class PageResult<T> where T : class
+    {
+        public PageResult(IEnumerable<T> list, int count)
+        {
+            this.List = list;
+            this.Count = count;
+        }
+        public IEnumerable<T> List { get; set; }
+        public int Count { get; set; }
     }
 }

@@ -108,15 +108,15 @@ namespace Hsiaye.Web.Controllers
         /// <returns></returns>
         [HttpGet]
         [Authorize(PermissionNames.组织机构)]
-        public List<OrganizationUnit> List(string keyword, int page, int limit)
+        public PageResult<OrganizationUnit> List(string keyword, int page, int limit)
         {
             IPredicate predicate = null;
             if (!string.IsNullOrEmpty(keyword))
             {
                 predicate = Predicates.Field<OrganizationUnit>(f => f.Name, Operator.Like, keyword);
             }
-            var list = _database.GetPage<OrganizationUnit>(predicate, new List<ISort> { Predicates.Sort<OrganizationUnit>(f => f.Id, false) }, page, limit).ToList();
-            return list;
+            var pageResult = _database.GetPaged<OrganizationUnit>(predicate, new List<ISort> { Predicates.Sort<OrganizationUnit>(f => f.Id, false) }, page, limit);
+            return pageResult;
         }
 
         [HttpGet]

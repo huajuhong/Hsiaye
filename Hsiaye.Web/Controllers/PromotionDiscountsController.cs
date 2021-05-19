@@ -63,7 +63,7 @@ namespace Hsiaye.Web.Controllers
 
         [HttpGet]
         [Authorize(PermissionNames.促销活动_列表)]
-        public List<PromotionDiscounts> List(string keyword, PromotionDiscountsRule rule, int page, int limit)
+        public PageResult<PromotionDiscounts> List(string keyword, PromotionDiscountsRule rule, int page, int limit)
         {
             var predicates = new List<IPredicate>();
             if (_accessor.Member.UserName != PermissionNames.AdminUserName)
@@ -78,9 +78,9 @@ namespace Hsiaye.Web.Controllers
             {
                 predicates.Add(Predicates.Field<PromotionDiscounts>(f => f.Rule, Operator.Eq, rule));
             }
-            var list = _database.GetPage<PromotionDiscounts>(Predicates.Group(GroupOperator.And, predicates.ToArray()),
-                new List<ISort> { Predicates.Sort<PromotionDiscounts>(f => f.Id, false) }, page, limit).ToList();
-            return list;
+            var pageResult = _database.GetPaged<PromotionDiscounts>(Predicates.Group(GroupOperator.And, predicates.ToArray()),
+                new List<ISort> { Predicates.Sort<PromotionDiscounts>(f => f.Id, false) }, page, limit);
+            return pageResult;
         }
 
         [HttpGet]

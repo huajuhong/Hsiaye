@@ -40,6 +40,7 @@ namespace Hsiaye.Web.Controllers
         public bool Create(WorkTimeInput input)
         {
             WorkTimeSalary workTimeSalary = _database.GetList<WorkTimeSalary>(Predicates.Field<WorkTimeSalary>(f => f.MembershipId, Operator.Eq, input.MembershipId)).FirstOrDefault();
+
             WorkTime entity = new WorkTime
             {
                 CreateMemberId = _accessor.MemberId,
@@ -60,7 +61,7 @@ namespace Hsiaye.Web.Controllers
 
         [HttpGet]
         [Authorize(PermissionNames.工时)]
-        public List<WorkTime> List(int projectId, int membershipId, bool? isOvertime, int page, int limit)
+        public PageResult<WorkTime> List(int projectId, int membershipId, bool? isOvertime, int page, int limit)
         {
             var predicates = new List<IPredicate>();
             if (projectId > 0)
@@ -75,9 +76,9 @@ namespace Hsiaye.Web.Controllers
             {
                 predicates.Add(Predicates.Field<WorkTime>(f => f.IsOvertime, Operator.Eq, isOvertime.Value));
             }
-            var list = _database.GetPage<WorkTime>(Predicates.Group(GroupOperator.And, predicates.ToArray()),
-                new List<ISort> { Predicates.Sort<WorkTime>(f => f.Id, false) }, page, limit).ToList();
-            return list;
+            var pageResult = _database.GetPaged<WorkTime>(Predicates.Group(GroupOperator.And, predicates.ToArray()),
+                new List<ISort> { Predicates.Sort<WorkTime>(f => f.Id, false) }, page, limit);
+            return pageResult;
         }
 
         [HttpGet]
