@@ -31,7 +31,7 @@ namespace Hsiaye.Application
                 UserName = input.UserName,
                 Name = input.Name,
                 EmailAddress = input.EmailAddress,
-                IsActive = input.IsActive,
+                State = input.State,
                 Password = DESHelper.EncryptByGeneric(input.Password),
                 EmailConfirmationCode = string.Empty,
                 PasswordResetCode = string.Empty,
@@ -83,7 +83,7 @@ namespace Hsiaye.Application
             model.UserName = input.UserName;
             model.Name = input.Name;
             model.EmailAddress = input.EmailAddress;
-            model.IsActive = input.IsActive;
+            model.State = input.State;
             try
             {
                 _database.BeginTransaction();
@@ -121,9 +121,9 @@ namespace Hsiaye.Application
             var model = _database.Get<Member>(id);
             if (model == null)
                 return;
-            if (model.IsActive)
+            if (model.State == MemberState.正常)
                 return;
-            model.IsActive = true;
+            model.State = MemberState.正常;
             _database.Update(model);
         }
 
@@ -132,9 +132,9 @@ namespace Hsiaye.Application
             var model = _database.Get<Member>(id);
             if (model == null)
                 return;
-            if (!model.IsActive)
+            if (model.State == MemberState.禁用)
                 return;
-            model.IsActive = false;
+            model.State = MemberState.禁用;
             _database.Update(model);
         }
 

@@ -41,7 +41,7 @@ namespace Hsiaye.Web.Controllers
             return _roleService.Create(input);
         }
         //todo:列表待优化，分页问题
-        [HttpGet]
+        [HttpPost]
         [Authorize(PermissionNames.角色_列表)]
         public List<RoleDto> List(KeywordsListInput input)
         {

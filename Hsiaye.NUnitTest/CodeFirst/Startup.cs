@@ -40,7 +40,7 @@ namespace Hsiaye.NUnitTest
                     EmailAddress = "891424065@qq.com",
                     IsEmailConfirmed = true,
                     EmailConfirmationCode = "",
-                    IsActive = true,
+                    State = MemberState.正常,
                     LastLoginTime = DateTime.Now,
                 };
                 Table.hsiayeContext.Member.Add(member);

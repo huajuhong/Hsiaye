@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Hsiaye.Domain;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Text;
@@ -17,7 +18,7 @@ namespace Hsiaye.Application.Contracts
         [Required]
         public string EmailAddress { get; set; }
 
-        public bool IsActive { get; set; }
+        public MemberState State { get; set; }
 
         [Required]
         public string[] RoleNames { get; set; }

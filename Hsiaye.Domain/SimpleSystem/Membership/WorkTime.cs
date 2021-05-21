@@ -10,7 +10,6 @@ namespace Hsiaye.Domain
     // 1.工时项目：列表/添加/编辑/删除
     // 2.工时表：列表/添加/编辑/删除
     // 3.组织机构会员工时薪资：列表/添加/编辑/删除
-    //todo:重建表结构
     public class WorkTime
     {
         public int Id { get; set; }

@@ -6,7 +6,6 @@ using System.Text;
 
 namespace Hsiaye.Domain
 {
-    //todo:重建表结构
     public class Member
     {
         public int Id { get; set; }
