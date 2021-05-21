@@ -102,20 +102,18 @@ namespace Hsiaye.Web.Controllers
         /// <summary>
         /// 组织结构列表，用于后台管理列表
         /// </summary>
-        /// <param name="keyword"></param>
-        /// <param name="page"></param>
-        /// <param name="limit"></param>
+        /// <param name="input"></param>
         /// <returns></returns>
-        [HttpGet]
+        [HttpPost]
         [Authorize(PermissionNames.组织机构)]
-        public PageResult<OrganizationUnit> List(string keyword, int page, int limit)
+        public PageResult<OrganizationUnit> List(KeywordsListInput input)
         {
             IPredicate predicate = null;
-            if (!string.IsNullOrEmpty(keyword))
+            if (!string.IsNullOrEmpty(input.Keywords))
             {
-                predicate = Predicates.Field<OrganizationUnit>(f => f.Name, Operator.Like, keyword);
+                predicate = Predicates.Field<OrganizationUnit>(f => f.Name, Operator.Like, input.Keywords);
             }
-            var pageResult = _database.GetPaged<OrganizationUnit>(predicate, new List<ISort> { Predicates.Sort<OrganizationUnit>(f => f.Id, false) }, page, limit);
+            var pageResult = _database.GetPaged<OrganizationUnit>(predicate, new List<ISort> { Predicates.Sort<OrganizationUnit>(f => f.Id, false) }, input.PageIndex, input.PageSize);
             return pageResult;
         }
 

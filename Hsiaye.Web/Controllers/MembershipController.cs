@@ -62,27 +62,27 @@ namespace Hsiaye.Web.Controllers
             return true;
         }
 
-        [HttpGet]
+        [HttpPost]
         [Authorize(PermissionNames.会员_列表)]
-        public PageResult<Membership> List(string keyword, MembershipState state, int page, int limit)
+        public PageResult<Membership> List(MembershipListInput input)
         {
             var predicates = new List<IPredicate>();
             if (_accessor.Member.UserName != PermissionNames.AdminUserName)
             {
                 predicates.Add(Predicates.Field<Membership>(f => f.OrganizationUnitId, Operator.Eq, _accessor.OrganizationUnitId));
             }
-            if (!string.IsNullOrEmpty(keyword))
+            if (!string.IsNullOrEmpty(input.Keywords))
             {
-                predicates.Add(Predicates.Field<Membership>(f => f.Name, Operator.Like, keyword));
-                predicates.Add(Predicates.Field<Membership>(f => f.Phone, Operator.Like, keyword));
-                predicates.Add(Predicates.Field<Membership>(f => f.IDCard, Operator.Like, keyword));
+                predicates.Add(Predicates.Field<Membership>(f => f.Name, Operator.Like, input.Keywords));
+                predicates.Add(Predicates.Field<Membership>(f => f.Phone, Operator.Like, input.Keywords));
+                predicates.Add(Predicates.Field<Membership>(f => f.IDCard, Operator.Like, input.Keywords));
             }
-            if (state != MembershipState.未知)
+            if (input.State != MembershipState.未知)
             {
-                predicates.Add(Predicates.Field<Membership>(f => f.State, Operator.Eq, state));
+                predicates.Add(Predicates.Field<Membership>(f => f.State, Operator.Eq, input.State));
             }
             var pageResult = _database.GetPaged<Membership>(Predicates.Group(GroupOperator.And, predicates.ToArray()),
-                new List<ISort> { Predicates.Sort<Membership>(f => f.Id, false) }, page, limit);
+                new List<ISort> { Predicates.Sort<Membership>(f => f.Id, false) }, input.PageIndex, input.PageSize);
             return pageResult;
         }
 

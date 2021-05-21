@@ -73,26 +73,26 @@ namespace Hsiaye.Web.Controllers
             return true;
         }
 
-        [HttpGet]
+        [HttpPost]
         [Authorize(PermissionNames.商品_列表)]
-        public PageResult<Product> List(string keyword, ProductState state, int page, int limit)
+        public PageResult<Product> List(ProductListInput input)
         {
             var predicates = new List<IPredicate>();
             if (_accessor.Member.UserName != PermissionNames.AdminUserName)
             {
                 predicates.Add(Predicates.Field<Product>(f => f.OrganizationUnitId, Operator.Eq, _accessor.OrganizationUnitId));
             }
-            if (!string.IsNullOrEmpty(keyword))
+            if (!string.IsNullOrEmpty(input.Keywords))
             {
-                predicates.Add(Predicates.Field<Product>(f => f.Name, Operator.Like, keyword));
-                predicates.Add(Predicates.Field<Product>(f => f.Title, Operator.Like, keyword));
+                predicates.Add(Predicates.Field<Product>(f => f.Name, Operator.Like, input.Keywords));
+                predicates.Add(Predicates.Field<Product>(f => f.Title, Operator.Like, input.Keywords));
             }
-            if (state != ProductState.未知)
+            if (input.State != ProductState.未知)
             {
-                predicates.Add(Predicates.Field<Product>(f => f.State, Operator.Eq, state));
+                predicates.Add(Predicates.Field<Product>(f => f.State, Operator.Eq, input.State));
             }
             var pageResult = _database.GetPaged<Product>(Predicates.Group(GroupOperator.And, predicates.ToArray()),
-                new List<ISort> { Predicates.Sort<Product>(f => f.Id, false) }, page, limit);
+                new List<ISort> { Predicates.Sort<Product>(f => f.Id, false) }, input.PageIndex, input.PageSize);
             return pageResult;
         }
 

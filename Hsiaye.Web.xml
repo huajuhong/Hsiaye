@@ -97,7 +97,7 @@
             <summary>
             组织结构列表，用于后台管理列表
             </summary>
-            <param name="keyword"></param>
+            <param name="keywords"></param>
             <param name="page"></param>
             <param name="limit"></param>
             <returns></returns>
@@ -220,6 +220,13 @@
         <member name="T:Hsiaye.Web.Extensions.StartupFilter">
             <summary>
             程序启动后只执行一次
+            </summary>
+        </member>
+        <member name="P:Hsiaye.Web.MemberListInput.IsActive">
+            <summary>
+            0：查询全部
+            1：true
+            2：false
             </summary>
         </member>
     </members>

@@ -8,6 +8,6 @@ namespace Hsiaye.Domain.Shared
 {
     public interface IPagedResult<T> : IList<T>
     {
-        public int TotalCount { get; set; }
+        public int Total { get; set; }
     }
 }

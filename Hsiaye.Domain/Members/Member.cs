@@ -6,6 +6,7 @@ using System.Text;
 
 namespace Hsiaye.Domain
 {
+    //todo:重建表结构
     public class Member
     {
         public int Id { get; set; }
@@ -32,7 +33,13 @@ namespace Hsiaye.Domain
         public bool IsEmailConfirmed { get; set; }
         [StringLength(64)]
         public string EmailConfirmationCode { get; set; }
-        public bool IsActive { get; set; }
+        public MemberState State { get; set; }
         public DateTime LastLoginTime { get; set; }
+    }
+    public enum MemberState
+    {
+        未知 = 0,
+        正常 = 1,
+        禁用 = 2,
     }
 }

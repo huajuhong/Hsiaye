@@ -52,25 +52,25 @@ namespace Hsiaye.Web.Controllers
             return true;
         }
 
-        [HttpGet]
+        [HttpPost]
         [Authorize(PermissionNames.工时)]
-        public PageResult<WorkTimeSalary> List(string keywords, int projectId, int membershipId, int page, int limit)
+        public PageResult<WorkTimeSalary> List(WorkTimeSalaryListInput input)
         {
             var predicates = new List<IPredicate>();
-            if (!string.IsNullOrEmpty(keywords))
+            if (!string.IsNullOrEmpty(input.Keywords))
             {
-                predicates.Add(Predicates.Field<WorkTimeSalary>(f => f.Name, Operator.Like, keywords));
+                predicates.Add(Predicates.Field<WorkTimeSalary>(f => f.Name, Operator.Like, input.Keywords));
             }
-            if (projectId > 0)
+            if (input.ProjectId > 0)
             {
-                predicates.Add(Predicates.Field<WorkTimeSalary>(f => f.ProjectId, Operator.Eq, projectId));
+                predicates.Add(Predicates.Field<WorkTimeSalary>(f => f.ProjectId, Operator.Eq, input.ProjectId));
             }
-            if (membershipId > 0)
+            if (input.MembershipId > 0)
             {
-                predicates.Add(Predicates.Field<WorkTimeSalary>(f => f.MembershipId, Operator.Eq, membershipId));
+                predicates.Add(Predicates.Field<WorkTimeSalary>(f => f.MembershipId, Operator.Eq, input.MembershipId));
             }
             var pageResult = _database.GetPaged<WorkTimeSalary>(Predicates.Group(GroupOperator.And, predicates.ToArray()),
-                new List<ISort> { Predicates.Sort<WorkTimeSalary>(f => f.Id, false) }, page, limit);
+                new List<ISort> { Predicates.Sort<WorkTimeSalary>(f => f.Id, false) }, input.PageIndex, input.PageSize);
             return pageResult;
         }
 

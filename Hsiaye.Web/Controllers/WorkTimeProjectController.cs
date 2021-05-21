@@ -50,21 +50,21 @@ namespace Hsiaye.Web.Controllers
             return true;
         }
 
-        [HttpGet]
+        [HttpPost]
         [Authorize(PermissionNames.工时)]
-        public PageResult<WorkTimeProject> List(string keywords, TimesheetProjectState state, int page, int limit)
+        public PageResult<WorkTimeProject> List(WorkTimeProjectListInput input)
         {
             var predicates = new List<IPredicate>();
-            if (!string.IsNullOrEmpty(keywords))
+            if (!string.IsNullOrEmpty(input.Keywords))
             {
-                predicates.Add(Predicates.Field<WorkTimeProject>(f => f.Name, Operator.Like, keywords));
+                predicates.Add(Predicates.Field<WorkTimeProject>(f => f.Name, Operator.Like, input.Keywords));
             }
-            if (state != TimesheetProjectState.未知)
+            if (input.State != TimesheetProjectState.未知)
             {
-                predicates.Add(Predicates.Field<WorkTimeProject>(f => f.State, Operator.Eq, state));
+                predicates.Add(Predicates.Field<WorkTimeProject>(f => f.State, Operator.Eq, input.State));
             }
             var pageResult = _database.GetPaged<WorkTimeProject>(Predicates.Group(GroupOperator.And, predicates.ToArray()),
-                new List<ISort> { Predicates.Sort<WorkTimeProject>(f => f.Id, false) }, page, limit);
+                new List<ISort> { Predicates.Sort<WorkTimeProject>(f => f.Id, false) }, input.PageIndex, input.PageSize);
             return pageResult;
         }
 

@@ -30,6 +30,7 @@
 
   <ItemGroup>
     <Compile Remove="%2a%2a/%2a.cs" />
+    <Compile Remove="Models\Member.cs" />
   </ItemGroup>
 
   <ItemGroup>
@@ -59,6 +60,10 @@
     <ProjectReference Include="..\Hsiaye.Dapper\Hsiaye.Dapper.csproj" />
     <ProjectReference Include="..\Hsiaye.Domain.Shared\Hsiaye.Domain.Shared.csproj" />
     <ProjectReference Include="..\Hsiaye.Domain\Hsiaye.Domain.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="Models\" />
   </ItemGroup>
 
 </Project>

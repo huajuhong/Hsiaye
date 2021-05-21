@@ -7,17 +7,10 @@ using System.Threading.Tasks;
 
 namespace Hsiaye.Application.Contracts
 {
-    public class WorkTimeInput
+    public class WorkTimeListInput:PageInput
     {
         public int ProjectId { get; set; }
         public int MembershipId { get; set; }
-        public DateTime Date { get; set; }
-        public TimeSpan Duration { get; set; }
         public WorkTimeOvertime Overtime { get; set; }
-        public string Description { get; set; }
-    }
-    public class WorkTimeEditInput : WorkTimeInput
-    {
-        public int Id { get; set; }
     }
 }

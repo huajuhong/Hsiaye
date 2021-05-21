@@ -61,25 +61,25 @@ namespace Hsiaye.Web.Controllers
             return true;
         }
 
-        [HttpGet]
+        [HttpPost]
         [Authorize(PermissionNames.促销活动_列表)]
-        public PageResult<PromotionDiscounts> List(string keyword, PromotionDiscountsRule rule, int page, int limit)
+        public PageResult<PromotionDiscounts> List(PromotionDiscountsListInput input)
         {
             var predicates = new List<IPredicate>();
             if (_accessor.Member.UserName != PermissionNames.AdminUserName)
             {
                 predicates.Add(Predicates.Field<PromotionDiscounts>(f => f.OrganizationUnitId, Operator.Eq, _accessor.OrganizationUnitId));
             }
-            if (!string.IsNullOrEmpty(keyword))
+            if (!string.IsNullOrEmpty(input.Keywords))
             {
-                predicates.Add(Predicates.Field<PromotionDiscounts>(f => f.Name, Operator.Like, keyword));
+                predicates.Add(Predicates.Field<PromotionDiscounts>(f => f.Name, Operator.Like, input.Keywords));
             }
-            if (rule != PromotionDiscountsRule.未知)
+            if (input.Rule != PromotionDiscountsRule.未知)
             {
-                predicates.Add(Predicates.Field<PromotionDiscounts>(f => f.Rule, Operator.Eq, rule));
+                predicates.Add(Predicates.Field<PromotionDiscounts>(f => f.Rule, Operator.Eq, input.Rule));
             }
             var pageResult = _database.GetPaged<PromotionDiscounts>(Predicates.Group(GroupOperator.And, predicates.ToArray()),
-                new List<ISort> { Predicates.Sort<PromotionDiscounts>(f => f.Id, false) }, page, limit);
+                new List<ISort> { Predicates.Sort<PromotionDiscounts>(f => f.Id, false) }, input.PageIndex, input.PageSize);
             return pageResult;
         }
 

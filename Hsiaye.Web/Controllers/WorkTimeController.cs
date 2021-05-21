@@ -49,7 +49,7 @@ namespace Hsiaye.Web.Controllers
                 MembershipId = input.MembershipId,
                 Date = input.Date,
                 Duration = input.Duration,
-                IsOvertime = input.IsOvertime,
+                Overtime = input.Overtime,
                 Salary = workTimeSalary.Amount,
                 Description = input.Description,
             };
@@ -59,25 +59,25 @@ namespace Hsiaye.Web.Controllers
             return true;
         }
 
-        [HttpGet]
+        [HttpPost]
         [Authorize(PermissionNames.工时)]
-        public PageResult<WorkTime> List(int projectId, int membershipId, bool? isOvertime, int page, int limit)
+        public PageResult<WorkTime> List(WorkTimeListInput input)
         {
             var predicates = new List<IPredicate>();
-            if (projectId > 0)
+            if (input.ProjectId > 0)
             {
-                predicates.Add(Predicates.Field<WorkTime>(f => f.ProjectId, Operator.Eq, projectId));
+                predicates.Add(Predicates.Field<WorkTime>(f => f.ProjectId, Operator.Eq, input.ProjectId));
             }
-            if (membershipId > 0)
+            if (input.MembershipId > 0)
             {
-                predicates.Add(Predicates.Field<WorkTime>(f => f.MembershipId, Operator.Eq, membershipId));
+                predicates.Add(Predicates.Field<WorkTime>(f => f.MembershipId, Operator.Eq, input.MembershipId));
             }
-            if (isOvertime.HasValue)
+            if (input.Overtime != WorkTimeOvertime.未知)
             {
-                predicates.Add(Predicates.Field<WorkTime>(f => f.IsOvertime, Operator.Eq, isOvertime.Value));
+                predicates.Add(Predicates.Field<WorkTime>(f => f.Overtime, Operator.Eq, input.Overtime));
             }
             var pageResult = _database.GetPaged<WorkTime>(Predicates.Group(GroupOperator.And, predicates.ToArray()),
-                new List<ISort> { Predicates.Sort<WorkTime>(f => f.Id, false) }, page, limit);
+                new List<ISort> { Predicates.Sort<WorkTime>(f => f.Id, false) }, input.PageIndex, input.PageSize);
             return pageResult;
         }
 
@@ -101,7 +101,7 @@ namespace Hsiaye.Web.Controllers
             entity.MembershipId = input.MembershipId;
             entity.Date = input.Date;
             entity.Duration = input.Duration;
-            entity.IsOvertime = input.IsOvertime;
+            entity.Overtime = input.Overtime;
             entity.Description = input.Description;
 
             _database.Update(entity);

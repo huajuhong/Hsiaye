@@ -43,17 +43,17 @@ namespace Hsiaye.Web.Controllers
         //todo:列表待优化，分页问题
         [HttpGet]
         [Authorize(PermissionNames.角色_列表)]
-        public List<RoleDto> List(string keyword, int page, int limit)
+        public List<RoleDto> List(KeywordsListInput input)
         {
             var predicates = new List<IPredicate>();
-            if (!string.IsNullOrEmpty(keyword))
+            if (!string.IsNullOrEmpty(input.Keywords))
             {
-                predicates.Add(Predicates.Field<Role>(e => e.Name, Operator.Like, keyword));
-                predicates.Add(Predicates.Field<Role>(e => e.DisplayName, Operator.Like, keyword));
-                predicates.Add(Predicates.Field<Role>(e => e.Description, Operator.Like, keyword));
+                predicates.Add(Predicates.Field<Role>(e => e.Name, Operator.Like, input.Keywords));
+                predicates.Add(Predicates.Field<Role>(e => e.DisplayName, Operator.Like, input.Keywords));
+                predicates.Add(Predicates.Field<Role>(e => e.Description, Operator.Like, input.Keywords));
             }
             var sort = new List<ISort> { Predicates.Sort<Role>(x => x.CreateTime) };
-            var roles = _database.GetPage<Role>(Predicates.Group(GroupOperator.Or, predicates.ToArray()), sort, page, limit).ToList();
+            var roles = _database.GetPage<Role>(Predicates.Group(GroupOperator.Or, predicates.ToArray()), sort, input.PageIndex, input.PageSize).ToList();
 
             var roleDtos = ExpressionGenericMapper<Role, RoleDto>.MapperTo(roles);
             if (roleDtos == null)
