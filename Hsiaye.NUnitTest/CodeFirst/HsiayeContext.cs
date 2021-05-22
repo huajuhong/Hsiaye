@@ -52,6 +52,7 @@ namespace Hsiaye.NUnitTest
             modelBuilder.Entity<Answer>();
             modelBuilder.Entity<Question>();
 
+            modelBuilder.Entity<TodoCategory>();
             modelBuilder.Entity<Todo>();
         }
         public DbSet<Member> Member { get; set; }

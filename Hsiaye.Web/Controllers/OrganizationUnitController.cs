@@ -84,7 +84,6 @@ namespace Hsiaye.Web.Controllers
                 Name = input.Name,
                 Description = input.Description,
                 ParentId = input.ParentId,
-                Balance = 0,
                 ModifyMemberId = _accessor.MemberId,
                 ModifyTime = DateTime.Now,
             };

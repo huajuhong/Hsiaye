@@ -37,8 +37,6 @@ namespace Hsiaye.NUnitTest
         [Test]
         public void Create()
         {
-
-
             //删除数据库
             //var result = hsiayeContext.Database.EnsureDeleted();
 

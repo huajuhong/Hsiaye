@@ -124,14 +124,11 @@
             <param name="id"></param>
             <returns></returns>
         </member>
-        <member name="M:Hsiaye.Web.Controllers.QAController.ListQuestion(System.String,System.String,System.Int32,System.Int32)">
+        <member name="M:Hsiaye.Web.Controllers.QAController.ListQuestion(Hsiaye.Application.Contracts.QuestionListInput)">
             <summary>
             获取问题列表
             </summary>
-            <param name="keywords"></param>
-            <param name="sortField"></param>
-            <param name="page"></param>
-            <param name="limit"></param>
+            <param name="input"></param>
             <returns></returns>
         </member>
         <member name="M:Hsiaye.Web.Controllers.QAController.UpdateQuestion(Hsiaye.Application.Contracts.QuestionEditInput)">
@@ -148,14 +145,18 @@
             <param name="id"></param>
             <returns></returns>
         </member>
-        <member name="M:Hsiaye.Web.Controllers.QAController.ListAnswer(System.Int64,System.Int32,System.Int32)">
+        <member name="M:Hsiaye.Web.Controllers.QAController.ListAnswer(Hsiaye.Application.Contracts.AnswerListInput)">
             <summary>
             获取问题答案列表
             </summary>
-            <param name="questionId"></param>
-            <param name="page"></param>
-            <param name="limit"></param>
+            <param name="input"></param>
             <returns></returns>
+        </member>
+        <member name="M:Hsiaye.Web.Controllers.QAController.VoteQuestion(System.Int32)">
+            <summary>
+            对问题投票，表示遇到该问题且支持
+            </summary>
+            <param name="id">问题Id</param>
         </member>
         <member name="M:Hsiaye.Web.Controllers.QAController.CreateAnswer(Hsiaye.Application.Contracts.AnswerInput)">
             <summary>
@@ -185,11 +186,31 @@
             <param name="id"></param>
             <returns></returns>
         </member>
+        <member name="M:Hsiaye.Web.Controllers.QAController.LikeAnswer(System.Int32)">
+            <summary>
+            对答案认可，点赞表时喜欢
+            </summary>
+            <param name="id">答案Id</param>
+        </member>
+        <member name="M:Hsiaye.Web.Controllers.QAController.AcceptedAnswer(System.Int32)">
+            <summary>
+            采纳答案
+            </summary>
+            <param name="id">答案Id</param>
+        </member>
         <member name="M:Hsiaye.Web.Controllers.RoleController.Current">
             <summary>
             当前用户的所有角色
             </summary>
             <returns></returns>
+        </member>
+        <member name="T:Hsiaye.Web.Controllers.TodoController">
+            <summary>
+            待办
+            todo:未完
+            1.简单添加，详细编辑
+            2.详细列表
+            </summary>
         </member>
         <member name="T:Hsiaye.Web.Controllers.WorkTimeController">
             <summary>
