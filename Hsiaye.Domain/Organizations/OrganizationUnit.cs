@@ -14,7 +14,6 @@ namespace Hsiaye.Domain
         public string Name { get; set; }
         public string Description { get; set; }
         public int ParentId { get; set; }
-        public decimal Balance { get; set; }
         public int ModifyMemberId { get; set; }
         public DateTime ModifyTime { get; set; }
         public bool IsDeleted { get; set; }

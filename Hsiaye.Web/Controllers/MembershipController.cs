@@ -166,10 +166,10 @@ namespace Hsiaye.Web.Controllers
                 _database.Update(entity);
                 _database.Commit();
             }
-            catch (Exception)
+            catch (Exception ex)
             {
                 _database.Rollback();
-                throw;
+                throw ex;
             }
             finally
             {
@@ -224,10 +224,10 @@ namespace Hsiaye.Web.Controllers
                 _database.Update(entity);
                 _database.Commit();
             }
-            catch (Exception)
+            catch (Exception ex)
             {
                 _database.Rollback();
-                throw;
+                throw ex;
             }
             finally
             {
@@ -345,10 +345,10 @@ namespace Hsiaye.Web.Controllers
                 _database.Update(entity);
                 _database.Commit();
             }
-            catch (Exception)
+            catch (Exception ex)
             {
                 _database.Rollback();
-                throw;
+                throw ex;
             }
             finally
             {

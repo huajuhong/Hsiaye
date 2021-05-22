@@ -49,7 +49,7 @@ namespace Hsiaye.Application
 
         public const string 工时 = "工时";
         public const string 问答 = "问答";
-
+        public const string 待办 = "待办";
 
         public static List<Permission> Permissions
         {
