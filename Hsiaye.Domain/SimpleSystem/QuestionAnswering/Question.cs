@@ -13,6 +13,7 @@ namespace Hsiaye.Domain
         public int Id { get; set; }
         public DateTime CreateTime { get; set; }
         public int OrganizationUnitId { get; set; }
+        public int CategoryId { get; set; }
         public int MemberId { get; set; }
         public string Title { get; set; }//标题
         public string Description { get; set; }//描述

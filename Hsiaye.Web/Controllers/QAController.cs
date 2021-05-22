@@ -41,6 +41,7 @@ namespace Hsiaye.Web.Controllers
             {
                 CreateTime = DateTime.Now,
                 OrganizationUnitId = _accessor.OrganizationUnitId,
+                CategoryId = input.CategoryId,
                 MemberId = _accessor.MemberId,
                 Title = input.Title,
                 Description = input.Description,
@@ -64,19 +65,18 @@ namespace Hsiaye.Web.Controllers
         public Question GetQuestion(long id)
         {
             var entity = _database.Get<Question>(id);
+            entity.ViewCount += 1;
+            _database.Update(entity);
             return entity;
         }
         /// <summary>
         /// 获取问题列表
         /// </summary>
-        /// <param name="keywords"></param>
-        /// <param name="sortField"></param>
-        /// <param name="page"></param>
-        /// <param name="limit"></param>
+        /// <param name="input"></param>
         /// <returns></returns>
         [HttpGet]
         [Authorize(PermissionNames.问答)]
-        public PageResult<Question> ListQuestion(string keywords, string sortField, int page, int limit)
+        public PageResult<Question> ListQuestion(QuestionListInput input)
         {
             var predicates = new List<IPredicate>
             {
@@ -84,18 +84,19 @@ namespace Hsiaye.Web.Controllers
                 Predicates.Field<Question>(f => f.OrganizationUnitId, Operator.Eq, _accessor.OrganizationUnitId),
             };
 
-            if (!string.IsNullOrEmpty(keywords))
+            if (!string.IsNullOrEmpty(input.Keywords))
             {
-                predicates.Add(Predicates.Field<Question>(f => f.Title, Operator.Like, keywords));
-                //predicates.Add(Predicates.Field<Question>(f => f.Description, Operator.Like, keywords));
+                predicates.Add(Predicates.Field<Question>(f => f.Title, Operator.Like, input.Keywords));
+                //predicates.Add(Predicates.Field<Question>(f => f.Description, Operator.Like, input.Keywords));
+            }
+            if (input.CategoryId > 0)
+            {
+                predicates.Add(Predicates.Field<Question>(f => f.CategoryId, Operator.Eq, input.CategoryId));
             }
 
             List<ISort> sort = new List<ISort>();
-            switch (sortField)
+            switch (input.SortField)
             {
-                case "Id":
-                    sort.Add(Predicates.Sort<Question>(f => f.Id, false));
-                    break;
                 case "VoteCount":
                     sort.Add(Predicates.Sort<Question>(f => f.VoteCount, false));
                     break;
@@ -106,10 +107,11 @@ namespace Hsiaye.Web.Controllers
                     sort.Add(Predicates.Sort<Question>(f => f.ViewCount, false));
                     break;
                 default:
+                    sort.Add(Predicates.Sort<Question>(f => f.Id, false));
                     break;
             }
 
-            var pageResult = _database.GetPaged<Question>(Predicates.Group(GroupOperator.And, predicates.ToArray()), sort, page, limit);
+            var pageResult = _database.GetPaged<Question>(Predicates.Group(GroupOperator.And, predicates.ToArray()), sort, input.PageIndex, input.PageSize);
             return pageResult;
         }
 
@@ -132,6 +134,8 @@ namespace Hsiaye.Web.Controllers
                 throw new UserFriendlyException("非法操作");
             }
 
+            entity.Title = input.Title;
+            entity.CategoryId = input.CategoryId;
             entity.Description = input.Description;
 
             _database.Update(entity);
@@ -162,22 +166,43 @@ namespace Hsiaye.Web.Controllers
         /// <summary>
         /// 获取问题答案列表
         /// </summary>
-        /// <param name="questionId"></param>
-        /// <param name="page"></param>
-        /// <param name="limit"></param>
+        /// <param name="input"></param>
         /// <returns></returns>
         [HttpPost]
         [Authorize(PermissionNames.问答)]
-        public List<Answer> ListAnswer(long questionId, int page, int limit)
+        public PageResult<Answer> ListAnswer(AnswerListInput input)
         {
             var predicates = new List<IPredicate>();
-            predicates.Add(Predicates.Field<Answer>(f => f.QuestionId, Operator.Eq, questionId));
+            predicates.Add(Predicates.Field<Answer>(f => f.QuestionId, Operator.Eq, input.QuestionId));
             predicates.Add(Predicates.Field<Answer>(f => f.Deleted, Operator.Eq, false));
+            List<ISort> sort = new List<ISort>();
+            switch (input.SortField)
+            {
+                case "LikeCount":
+                    sort.Add(Predicates.Sort<Answer>(f => f.LikeCount, false));
+                    break;
+                default:
+                    sort.Add(Predicates.Sort<Answer>(f => f.Id, false));
+                    break;
+            }
+            var pageResult = _database.GetPaged<Answer>(Predicates.Group(GroupOperator.And, predicates.ToArray()), new List<ISort> { Predicates.Sort<Answer>(f => f.Id, false) }, input.PageIndex, input.PageSize);
 
-            var list = _database.GetPage<Answer>(Predicates.Group(GroupOperator.And, predicates.ToArray()), new List<ISort> { Predicates.Sort<Answer>(f => f.Id, false) }, page, limit).ToList();
-
-            return list;
+            return pageResult;
         }
+
+        /// <summary>
+        /// 对问题投票，表示遇到该问题且支持
+        /// </summary>
+        /// <param name="id">问题Id</param>
+        [HttpPost]
+        [Authorize(PermissionNames.问答)]
+        public void VoteQuestion(int id)
+        {
+            var entity = _database.Get<Question>(id);
+            entity.VoteCount += 1;
+            _database.Update(entity);
+        }
+
         /// <summary>
         /// 创建答案
         /// </summary>
@@ -262,6 +287,42 @@ namespace Hsiaye.Web.Controllers
             _database.Update(entity);
 
             return true;
+        }
+
+        /// <summary>
+        /// 对答案认可，点赞表时喜欢
+        /// </summary>
+        /// <param name="id">答案Id</param>
+        [HttpPost]
+        [Authorize(PermissionNames.问答)]
+        public void LikeAnswer(int id)
+        {
+            var entity = _database.Get<Answer>(id);
+            entity.LikeCount += 1;
+            _database.Update(entity);
+        }
+
+        /// <summary>
+        /// 采纳答案
+        /// </summary>
+        /// <param name="id">答案Id</param>
+        [HttpPost]
+        [Authorize(PermissionNames.问答)]
+        public void AcceptedAnswer(int id)
+        {
+            var answer = _database.Get<Answer>(id);
+            if (answer.Accepted)
+            {
+                return;
+            }
+            answer.Accepted = true;
+            _database.Update(answer);
+            var question = _database.Get<Question>(answer.QuestionId);
+            if (question.AnswerId < 1)
+            {
+                question.AnswerId = answer.Id;
+                _database.Update(question);
+            }
         }
     }
 }
