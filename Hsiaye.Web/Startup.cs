@@ -66,9 +66,9 @@ namespace Hsiaye.Web
             {
                 c.SwaggerDoc("v1", new OpenApiInfo
                 {
-                    Title = "Hsiaye.Web",
+                    Title = "道阻且长行则将至",
                     Version = "v1",
-                    Description = "新的开始",
+                    Description = "感到迷茫的时候，与其胡思乱想，不如行动起来，去做点什么。行动则有可能，而结果则在一次次行动中悄悄出现。",
                 });
 
                 c.AddSecurityDefinition("ProviderKey", new OpenApiSecurityScheme
