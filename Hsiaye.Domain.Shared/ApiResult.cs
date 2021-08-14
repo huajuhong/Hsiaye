@@ -31,12 +31,12 @@ namespace Hsiaye.Domain.Shared
         /// 503: '服务不可用，服务器暂时过载或维护。',
         /// 504: '网关超时。',
         /// </summary>
-        public int ErrorCode { get; set; }
+        public int Code { get; set; }
 
         /// <summary>
         /// 业务上的错误信息
         /// </summary>
-        public string ErrorMessage { get; set; }
+        public string Message { get; set; }
 
         public object Data { get; set; }
     }

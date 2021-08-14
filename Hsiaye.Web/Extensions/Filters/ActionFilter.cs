@@ -15,13 +15,13 @@ namespace Hsiaye.Web.Extensions
 
             if (context.Result is ObjectResult objectResult)
             {
-                context.Result = new JsonResult(new ApiResult { Success = true, ErrorCode = 200, ErrorMessage = "success", Data = objectResult.Value });
+                context.Result = new JsonResult(new ApiResult { Success = true, Code = 200, Message = "success", Data = objectResult.Value });
                 return;
             }
 
             if (context.Result is StatusCodeResult statusCodeResult)
             {
-                context.Result = new JsonResult(new ApiResult { Success = true, ErrorCode = statusCodeResult.StatusCode, ErrorMessage = "success", });
+                context.Result = new JsonResult(new ApiResult { Success = true, Code = statusCodeResult.StatusCode, Message = "success", });
                 return;
             }
         }

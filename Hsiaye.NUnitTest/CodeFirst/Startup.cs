@@ -49,6 +49,7 @@ namespace Hsiaye.NUnitTest
 
             //管理员权限写入
             List<Permission> permissions = PermissionNames.Permissions;
+            List<Permission> permissionsByAdmin = new List<Permission>();
             foreach (var item in permissions)
             {
                 var predicate = Predicates.Group(GroupOperator.And,
@@ -58,7 +59,7 @@ namespace Hsiaye.NUnitTest
                 int count = Table.database.Count<Permission>(predicate);
                 if (count > 0)
                     continue;
-                permissions.Add(new Permission
+                permissionsByAdmin.Add(new Permission
                 {
                     CreatorMemberId = member.Id,
                     Name = item.Name,
@@ -67,9 +68,9 @@ namespace Hsiaye.NUnitTest
                     IsGranted = true,
                 });
             }
-            if (permissions.Any())
+            if (permissionsByAdmin.Any())
             {
-                Table.database.Insert(permissions.AsEnumerable());
+                Table.database.Insert(permissionsByAdmin.AsEnumerable());
             }
         }
     }
