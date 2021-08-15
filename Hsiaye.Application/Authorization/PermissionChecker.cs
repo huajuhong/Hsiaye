@@ -1,8 +1,9 @@
 ﻿using Hsiaye.Application.Contracts;
-using Hsiaye.Dapper;
+using DapperExtensions;
 using Hsiaye.Domain;
 using System.Collections.Generic;
 using System.Linq;
+using DapperExtensions.Predicate;
 
 namespace Hsiaye.Application
 {

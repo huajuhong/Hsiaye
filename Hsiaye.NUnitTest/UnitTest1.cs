@@ -1,6 +1,3 @@
-using Hsiaye.Dapper;
-using Hsiaye.Dapper.Mapper;
-using Hsiaye.Dapper.Sql;
 using Hsiaye.Domain;
 using Hsiaye.Extensions;
 using NUnit.Framework;
@@ -10,6 +7,8 @@ using System.Reflection;
 //using Dapper;
 using SqlKata;
 using SqlKata.Extensions;
+using DapperExtensions;
+using DapperExtensions.Predicate;
 
 namespace Hsiaye.NUnitTest
 {

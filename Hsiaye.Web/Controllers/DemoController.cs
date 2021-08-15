@@ -1,5 +1,6 @@
-﻿using Hsiaye.Application;
-using Hsiaye.Dapper;
+﻿using DapperExtensions;
+using DapperExtensions.Predicate;
+using Hsiaye.Application;
 using Hsiaye.Domain;
 using Hsiaye.Domain.Shared;
 using Microsoft.AspNetCore.Http;

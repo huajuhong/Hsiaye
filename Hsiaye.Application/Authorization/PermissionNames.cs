@@ -1,4 +1,4 @@
-﻿using Hsiaye.Dapper;
+﻿using DapperExtensions;
 using Hsiaye.Domain;
 using System.Collections.Generic;
 

@@ -1,6 +1,6 @@
 ﻿using Hsiaye.Application;
 using Hsiaye.Application.Contracts;
-using Hsiaye.Dapper;
+using DapperExtensions;using DapperExtensions.Predicate;
 using Hsiaye.Domain;
 using Hsiaye.Domain.Shared;
 using Hsiaye.Extensions;

@@ -1,8 +1,6 @@
 using Hsiaye.Application;
 using Hsiaye.Application.Contracts;
-using Hsiaye.Dapper;
-using Hsiaye.Dapper.Mapper;
-using Hsiaye.Dapper.Sql;
+using DapperExtensions;using DapperExtensions.Predicate;
 using Hsiaye.Web.Extensions;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -15,6 +13,8 @@ using Microsoft.OpenApi.Models;
 using System.Collections.Generic;
 using System.Reflection;
 using System.Text.Encodings.Web;
+using DapperExtensions.Mapper;
+using DapperExtensions.Sql;
 
 namespace Hsiaye.Web
 {

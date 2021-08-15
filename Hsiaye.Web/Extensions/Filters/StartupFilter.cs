@@ -1,5 +1,5 @@
 ﻿using Hsiaye.Application.Contracts;
-using Hsiaye.Dapper;
+using DapperExtensions;using DapperExtensions.Predicate;
 using Hsiaye.Domain;
 using Hsiaye.Extensions;
 using Microsoft.AspNetCore.Builder;

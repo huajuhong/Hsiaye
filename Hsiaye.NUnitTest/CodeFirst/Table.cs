@@ -1,6 +1,6 @@
-﻿using Hsiaye.Dapper;
-using Hsiaye.Dapper.Mapper;
-using Hsiaye.Dapper.Sql;
+﻿using DapperExtensions;
+using DapperExtensions.Mapper;
+using DapperExtensions.Sql;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Storage;
@@ -13,8 +13,8 @@ using System.Linq;
 using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
-using Database = Hsiaye.Dapper.Database;
-using IDatabase = Hsiaye.Dapper.IDatabase;
+using Database = DapperExtensions.Database;
+using IDatabase = DapperExtensions.IDatabase;
 
 namespace Hsiaye.NUnitTest
 {

@@ -1,0 +1,18 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net5.0</TargetFramework>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Dapper" Version="2.0.90" />
+    <PackageReference Include="Oracle.ManagedDataAccess.Core" Version="3.21.3" />
+    <PackageReference Include="Slapper.AutoMapper" Version="2.0.4" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Hsiaye.Domain.Shared\Hsiaye.Domain.Shared.csproj" />
+    <ProjectReference Include="..\Hsiaye.Extensions\Hsiaye.Extensions.csproj" />
+  </ItemGroup>
+
+</Project>

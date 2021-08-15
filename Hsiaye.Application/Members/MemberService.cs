@@ -1,5 +1,5 @@
 ﻿using Hsiaye.Application.Contracts;
-using Hsiaye.Dapper;
+using DapperExtensions;
 using Hsiaye.Domain;
 using Hsiaye.Domain.Shared;
 using Hsiaye.Extensions;
@@ -8,6 +8,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using DapperExtensions.Predicate;
 
 namespace Hsiaye.Application
 {
