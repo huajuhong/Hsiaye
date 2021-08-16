@@ -1,6 +1,7 @@
 ﻿using Hsiaye.Application;
 using Hsiaye.Application.Contracts;
-using DapperExtensions;using DapperExtensions.Predicate;
+using DapperExtensions;
+using DapperExtensions.Predicate;
 using Hsiaye.Domain;
 using Hsiaye.Extensions;
 using Microsoft.AspNetCore.Mvc;
@@ -8,6 +9,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Hsiaye.Domain.Shared;
 
 namespace Hsiaye.Web.Controllers
 {
@@ -43,27 +45,33 @@ namespace Hsiaye.Web.Controllers
         //todo:列表待优化，分页问题
         [HttpPost]
         [Authorize(PermissionNames.角色_列表)]
-        public List<RoleDto> List(KeywordsListInput input)
+        public PageResult<RoleDto> List(KeywordsListInput input)
         {
-            var predicates = new List<IPredicate>();
+            IPredicateGroup predicate = new PredicateGroup()
+            {
+                Operator = GroupOperator.And,
+                Predicates = new List<IPredicate>()
+            };
             if (!string.IsNullOrEmpty(input.Keywords))
             {
-                predicates.Add(Predicates.Field<Role>(e => e.Name, Operator.Like, input.Keywords));
-                predicates.Add(Predicates.Field<Role>(e => e.DisplayName, Operator.Like, input.Keywords));
-                predicates.Add(Predicates.Field<Role>(e => e.Description, Operator.Like, input.Keywords));
+                predicate.Predicates.Add(Predicates.Field<Role>(e => e.Name, Operator.Like, input.Keywords));
+                predicate.Predicates.Add(Predicates.Field<Role>(e => e.DisplayName, Operator.Like, input.Keywords));
+                predicate.Predicates.Add(Predicates.Field<Role>(e => e.Description, Operator.Like, input.Keywords));
             }
             var sort = new List<ISort> { Predicates.Sort<Role>(x => x.CreateTime) };
-            var roles = _database.GetPage<Role>(Predicates.Group(GroupOperator.Or, predicates.ToArray()), sort, input.PageIndex, input.PageSize).ToList();
+            var list = _database.GetPage<Role>(Predicates.Group(GroupOperator.Or, predicate.Predicates.ToArray()), sort, input.PageIndex, input.PageSize).ToList();
 
-            var roleDtos = ExpressionGenericMapper<Role, RoleDto>.MapperTo(roles);
-            if (roleDtos == null)
+            var listDto = ExpressionGenericMapper<Role, RoleDto>.MapperTo(list);
+            if (listDto == null)
                 return null;
-            foreach (var roleDto in roleDtos)
+            foreach (var roleDto in listDto)
             {
                 var permissions = _database.GetList<Permission>(Predicates.Field<Permission>(f => f.RoleId, Operator.Eq, roleDto.Id));
                 roleDto.GrantedPermissions = permissions.ToList().FindAll(x => x.IsGranted).Select(x => x.Name).ToList();
             }
-            return roleDtos;
+
+            var count = _database.Count<Role>(predicate);
+            return new PageResult<RoleDto>(listDto, count);
         }
 
         [HttpGet]

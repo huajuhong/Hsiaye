@@ -1,6 +1,7 @@
 ﻿using Hsiaye.Application;
 using Hsiaye.Application.Contracts;
-using DapperExtensions;using DapperExtensions.Predicate;
+using DapperExtensions;
+using DapperExtensions.Predicate;
 using Hsiaye.Domain;
 using Hsiaye.Domain.Shared;
 using Hsiaye.Extensions;
@@ -77,23 +78,29 @@ namespace Hsiaye.Web.Controllers
         [Authorize(PermissionNames.商品_列表)]
         public PageResult<Product> List(ProductListInput input)
         {
-            var predicates = new List<IPredicate>();
+            IPredicateGroup predicate = new PredicateGroup()
+            {
+                Operator = GroupOperator.And,
+                Predicates = new List<IPredicate>()
+            };
             if (_accessor.Member.UserName != PermissionNames.AdminUserName)
             {
-                predicates.Add(Predicates.Field<Product>(f => f.OrganizationUnitId, Operator.Eq, _accessor.OrganizationUnitId));
+                predicate.Predicates.Add(Predicates.Field<Product>(f => f.OrganizationUnitId, Operator.Eq, _accessor.OrganizationUnitId));
             }
             if (!string.IsNullOrEmpty(input.Keywords))
             {
-                predicates.Add(Predicates.Field<Product>(f => f.Name, Operator.Like, input.Keywords));
-                predicates.Add(Predicates.Field<Product>(f => f.Title, Operator.Like, input.Keywords));
+                predicate.Predicates.Add(Predicates.Field<Product>(f => f.Name, Operator.Like, input.Keywords));
+                predicate.Predicates.Add(Predicates.Field<Product>(f => f.Title, Operator.Like, input.Keywords));
             }
             if (input.State != ProductState.未知)
             {
-                predicates.Add(Predicates.Field<Product>(f => f.State, Operator.Eq, input.State));
+                predicate.Predicates.Add(Predicates.Field<Product>(f => f.State, Operator.Eq, input.State));
             }
-            var pageResult = _database.GetPaged<Product>(Predicates.Group(GroupOperator.And, predicates.ToArray()),
-                new List<ISort> { Predicates.Sort<Product>(f => f.Id, false) }, input.PageIndex, input.PageSize);
-            return pageResult;
+
+            IList<ISort> sort = new List<ISort> { Predicates.Sort<Product>(f => f.Id, false) };
+            var list = _database.GetPage<Product>(predicate, sort, input.PageIndex, input.PageSize);
+            var count = _database.Count<Product>(predicate);
+            return new PageResult<Product>(list, count);
         }
 
         [HttpGet]

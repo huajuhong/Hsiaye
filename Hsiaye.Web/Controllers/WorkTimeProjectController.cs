@@ -54,18 +54,24 @@ namespace Hsiaye.Web.Controllers
         [Authorize(PermissionNames.工时)]
         public PageResult<WorkTimeProject> List(WorkTimeProjectListInput input)
         {
-            var predicates = new List<IPredicate>();
+            IPredicateGroup predicate = new PredicateGroup()
+            {
+                Operator = GroupOperator.And,
+                Predicates = new List<IPredicate>()
+            };
             if (!string.IsNullOrEmpty(input.Keywords))
             {
-                predicates.Add(Predicates.Field<WorkTimeProject>(f => f.Name, Operator.Like, input.Keywords));
+                predicate.Predicates.Add(Predicates.Field<WorkTimeProject>(f => f.Name, Operator.Like, input.Keywords));
             }
             if (input.State != TimesheetProjectState.未知)
             {
-                predicates.Add(Predicates.Field<WorkTimeProject>(f => f.State, Operator.Eq, input.State));
+                predicate.Predicates.Add(Predicates.Field<WorkTimeProject>(f => f.State, Operator.Eq, input.State));
             }
-            var pageResult = _database.GetPaged<WorkTimeProject>(Predicates.Group(GroupOperator.And, predicates.ToArray()),
-                new List<ISort> { Predicates.Sort<WorkTimeProject>(f => f.Id, false) }, input.PageIndex, input.PageSize);
-            return pageResult;
+
+            IList<ISort> sort = new List<ISort> { Predicates.Sort<WorkTimeProject>(f => f.Id, false) };
+            var list = _database.GetPage<WorkTimeProject>(predicate, sort, input.PageIndex, input.PageSize);
+            var count = _database.Count<WorkTimeProject>(predicate);
+            return new PageResult<WorkTimeProject>(list, count);
         }
 
         [HttpGet]

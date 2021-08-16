@@ -1,6 +1,7 @@
 ﻿using Hsiaye.Application;
 using Hsiaye.Application.Contracts;
-using DapperExtensions;using DapperExtensions.Predicate;
+using DapperExtensions;
+using DapperExtensions.Predicate;
 using Hsiaye.Domain;
 using Hsiaye.Domain.Shared;
 using Hsiaye.Extensions;
@@ -71,38 +72,44 @@ namespace Hsiaye.Web.Controllers
         [Authorize(PermissionNames.待办)]
         public PageResult<Todo> List(TodoListInput input)
         {
-            var predicates = new List<IPredicate>();
+            IPredicateGroup predicate = new PredicateGroup()
+            {
+                Operator = GroupOperator.And,
+                Predicates = new List<IPredicate>()
+            };
             if (_accessor.Member.UserName != PermissionNames.AdminUserName)
             {
-                predicates.Add(Predicates.Field<Todo>(f => f.OrganizationUnitId, Operator.Eq, _accessor.OrganizationUnitId));
+                predicate.Predicates.Add(Predicates.Field<Todo>(f => f.OrganizationUnitId, Operator.Eq, _accessor.OrganizationUnitId));
             }
             if (!string.IsNullOrEmpty(input.Title))
             {
-                predicates.Add(Predicates.Field<Todo>(f => f.Title, Operator.Like, input.Title));
+                predicate.Predicates.Add(Predicates.Field<Todo>(f => f.Title, Operator.Like, input.Title));
             }
             if (input.Priority > 0)
             {
-                predicates.Add(Predicates.Field<Todo>(f => f.Priority, Operator.Eq, input.Priority));
+                predicate.Predicates.Add(Predicates.Field<Todo>(f => f.Priority, Operator.Eq, input.Priority));
             }
             if (input.DistributeToMemberId > 0)
             {
-                predicates.Add(Predicates.Field<Todo>(f => f.DistributeToMemberId, Operator.Eq, input.DistributeToMemberId));
+                predicate.Predicates.Add(Predicates.Field<Todo>(f => f.DistributeToMemberId, Operator.Eq, input.DistributeToMemberId));
             }
             if (input.CategoryId > 0)
             {
-                predicates.Add(Predicates.Field<Todo>(f => f.CategoryId, Operator.Eq, input.CategoryId));
+                predicate.Predicates.Add(Predicates.Field<Todo>(f => f.CategoryId, Operator.Eq, input.CategoryId));
             }
             if (!string.IsNullOrEmpty(input.Tag))
             {
-                predicates.Add(Predicates.Field<Todo>(f => f.Tag, Operator.Eq, input.Tag));
+                predicate.Predicates.Add(Predicates.Field<Todo>(f => f.Tag, Operator.Eq, input.Tag));
             }
             if (input.State != TodoState.未知)
             {
-                predicates.Add(Predicates.Field<Todo>(f => f.State, Operator.Eq, input.State));
+                predicate.Predicates.Add(Predicates.Field<Todo>(f => f.State, Operator.Eq, input.State));
             }
-            var pageResult = _database.GetPaged<Todo>(Predicates.Group(GroupOperator.And, predicates.ToArray()),
-                new List<ISort> { Predicates.Sort<Todo>(f => f.Id, false) }, input.PageIndex, input.PageSize);
-            return pageResult;
+
+            IList<ISort> sort = new List<ISort> { Predicates.Sort<Todo>(f => f.Id, false) };
+            var list = _database.GetPage<Todo>(predicate, sort, input.PageIndex, input.PageSize);
+            var count = _database.Count<Todo>(predicate);
+            return new PageResult<Todo>(list, count);
         }
 
         [HttpGet]

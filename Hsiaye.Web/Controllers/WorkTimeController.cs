@@ -1,6 +1,7 @@
 ﻿using Hsiaye.Application;
 using Hsiaye.Application.Contracts;
-using DapperExtensions;using DapperExtensions.Predicate;
+using DapperExtensions;
+using DapperExtensions.Predicate;
 using Hsiaye.Domain;
 using Hsiaye.Domain.Shared;
 using Hsiaye.Extensions;
@@ -63,22 +64,28 @@ namespace Hsiaye.Web.Controllers
         [Authorize(PermissionNames.工时)]
         public PageResult<WorkTime> List(WorkTimeListInput input)
         {
-            var predicates = new List<IPredicate>();
+            IPredicateGroup predicate = new PredicateGroup()
+            {
+                Operator = GroupOperator.And,
+                Predicates = new List<IPredicate>()
+            };
             if (input.ProjectId > 0)
             {
-                predicates.Add(Predicates.Field<WorkTime>(f => f.ProjectId, Operator.Eq, input.ProjectId));
+                predicate.Predicates.Add(Predicates.Field<WorkTime>(f => f.ProjectId, Operator.Eq, input.ProjectId));
             }
             if (input.MembershipId > 0)
             {
-                predicates.Add(Predicates.Field<WorkTime>(f => f.MembershipId, Operator.Eq, input.MembershipId));
+                predicate.Predicates.Add(Predicates.Field<WorkTime>(f => f.MembershipId, Operator.Eq, input.MembershipId));
             }
             if (input.Overtime != WorkTimeOvertime.未知)
             {
-                predicates.Add(Predicates.Field<WorkTime>(f => f.Overtime, Operator.Eq, input.Overtime));
+                predicate.Predicates.Add(Predicates.Field<WorkTime>(f => f.Overtime, Operator.Eq, input.Overtime));
             }
-            var pageResult = _database.GetPaged<WorkTime>(Predicates.Group(GroupOperator.And, predicates.ToArray()),
-                new List<ISort> { Predicates.Sort<WorkTime>(f => f.Id, false) }, input.PageIndex, input.PageSize);
-            return pageResult;
+
+            IList<ISort> sort = new List<ISort> { Predicates.Sort<WorkTime>(f => f.Id, false) };
+            var list = _database.GetPage<WorkTime>(predicate, sort, input.PageIndex, input.PageSize);
+            var count = _database.Count<WorkTime>(predicate);
+            return new PageResult<WorkTime>(list, count);
         }
 
         [HttpGet]

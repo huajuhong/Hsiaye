@@ -1,6 +1,7 @@
 ﻿using Hsiaye.Application;
 using Hsiaye.Application.Contracts;
-using DapperExtensions;using DapperExtensions.Predicate;
+using DapperExtensions;
+using DapperExtensions.Predicate;
 using Hsiaye.Domain;
 using Hsiaye.Domain.Shared;
 using Hsiaye.Extensions;
@@ -78,7 +79,12 @@ namespace Hsiaye.Web.Controllers
         [Authorize(PermissionNames.问答)]
         public PageResult<Question> ListQuestion(QuestionListInput input)
         {
-            var predicates = new List<IPredicate>
+            IPredicateGroup predicate = new PredicateGroup()
+            {
+                Operator = GroupOperator.And,
+            };
+
+            predicate.Predicates = new List<IPredicate>
             {
                 Predicates.Field<Question>(f => f.Deleted, Operator.Eq, false),
                 Predicates.Field<Question>(f => f.OrganizationUnitId, Operator.Eq, _accessor.OrganizationUnitId),
@@ -86,12 +92,12 @@ namespace Hsiaye.Web.Controllers
 
             if (!string.IsNullOrEmpty(input.Keywords))
             {
-                predicates.Add(Predicates.Field<Question>(f => f.Title, Operator.Like, input.Keywords));
-                //predicates.Add(Predicates.Field<Question>(f => f.Description, Operator.Like, input.Keywords));
+                predicate.Predicates.Add(Predicates.Field<Question>(f => f.Title, Operator.Like, input.Keywords));
+                //predicate.Predicates.Add(Predicates.Field<Question>(f => f.Description, Operator.Like, input.Keywords));
             }
             if (input.CategoryId > 0)
             {
-                predicates.Add(Predicates.Field<Question>(f => f.CategoryId, Operator.Eq, input.CategoryId));
+                predicate.Predicates.Add(Predicates.Field<Question>(f => f.CategoryId, Operator.Eq, input.CategoryId));
             }
 
             List<ISort> sort = new List<ISort>();
@@ -111,8 +117,9 @@ namespace Hsiaye.Web.Controllers
                     break;
             }
 
-            var pageResult = _database.GetPaged<Question>(Predicates.Group(GroupOperator.And, predicates.ToArray()), sort, input.PageIndex, input.PageSize);
-            return pageResult;
+            var list = _database.GetPage<Question>(predicate, sort, input.PageIndex, input.PageSize);
+            var count = _database.Count<Question>(predicate);
+            return new PageResult<Question>(list, count);
         }
 
         /// <summary>
@@ -172,9 +179,13 @@ namespace Hsiaye.Web.Controllers
         [Authorize(PermissionNames.问答)]
         public PageResult<Answer> ListAnswer(AnswerListInput input)
         {
-            var predicates = new List<IPredicate>();
-            predicates.Add(Predicates.Field<Answer>(f => f.QuestionId, Operator.Eq, input.QuestionId));
-            predicates.Add(Predicates.Field<Answer>(f => f.Deleted, Operator.Eq, false));
+            IPredicateGroup predicate = new PredicateGroup()
+            {
+                Operator = GroupOperator.And,
+                Predicates = new List<IPredicate>()
+            };
+            predicate.Predicates.Add(Predicates.Field<Answer>(f => f.QuestionId, Operator.Eq, input.QuestionId));
+            predicate.Predicates.Add(Predicates.Field<Answer>(f => f.Deleted, Operator.Eq, false));
             List<ISort> sort = new List<ISort>();
             switch (input.SortField)
             {
@@ -185,9 +196,10 @@ namespace Hsiaye.Web.Controllers
                     sort.Add(Predicates.Sort<Answer>(f => f.Id, false));
                     break;
             }
-            var pageResult = _database.GetPaged<Answer>(Predicates.Group(GroupOperator.And, predicates.ToArray()), new List<ISort> { Predicates.Sort<Answer>(f => f.Id, false) }, input.PageIndex, input.PageSize);
 
-            return pageResult;
+            var list = _database.GetPage<Answer>(predicate, sort, input.PageIndex, input.PageSize);
+            var count = _database.Count<Answer>(predicate);
+            return new PageResult<Answer>(list, count);
         }
 
         /// <summary>

@@ -47,10 +47,6 @@ namespace DapperExtensions
         Guid GetNextGuid();
         IClassMapper GetMap<T>() where T : class;
         void ClearCache();
-
-        //扩展
-        PageResult<T> GetPaged<T>(object predicate, IList<ISort> sort, int page, int resultsPerPage, IDbTransaction transaction, int? commandTimeout = null, bool buffered = true) where T : class;
-        PageResult<T> GetPaged<T>(object predicate, IList<ISort> sort, int page, int resultsPerPage, int? commandTimeout = null, bool buffered = true) where T : class;
     }
 
     public interface IAsyncDatabase : IBaseDatabase
@@ -325,21 +321,6 @@ namespace DapperExtensions
         {
             return _dapper.SqlGenerator.Configuration.GetMap<T>();
         }
-
-        //扩展
-        public PageResult<T> GetPaged<T>(object predicate, IList<ISort> sort, int page, int resultsPerPage, IDbTransaction transaction, int? commandTimeout, bool buffered) where T : class
-        {
-            var list = _dapper.GetPage<T>(Connection, predicate, sort, page, resultsPerPage, transaction, commandTimeout, buffered);
-            var count = _dapper.Count<T>(Connection, predicate, transaction, commandTimeout);
-            return new PageResult<T>(list, count);
-        }
-
-        public PageResult<T> GetPaged<T>(object predicate, IList<ISort> sort, int page, int resultsPerPage, int? commandTimeout, bool buffered) where T : class
-        {
-            var list = _dapper.GetPage<T>(Connection, predicate, sort, page, resultsPerPage, _transaction, commandTimeout, buffered);
-            var count = _dapper.Count<T>(Connection, predicate, _transaction, commandTimeout);
-            return new PageResult<T>(list, count);
-        }
     }
 
     public class AsyncDatabase : BaseDatabase, IAsyncDatabase
@@ -477,16 +458,4 @@ namespace DapperExtensions
         }
     }
     #endregion
-
-    //扩展
-    public class PageResult<T> where T : class
-    {
-        public PageResult(IEnumerable<T> list, int count)
-        {
-            this.List = list;
-            this.Count = count;
-        }
-        public IEnumerable<T> List { get; set; }
-        public int Count { get; set; }
-    }
 }
