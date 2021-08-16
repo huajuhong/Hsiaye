@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Hsiaye.Domain;
+using System;
 using System.Collections.Generic;
 using System.Text;
 
@@ -15,6 +16,7 @@ namespace Hsiaye.Application.Contracts
 
         public string Description { get; set; }
 
-        public List<string> GrantedPermissions { get; set; }
+        //public List<string> GrantedPermissions { get; set; }
+        public List<Permission> GrantedPermissions { get; set; }
     }
 }

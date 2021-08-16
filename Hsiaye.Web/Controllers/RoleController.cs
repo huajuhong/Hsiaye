@@ -96,3 +96,13 @@ namespace Hsiaye.Web.Controllers
         }
     }
 }
+//[System.Diagnostics.CodeAnalysis.ExcludeFromCodeCoverage]
+public class ExternallyMappedMapper : DapperExtensions.Mapper.ClassMapper<RoleDto>
+{
+    public ExternallyMappedMapper()
+    {
+        Table("Role");
+        AutoMap();
+        ReferenceMap(t => t.GrantedPermissions).Reference<Permission>((item, role) => item.RoleId == role.Id);
+    }
+}
