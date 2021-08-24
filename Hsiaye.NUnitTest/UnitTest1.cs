@@ -9,6 +9,7 @@ using SqlKata;
 using SqlKata.Extensions;
 using DapperExtensions;
 using DapperExtensions.Predicate;
+using Hsiaye.Application.Contracts;
 
 namespace Hsiaye.NUnitTest
 {
@@ -96,7 +97,8 @@ namespace Hsiaye.NUnitTest
         [Test]
         public void MyTestMethod()
         {
-           
+            
         }
     }
+
 }

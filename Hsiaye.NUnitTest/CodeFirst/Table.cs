@@ -1,6 +1,8 @@
 ﻿using DapperExtensions;
 using DapperExtensions.Mapper;
 using DapperExtensions.Sql;
+using Hsiaye.Application.Contracts;
+using Hsiaye.Domain;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Storage;
@@ -18,6 +20,27 @@ using IDatabase = DapperExtensions.IDatabase;
 
 namespace Hsiaye.NUnitTest
 {
+
+    //[System.Diagnostics.CodeAnalysis.ExcludeFromCodeCoverage]
+    //public class ExternallyMappedMapper : DapperExtensions.Mapper.ClassMapper<RoleDto>
+    //{
+    //    public ExternallyMappedMapper()
+    //    {
+    //        Table("Role");
+    //        AutoMap();
+    //        ReferenceMap(t => t.GrantedPermissions).Reference<Permission>((item, role) => item.RoleId == role.Id);
+    //    }
+    //}
+    public class CustomerMap : ClassMapper<RoleDto>
+    {
+        public CustomerMap()
+            : base()
+        {
+            Table("Role");
+            AutoMap();
+            ReferenceMap(t => t.GrantedPermissions).Reference<Permission>((item, role) => item.RoleId == role.Id);
+        }
+    }
     public class Table
     {
         public static readonly string connectionString = "Password=222222;Persist Security Info=True;User ID=sa;Initial Catalog=Hsiaye;Data Source=.";
@@ -33,7 +56,16 @@ namespace Hsiaye.NUnitTest
             }
         }
 
-
+        [Test]
+        public void Map()
+        {
+            //https://www.coder.work/article/1603792
+            //https://dapper-tutorial.net/knowledge-base/33768919/how-do-you-register-dapperextension-classmapper-subclasses-so-they-are-used-
+            //https://stackoverflow.com/questions/58659060/dapper-extensions-custom-classmapper-isnt-called-on-insert
+            DapperExtensions.DapperExtensions.SetMappingAssemblies(new[] { Assembly.GetExecutingAssembly() });
+            //DapperExtensions.DapperAsyncExtensions.DefaultMapper = typeof(PluralizedAutoClassMapper<>);
+            var list = database.GetList<RoleDto>();
+        }
         [Test]
         public void Create()
         {

@@ -67,7 +67,7 @@ namespace Hsiaye.Web.Controllers
             foreach (var roleDto in listDto)
             {
                 var permissions = _database.GetList<Permission>(Predicates.Field<Permission>(f => f.RoleId, Operator.Eq, roleDto.Id));
-                roleDto.GrantedPermissions = permissions.ToList().FindAll(x => x.IsGranted).Select(x => x.Name).ToList();
+                //roleDto.GrantedPermissions = permissions.ToList().FindAll(x => x.IsGranted).Select(x => x.Name).ToList();
             }
 
             var count = _database.Count<Role>(predicate);
@@ -94,15 +94,10 @@ namespace Hsiaye.Web.Controllers
         {
             return _roleService.Update(input);
         }
-    }
-}
-//[System.Diagnostics.CodeAnalysis.ExcludeFromCodeCoverage]
-public class ExternallyMappedMapper : DapperExtensions.Mapper.ClassMapper<RoleDto>
-{
-    public ExternallyMappedMapper()
-    {
-        Table("Role");
-        AutoMap();
-        ReferenceMap(t => t.GrantedPermissions).Reference<Permission>((item, role) => item.RoleId == role.Id);
+
+        public RoleDto MapToEntityDto(Role role)
+        {
+            return null;
+        }
     }
 }

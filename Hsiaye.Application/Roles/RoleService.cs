@@ -98,10 +98,11 @@ namespace Hsiaye.Application
             //    throw new UserFriendlyException($"无权限操作角色：{role.Name}");
             foreach (var item in input.GrantedPermissions)
             {
-                if (!PermissionNames.Permissions.Exists(x => x.Name == item))
-                {
-                    throw new UserFriendlyException($"系统内置权限中没有[{item}]");
-                }
+                // todo:待解除
+                //if (!PermissionNames.Permissions.Exists(x => x.Name == item))
+                //{
+                //    throw new UserFriendlyException($"系统内置权限中没有[{item}]");
+                //}
             }
 
             try
@@ -119,7 +120,7 @@ namespace Hsiaye.Application
                     {
                         CreatorMemberId = _accessor.MemberId,
                         IsGranted = true,
-                        Name = permissionName,
+                        //Name = permissionName,// todo:待解除
                         RoleId = role.Id,
                         MemberId = 0
                     });
@@ -158,7 +159,7 @@ namespace Hsiaye.Application
                 throw new UserFriendlyException("该记录不存在");
             var permissions = _database.GetList<Permission>(Predicates.Field<Permission>(f => f.RoleId, Operator.Eq, role.Id));
             var roleDto = ExpressionGenericMapper<Role, RoleDto>.MapperTo(role);
-            roleDto.GrantedPermissions = permissions.ToList().FindAll(x => x.IsGranted).Select(x => x.Name).ToList();
+            //roleDto.GrantedPermissions = permissions.ToList().FindAll(x => x.IsGranted).Select(x => x.Name).ToList();
             return roleDto;
         }
 
