@@ -9,6 +9,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\DapperExtensions\DapperExtensions.csproj" />
     <ProjectReference Include="..\Hsiaye.Domain.Shared\Hsiaye.Domain.Shared.csproj" />
   </ItemGroup>
 

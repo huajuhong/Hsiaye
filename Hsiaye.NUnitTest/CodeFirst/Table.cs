@@ -1,4 +1,5 @@
-﻿using DapperExtensions;
+﻿using Dapper;
+using DapperExtensions;
 using DapperExtensions.Mapper;
 using DapperExtensions.Sql;
 using Hsiaye.Application.Contracts;
@@ -20,27 +21,6 @@ using IDatabase = DapperExtensions.IDatabase;
 
 namespace Hsiaye.NUnitTest
 {
-
-    //[System.Diagnostics.CodeAnalysis.ExcludeFromCodeCoverage]
-    //public class ExternallyMappedMapper : DapperExtensions.Mapper.ClassMapper<RoleDto>
-    //{
-    //    public ExternallyMappedMapper()
-    //    {
-    //        Table("Role");
-    //        AutoMap();
-    //        ReferenceMap(t => t.GrantedPermissions).Reference<Permission>((item, role) => item.RoleId == role.Id);
-    //    }
-    //}
-    public class CustomerMap : ClassMapper<RoleDto>
-    {
-        public CustomerMap()
-            : base()
-        {
-            Table("Role");
-            AutoMap();
-            ReferenceMap(t => t.GrantedPermissions).Reference<Permission>((item, role) => item.RoleId == role.Id);
-        }
-    }
     public class Table
     {
         public static readonly string connectionString = "Password=222222;Persist Security Info=True;User ID=sa;Initial Catalog=Hsiaye;Data Source=.";
@@ -50,7 +30,7 @@ namespace Hsiaye.NUnitTest
         {
             get
             {
-                var config = new DapperExtensionsConfiguration(typeof(AutoClassMapper<>), new List<Assembly>(), new SqlServerDialect());
+                var config = new DapperExtensionsConfiguration();
                 var sqlGenerator = new SqlGeneratorImpl(config);
                 return new Database(Table.connection, sqlGenerator);
             }
@@ -62,9 +42,8 @@ namespace Hsiaye.NUnitTest
             //https://www.coder.work/article/1603792
             //https://dapper-tutorial.net/knowledge-base/33768919/how-do-you-register-dapperextension-classmapper-subclasses-so-they-are-used-
             //https://stackoverflow.com/questions/58659060/dapper-extensions-custom-classmapper-isnt-called-on-insert
-            DapperExtensions.DapperExtensions.SetMappingAssemblies(new[] { Assembly.GetExecutingAssembly() });
             //DapperExtensions.DapperAsyncExtensions.DefaultMapper = typeof(PluralizedAutoClassMapper<>);
-            var list = database.GetList<RoleDto>();
+            //var list = database.GetList<RoleDto>();
         }
         [Test]
         public void Create()
@@ -81,6 +60,19 @@ namespace Hsiaye.NUnitTest
             //EnsureCreated 仅在数据库中不存在任何表时有效。 如果需要，您可以编写自己的检查来查看是否需要初始化架构，并使用基础 IRelationalDatabaseCreator 服务来初始化架构。
             //var databaseCreator = hsiayeContext.GetService<IRelationalDatabaseCreator>();
             //databaseCreator.CreateTables();
+        }
+        [Test]
+        public void OneToMany()
+        {
+            //DapperExtensions.DapperExtensions.DefaultMapper = typeof(RoleMap);
+
+            //// Tell Dapper Extension to scan this assembly for custom mappings
+            //DapperExtensions.DapperExtensions.SetMappingAssemblies(new[]
+            //{
+            //    typeof (RoleMap).Assembly
+            //});
+            //DapperExtensions.DapperExtensions.SetMappingAssemblies(new[] { Assembly.GetExecutingAssembly() });
+            var role = database.Get<Role>(1);
         }
     }
 }
