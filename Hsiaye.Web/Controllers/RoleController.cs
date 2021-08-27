@@ -10,6 +10,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Hsiaye.Domain.Shared;
+using Dapper;
 
 namespace Hsiaye.Web.Controllers
 {
@@ -28,6 +29,13 @@ namespace Hsiaye.Web.Controllers
             _accessor = accessor;
             _permissionChecker = permissionChecker;
         }
+
+        //public IEnumerable<Role> Test()
+        //{
+        //    var list = _database.Connection.Query<Role>("Select * From Role where OrganizationUnitId.IsDescendantOf('/1/2/')=1");
+        //    //var list = _database.Connection.Query<Role>("Select * From Role where OrganizationUnitId.IsDescendantOf(@OrganizationUnitId)=1", new { OrganizationUnitId = "/1/2/" });
+        //    return list;
+        //}
 
         /// <summary>
         /// 当前用户的所有角色

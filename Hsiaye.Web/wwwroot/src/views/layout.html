@@ -58,10 +58,10 @@
         </a>
       </li>
       <li class="layui-nav-item" lay-unselect>
-        <script type="text/html" template lay-url="./json/user/session.js"
+        <script type="text/html" template lay-url="/api/Member/Current"
           lay-done="layui.element.render('nav', 'layadmin-layout-right');">
           <a href="javascript:;">
-            <cite>{{ d.Data.username }}</cite>
+            <cite>{{ d.Data.UserName }}</cite>
           </a>
           <dl class="layui-nav-child">
             <dd><a lay-href="set/user/info">基本资料</a></dd>

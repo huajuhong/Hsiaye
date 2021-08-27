@@ -11,8 +11,7 @@ namespace Hsiaye.Domain
     public class Role
     {
         public int Id { get; set; }
-        [DataType("hierarchyid")]
-        public string OrganizationUnitId { get; set; }
+        public int OrganizationUnitId { get; set; }
         public long CreatorId { get; set; }//创建者id
         public DateTime CreateTime { get; set; }
         [StringLength(64)]

@@ -176,7 +176,7 @@ namespace Hsiaye.Web.Controllers
             catch (Exception ex)
             {
                 _database.Rollback();
-                throw ex;
+                throw new UserFriendlyException(ex);
             }
             finally
             {
@@ -234,7 +234,7 @@ namespace Hsiaye.Web.Controllers
             catch (Exception ex)
             {
                 _database.Rollback();
-                throw ex;
+                throw new UserFriendlyException(ex);
             }
             finally
             {
@@ -355,7 +355,7 @@ namespace Hsiaye.Web.Controllers
             catch (Exception ex)
             {
                 _database.Rollback();
-                throw ex;
+                throw new UserFriendlyException(ex);
             }
             finally
             {

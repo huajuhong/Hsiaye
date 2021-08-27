@@ -33,79 +33,6 @@ namespace Hsiaye.Web.Controllers
             _database = database;
             _memberService = memberService;
         }
-        /// <summary>
-        /// 登录
-        /// </summary>
-        /// <param name="input"></param>
-        /// <returns></returns>
-        [HttpPost]
-        public MemberToken Login(LoginDto input)
-        {
-            string value = _cache.Get<string>(input.VerifyKey);
-            if (string.IsNullOrEmpty(value))
-                throw new UserFriendlyException("图形验证码已过期");
-            if (!value.Equals(input.VerifyCode, StringComparison.OrdinalIgnoreCase))
-                throw new UserFriendlyException("图形验证码错误");
-
-            var list = _database.GetList<Member>(Predicates.Field<Member>(f => f.UserName, Operator.Eq, input.UserName)).ToList();
-            if (!list.Any())
-                throw new UserFriendlyException("账号或密码错误");
-            var member = list[0];
-
-            if (member.AccessFailedCount >= 5)
-                throw new UserFriendlyException("密码连续5次错误，账户已被锁定");
-
-            if (member.Password != DESHelper.EncryptByGeneric(input.Password))
-            {
-                //登录失败次数累加1
-                member.AccessFailedCount += 1;
-                _database.Update(member);
-                throw new UserFriendlyException("密码错误");
-            }
-            string providerKey = Guid.NewGuid().ToString("N");
-            List<MemberToken> memberTokens = _database.GetList<MemberToken>(Predicates.Field<MemberToken>(f => f.MemberId, Operator.Eq, member.Id)).ToList();
-            MemberToken memberToken;
-            if (memberTokens.Any())
-            {
-                memberToken = memberTokens[0];
-                memberToken.ProviderKey = providerKey;
-                memberToken.ExpireDate = DateTime.Now.AddHours(6);
-                _database.Update(memberToken);
-            }
-            else
-            {
-                memberToken = new MemberToken
-                {
-                    MemberId = member.Id,
-                    LoginProvider = "PC",
-                    ProviderKey = providerKey,
-                    ExpireDate = DateTime.Now.AddHours(6),
-                };
-                _database.Insert(memberToken);
-            }
-            _cache.Remove(input.VerifyKey);
-
-            MemberDto memberDto = _memberService.Get(member.Id);
-            _cache.Set(providerKey, memberDto, memberToken.ExpireDate);
-
-            //记录最后一次登录时间
-            member.LastLoginTime = DateTime.Now;
-            //登录失败次数清零
-            member.AccessFailedCount = 0;
-            _database.Update(member);
-
-            return memberToken;
-        }
-        /// <summary>
-        /// 当前用户信息
-        /// </summary>
-        /// <returns></returns>
-        [HttpGet]
-        public MemberDto Current()
-        {
-            MemberDto dto = _cache.Get<MemberDto>(_accessor.ProviderKey);
-            return dto;
-        }
 
         [HttpPost]
         [Authorize(PermissionNames.成员_新建)]
@@ -182,6 +109,89 @@ namespace Hsiaye.Web.Controllers
         }
 
         /// <summary>
+        /// 登录
+        /// </summary>
+        /// <param name="input"></param>
+        /// <returns></returns>
+        [HttpPost]
+        public MemberToken Login(LoginDto input)
+        {
+            string value = _cache.Get<string>(input.VerifyKey);
+            if (string.IsNullOrEmpty(value))
+                throw new UserFriendlyException("图形验证码已过期");
+            if (!value.Equals(input.VerifyCode, StringComparison.OrdinalIgnoreCase))
+                throw new UserFriendlyException("图形验证码错误");
+
+            var list = _database.GetList<Member>(Predicates.Field<Member>(f => f.UserName, Operator.Eq, input.UserName)).ToList();
+            if (!list.Any())
+                throw new UserFriendlyException("账号或密码错误");
+            var member = list[0];
+
+            if (member.AccessFailedCount >= 5)
+                throw new UserFriendlyException("密码连续5次错误，账户已被锁定");
+
+            if (member.Password != DESHelper.EncryptByGeneric(input.Password))
+            {
+                //登录失败次数累加1
+                member.AccessFailedCount += 1;
+                _database.Update(member);
+                throw new UserFriendlyException("密码错误");
+            }
+            string providerKey = Guid.NewGuid().ToString("N");
+            MemberToken memberToken = _database.Get<MemberToken>(Predicates.Field<MemberToken>(f => f.MemberId, Operator.Eq, member.Id));
+            if (memberToken != null)
+            {
+                memberToken.ProviderKey = providerKey;
+                memberToken.ExpireDate = DateTime.Now.AddHours(6);
+                _database.Update(memberToken);
+            }
+            else
+            {
+                memberToken = new MemberToken
+                {
+                    MemberId = member.Id,
+                    LoginProvider = "PC",
+                    ProviderKey = providerKey,
+                    ExpireDate = DateTime.Now.AddHours(6),
+                };
+                _database.Insert(memberToken);
+            }
+            _cache.Remove(input.VerifyKey);
+
+            MemberDto memberDto = _memberService.Get(member.Id);
+            _cache.Set(providerKey, memberDto, memberToken.ExpireDate);
+
+            //记录最后一次登录时间
+            member.LastLoginTime = DateTime.Now;
+            //登录失败次数清零
+            member.AccessFailedCount = 0;
+            _database.Update(member);
+
+            return memberToken;
+        }
+
+        [HttpPost]
+        public bool Logout()
+        {
+            MemberToken memberToken = _database.Get<MemberToken>(Predicates.Field<MemberToken>(f => f.MemberId, Operator.Eq, _accessor.MemberId));
+            memberToken.ProviderKey = string.Empty;
+            memberToken.ExpireDate = DateTime.Now;
+            _database.Update(memberToken);
+            _cache.Remove(_accessor.ProviderKey);
+            return true;
+        }
+        /// <summary>
+        /// 当前用户信息
+        /// </summary>
+        /// <returns></returns>
+        [HttpGet]
+        public MemberDto Current()
+        {
+            MemberDto dto = _cache.Get<MemberDto>(_accessor.ProviderKey);
+            return dto;
+        }
+
+        /// <summary>
         /// 修改密码
         /// </summary>
         /// <param name="input"></param>
@@ -189,7 +199,8 @@ namespace Hsiaye.Web.Controllers
         [HttpPost]
         public bool ChangePassword(ChangePasswordDto input)
         {
-            return _memberService.ChangePassword(input);
+            _memberService.ChangePassword(input);
+            return Logout();
         }
 
         /// <summary>

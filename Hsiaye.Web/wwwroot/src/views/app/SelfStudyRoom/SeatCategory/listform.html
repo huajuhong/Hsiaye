@@ -1,0 +1,70 @@
+<form class="layui-form" lay-filter="layuiadmin-form-SeatCategory" id="layuiadmin-form-SeatCategory"
+  style="padding: 20px 30px 0 0;">
+  <div class="layui-form-item">
+    <label class="layui-form-label">名称</label>
+    <div class="layui-input-block">
+      <input type="text" name="Name" lay-verify="required" placeholder="请输入名称" autocomplete="off" class="layui-input">
+    </div>
+  </div>
+  <div class="layui-form-item">
+    <label class="layui-form-label">开始时段</label>
+    <div class="layui-input-block">
+      <input id="BeginTime" name="BeginTime" lay-verify="required" autocomplete="off" class="layui-input">
+    </div>
+  </div>
+  <div class="layui-form-item">
+    <label class="layui-form-label">结束时段</label>
+    <div class="layui-input-block">
+      <input id="EndTime" name="EndTime" lay-verify="required" autocomplete="off" class="layui-input">
+    </div>
+  </div>
+  <div class="layui-form-item">
+    <label class="layui-form-label">价格</label>
+    <div class="layui-input-block">
+      <input type="text" name="Price" lay-verify="required" placeholder="请输入价格" autocomplete="off" class="layui-input">
+    </div>
+  </div>
+  <div class="layui-form-item">
+    <label class="layui-form-label">说明</label>
+    <div class="layui-input-block">
+      <textarea name="Description" lay-verify="required" autocomplete="off" class="layui-textarea"></textarea>
+    </div>
+  </div>
+  <div class="layui-form-item">
+    <label class="layui-form-label">开关</label>
+    <div class="layui-input-block">
+      <input type="checkbox" name="Normal" lay-skin="switch">
+    </div>
+  </div>
+  <div class="layui-form-item">
+    <label class="layui-form-label"></label>
+    <div class="layui-input-block">
+      <input type="button" lay-submit lay-filter="layuiadmin-app-SeatCategory-submit" value="确认" class="layui-btn">
+    </div>
+  </div>
+</form>
+
+<script>
+  layui.use(['admin', 'form', 'laydate'], function () {
+    var $ = layui.$
+      , admin = layui.admin
+      , view = layui.view
+      , table = layui.table
+      , form = layui.form
+      , laydate = layui.laydate;
+
+    laydate.render({
+      elem: '#BeginTime'
+      , type: 'time'
+      , format: 'HH:MM:00'
+    });
+
+    laydate.render({
+      elem: '#EndTime'
+      , type: 'time'
+      , format: 'HH:MM:00'
+    });
+
+    
+  })
+</script>

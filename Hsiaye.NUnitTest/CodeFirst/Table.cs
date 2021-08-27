@@ -18,6 +18,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Database = DapperExtensions.Database;
 using IDatabase = DapperExtensions.IDatabase;
+using SqlKata;
 
 namespace Hsiaye.NUnitTest
 {
@@ -72,7 +73,7 @@ namespace Hsiaye.NUnitTest
             //    typeof (RoleMap).Assembly
             //});
             //DapperExtensions.DapperExtensions.SetMappingAssemblies(new[] { Assembly.GetExecutingAssembly() });
-            var role = database.Get<Role>(1);
+
         }
     }
 }

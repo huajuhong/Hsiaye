@@ -27,6 +27,7 @@ namespace Hsiaye.NUnitTest
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             modelBuilder.Entity<Member>();
+            modelBuilder.Entity<MemberOrganizationUnit>();
             modelBuilder.Entity<Role>();
             modelBuilder.Entity<MemberRole>();
             modelBuilder.Entity<Permission>();
@@ -54,6 +55,10 @@ namespace Hsiaye.NUnitTest
 
             modelBuilder.Entity<TodoCategory>();
             modelBuilder.Entity<Todo>();
+
+            modelBuilder.Entity<Seat>();
+            modelBuilder.Entity<SeatCategory>();
+            modelBuilder.Entity<SeatReservation>();
         }
         public DbSet<Member> Member { get; set; }
         public DbSet<Role> Role { get; set; }

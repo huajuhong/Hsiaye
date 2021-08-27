@@ -10,6 +10,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Hsiaye.Domain.Shared;
+using System.Data.SqlTypes;
 
 namespace Hsiaye.Web.Controllers
 {
@@ -28,7 +29,19 @@ namespace Hsiaye.Web.Controllers
         public bool Run()
         {
             //建立组织机构
-
+            var organizationUnit = _database.Get<OrganizationUnit>(Predicates.Field<OrganizationUnit>(f => f.Name, Operator.Eq, "hsiaye"));
+            if (organizationUnit == null)
+            {
+                organizationUnit = new OrganizationUnit
+                {
+                    CreateTime = DateTime.Now,
+                    Name = "hsiaye",
+                    Description = "hsiaye",
+                    ParentId = 0,
+                    ModifyTime = SqlDateTime.MinValue.Value,
+                };
+                _database.Insert(organizationUnit);
+            }
             //建管理员账号
             var member = _database.Get<Member>(Predicates.Field<Member>(f => f.UserName, Operator.Eq, "admin"));
             if (member == null)

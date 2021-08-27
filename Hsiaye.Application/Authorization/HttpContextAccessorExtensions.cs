@@ -13,9 +13,9 @@ namespace Hsiaye.Application
     {
         public static string GetProviderKey(this IHttpContextAccessor httpContextAccessor)
         {
-            if (!httpContextAccessor.HttpContext.Request.Headers.ContainsKey("token"))
+            if (!httpContextAccessor.HttpContext.Request.Headers.ContainsKey("access_token"))
                 return "";
-            string token = httpContextAccessor.HttpContext.Request.Headers["token"];
+            string token = httpContextAccessor.HttpContext.Request.Headers["access_token"];
             return token;
         }
     }

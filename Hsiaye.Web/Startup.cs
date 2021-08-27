@@ -1,6 +1,7 @@
 using Hsiaye.Application;
 using Hsiaye.Application.Contracts;
-using DapperExtensions;using DapperExtensions.Predicate;
+using DapperExtensions;
+using DapperExtensions.Predicate;
 using Hsiaye.Web.Extensions;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -39,7 +40,8 @@ namespace Hsiaye.Web
                 options.Filters.Add<AuthorizationFilter>();
                 options.Filters.Add<ActionFilter>();
                 options.Filters.Add<ExceptionFilter>();
-            }).AddJsonOptions(options =>
+            })
+                .AddJsonOptions(options =>
             {
                 options.JsonSerializerOptions.PropertyNamingPolicy = null;//默认大驼峰命名规则
                 options.JsonSerializerOptions.WriteIndented = true;//缩进
@@ -68,7 +70,7 @@ namespace Hsiaye.Web
                 {
                     Title = "道阻且长行则将至",
                     Version = "v1",
-                    Description = "感到迷茫的时候，与其胡思乱想，不如行动起来，去做点什么。行动则有可能，而结果则在一次次行动中悄悄出现。",
+                    Description = "感到迷茫的时候，与其胡思乱想，不如行动起来，去做点什么。",
                 });
 
                 c.AddSecurityDefinition("ProviderKey", new OpenApiSecurityScheme
@@ -100,12 +102,9 @@ namespace Hsiaye.Web
             {
                 app.UseDeveloperExceptionPage();
             }
+
             app.UseStaticFiles();
-            app.UseSwagger();
-            app.UseSwaggerUI(c =>
-            {
-                c.SwaggerEndpoint("/swagger/v1/swagger.json", "Hsiaye.Web v1");
-            });
+
 
             app.UseRouting();
 
@@ -119,6 +118,12 @@ namespace Hsiaye.Web
             app.UseEndpoints(endpoints =>
             {
                 endpoints.MapControllers();
+            });
+
+            app.UseSwagger();
+            app.UseSwaggerUI(c =>
+            {
+                c.SwaggerEndpoint("/swagger/v1/swagger.json", "Hsiaye.Web v1");
             });
         }
     }
