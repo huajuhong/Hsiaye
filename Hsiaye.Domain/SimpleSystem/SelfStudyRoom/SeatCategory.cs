@@ -12,8 +12,8 @@ namespace Hsiaye.Domain
     /// </summary>
     public class SeatCategory
     {
-        public int Id { get; set; }
-        public int OrganizationUnitId { get; set; }
+        public long Id { get; set; }
+        public long OrganizationUnitId { get; set; }
         public DateTime CreateTime { get; set; }
         [StringLength(64)]
         public string Name { get; set; }

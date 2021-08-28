@@ -840,12 +840,30 @@ layui.define(['view', 'table', 'upload'], function(exports){
     var request = setter.request;
     if(request.tokenName){
       var obj = {};
+      
       obj[request.tokenName] = layui.data(setter.tableName)[request.tokenName] || ''
       
       //table
       table.set({
         headers: obj, //通过 request 头传递
-        where: obj //通过参数传递
+        where: obj, //通过参数传递
+        method: 'post',
+        contentType: 'application/json',
+        request: {
+          pageName: 'PageIndex' //页码的参数名称，默认：page
+          , limitName: 'PageSize' //每页数据量的参数名，默认：limit
+        },
+        response: {
+          statusCode: 200 //规定成功的状态码，默认：0
+        },
+        parseData: function (res) { //res 即为原始返回的数据
+          return {
+            "code": res.Code, //解析接口状态
+            "msg": res.Message, //解析提示文本
+            "count": res.Data.Count, //解析数据长度
+            "data": res.Data.List //解析数据列表
+          };
+        }
       });
       //upload
       upload.set({

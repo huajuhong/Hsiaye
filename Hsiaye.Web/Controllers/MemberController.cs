@@ -188,6 +188,10 @@ namespace Hsiaye.Web.Controllers
         public MemberDto Current()
         {
             MemberDto dto = _cache.Get<MemberDto>(_accessor.ProviderKey);
+            if (dto == null)
+            {
+               throw new UserFriendlyException(1001, "登录失效");
+            }
             return dto;
         }
 

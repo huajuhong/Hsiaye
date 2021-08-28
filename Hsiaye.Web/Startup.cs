@@ -16,6 +16,9 @@ using System.Reflection;
 using System.Text.Encodings.Web;
 using DapperExtensions.Mapper;
 using DapperExtensions.Sql;
+using Newtonsoft.Json.Serialization;
+using Newtonsoft.Json.Converters;
+using Newtonsoft.Json;
 
 namespace Hsiaye.Web
 {
@@ -41,13 +44,35 @@ namespace Hsiaye.Web
                 options.Filters.Add<ActionFilter>();
                 options.Filters.Add<ExceptionFilter>();
             })
-                .AddJsonOptions(options =>
+            .AddNewtonsoftJson(options =>
             {
-                options.JsonSerializerOptions.PropertyNamingPolicy = null;//默认大驼峰命名规则
-                options.JsonSerializerOptions.WriteIndented = true;//缩进
-                options.JsonSerializerOptions.Converters.Add(new JsonSerializerDateTimeConverter());//时间转换器
-                options.JsonSerializerOptions.Encoder = JavaScriptEncoder.UnsafeRelaxedJsonEscaping;//字符串中有Unicode字符时需要此设置转义
-            }).SetCompatibilityVersion(CompatibilityVersion.Version_3_0);
+                //修改属性名称的序列化方式，首字母小写，即驼峰样式
+                //options.SerializerSettings.ContractResolver = new CamelCasePropertyNamesContractResolver();
+
+                //日期类型默认格式化处理 方式1
+
+                //options.SerializerSettings.Converters.Add(new IsoDateTimeConverter() { DateTimeFormat = "yyyy/MM/dd HH:mm:ss" });
+                //日期类型默认格式化处理 方式2
+                options.SerializerSettings.DateFormatHandling = Newtonsoft.Json.DateFormatHandling.MicrosoftDateFormat;
+                options.SerializerSettings.DateFormatString = "yyyy/MM/dd HH:mm:ss";
+
+                //忽略循环引用
+                options.SerializerSettings.ReferenceLoopHandling = ReferenceLoopHandling.Ignore;
+
+                //解决命名不一致问题 
+                options.SerializerSettings.ContractResolver = new DefaultContractResolver();
+
+                //空值处理
+                options.SerializerSettings.NullValueHandling = NullValueHandling.Include;
+            })
+            //    .AddJsonOptions(options =>
+            //{
+            //    options.JsonSerializerOptions.PropertyNamingPolicy = null;//默认大驼峰命名规则
+            //    options.JsonSerializerOptions.WriteIndented = true;//缩进
+            //    options.JsonSerializerOptions.Converters.Add(new JsonSerializerDateTimeConverter());//时间转换器
+            //    options.JsonSerializerOptions.Encoder = JavaScriptEncoder.UnsafeRelaxedJsonEscaping;//字符串中有Unicode字符时需要此设置转义
+            //})
+            .SetCompatibilityVersion(CompatibilityVersion.Version_3_0);
 
 
             services.AddTransient(serviceProvider =>

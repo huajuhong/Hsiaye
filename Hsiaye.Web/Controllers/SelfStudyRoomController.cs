@@ -45,7 +45,9 @@ namespace Hsiaye.Web.Controllers
             {
                 throw new UserFriendlyException($"已存在：{input.Name}");
             }
+
             input.OrganizationUnitId = _accessor.OrganizationUnitId;
+            input.CreateTime = DateTime.Now;
             _database.Insert(input);
             return true;
         }
