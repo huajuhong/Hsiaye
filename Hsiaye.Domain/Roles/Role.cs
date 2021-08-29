@@ -10,8 +10,8 @@ namespace Hsiaye.Domain
 {
     public class Role
     {
-        public int Id { get; set; }
-        public int OrganizationUnitId { get; set; }
+        public long Id { get; set; }
+        public long OrganizationUnitId { get; set; }
         public long CreatorId { get; set; }//创建者id
         public DateTime CreateTime { get; set; }
         [StringLength(64)]

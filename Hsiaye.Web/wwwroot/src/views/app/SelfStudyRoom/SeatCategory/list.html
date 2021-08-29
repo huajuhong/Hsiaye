@@ -121,7 +121,7 @@
           , id: 'LAY-popup-SeatCategory-add'
           , success: function (layero, index) {
             view(this.id).render('app/SelfStudyRoom/SeatCategory/listform').done(function () {
-              form.render(null, 'layuiadmin-form-SeatCategory');
+              form.render(null, 'layuiadmin-form-list');
 
               //提交
               form.on('submit(layuiadmin-app-SeatCategory-submit)', function (data) {

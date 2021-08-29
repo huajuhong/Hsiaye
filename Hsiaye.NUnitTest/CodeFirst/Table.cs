@@ -73,7 +73,9 @@ namespace Hsiaye.NUnitTest
             //    typeof (RoleMap).Assembly
             //});
             //DapperExtensions.DapperExtensions.SetMappingAssemblies(new[] { Assembly.GetExecutingAssembly() });
-
+            var res = database.Insert(new Role { CreateTime = DateTime.Now, Name = "111", Description = "", DisplayName = "", });
+            var model1 = database.Get<Role>(res);
+            //var model2 = database.Get<SeatCategory>(new { Id = 2 });
         }
     }
 }

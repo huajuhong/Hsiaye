@@ -1,4 +1,5 @@
-﻿using System;
+﻿using DapperExtensions.Mapper;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
@@ -24,4 +25,13 @@ namespace Hsiaye.Domain
         public string Description { get; set; }
         public bool Normal { get; set; }
     }
+
+    //public class SeatCategoryMap : ClassMapper<SeatCategory>
+    //{
+    //    public SeatCategoryMap()
+    //    {
+    //        Map(m => m.Id).Key(KeyType.Identity);
+    //        AutoMap();
+    //    }
+    //}
 }

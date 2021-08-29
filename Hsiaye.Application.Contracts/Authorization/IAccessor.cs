@@ -14,7 +14,7 @@ namespace Hsiaye.Application.Contracts
         Member Member { get; }
         int OrganizationUnitId { get; }
         Permission[] Permissions { get; }
-        int[] RoleIds { get; }
+        long[] RoleIds { get; }
         Role[] Roles { get; }
         void RoleAuthorize(params string[] roleNames);
     }

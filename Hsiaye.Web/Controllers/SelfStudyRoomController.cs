@@ -55,7 +55,7 @@ namespace Hsiaye.Web.Controllers
         [HttpPost]
         public bool SeatCategory_Update(SeatCategory input)
         {
-            var model = _database.Get<SeatCategory>(input.Id);
+            var model = _database.Get<SeatCategory>(new { input.Id });
             if (model.OrganizationUnitId != _accessor.OrganizationUnitId)
             {
                 throw new UserFriendlyException($"非法请求");
@@ -127,7 +127,7 @@ namespace Hsiaye.Web.Controllers
         [HttpPost]
         public bool Seat_Update(Seat input)
         {
-            var model = _database.Get<Seat>(input.Id);
+            var model = _database.Get<Seat>(new { input.Id });
             if (model.OrganizationUnitId != _accessor.OrganizationUnitId)
             {
                 throw new UserFriendlyException($"非法请求");
@@ -227,7 +227,7 @@ namespace Hsiaye.Web.Controllers
         [HttpPost]
         public bool SeatReservation_Update(SeatReservation input)
         {
-            var model = _database.Get<SeatReservation>(input.Id);
+            var model = _database.Get<SeatReservation>(new { input.Id });
             if (model.OrganizationUnitId != _accessor.OrganizationUnitId)
             {
                 throw new UserFriendlyException($"非法请求");

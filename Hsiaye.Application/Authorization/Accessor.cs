@@ -56,7 +56,7 @@ namespace Hsiaye.Application
                 return permissions.ToArray();
             }
         }
-        public int[] RoleIds => _database.GetList<MemberRole>(Predicates.Field<MemberRole>(f => f.MemberId, Operator.Eq, MemberId)).Select(x => x.RoleId).ToArray();
+        public long[] RoleIds => _database.GetList<MemberRole>(Predicates.Field<MemberRole>(f => f.MemberId, Operator.Eq, MemberId)).Select(x => x.RoleId).ToArray();
         public Role[] Roles => _database.GetList<Role>(Predicates.Field<Role>(f => f.Id, Operator.Eq, RoleIds)).ToArray();
         public void RoleAuthorize(params string[] roleNames)
         {

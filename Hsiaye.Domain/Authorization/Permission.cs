@@ -12,14 +12,14 @@ namespace Hsiaye.Domain
     /// </summary>
     public class Permission
     {
-        public int Id { get; set; }
+        public long Id { get; set; }
         public long CreatorMemberId { get; set; }
         public bool IsGranted { get; set; }
         [StringLength(64)]
         public string Name { get; set; }
         public string DisplayName { get; set; }
         public string Description { get; set; }
-        public int RoleId { get; set; }
+        public long RoleId { get; set; }
         public long MemberId { get; set; }
     }
 }
