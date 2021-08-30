@@ -1,4 +1,5 @@
-﻿using System;
+﻿using DapperExtensions.Mapper;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
@@ -35,5 +36,13 @@ namespace Hsiaye.Domain
         public bool Reported { get; set; }//默认false,未签到false,已签到true
 
         public Seat Seat { get; set; }
+    }
+    public class SeatReservationMap : ClassMapper<SeatReservation>
+    {
+        public SeatReservationMap()
+        {
+            Map(t => t.Seat).Ignore();
+            AutoMap();
+        }
     }
 }

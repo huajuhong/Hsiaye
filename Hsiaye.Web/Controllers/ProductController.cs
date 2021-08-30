@@ -78,28 +78,28 @@ namespace Hsiaye.Web.Controllers
         [Authorize(PermissionNames.商品_列表)]
         public PageResult<Product> List(ProductListInput input)
         {
-            IPredicateGroup predicate = new PredicateGroup()
+            IPredicateGroup predicateGroup = new PredicateGroup()
             {
                 Operator = GroupOperator.And,
                 Predicates = new List<IPredicate>()
             };
             if (_accessor.Member.UserName != PermissionNames.AdminUserName)
             {
-                predicate.Predicates.Add(Predicates.Field<Product>(f => f.OrganizationUnitId, Operator.Eq, _accessor.OrganizationUnitId));
+                predicateGroup.Predicates.Add(Predicates.Field<Product>(f => f.OrganizationUnitId, Operator.Eq, _accessor.OrganizationUnitId));
             }
             if (!string.IsNullOrEmpty(input.Keywords))
             {
-                predicate.Predicates.Add(Predicates.Field<Product>(f => f.Name, Operator.Like, input.Keywords));
-                predicate.Predicates.Add(Predicates.Field<Product>(f => f.Title, Operator.Like, input.Keywords));
+                predicateGroup.Predicates.Add(Predicates.Field<Product>(f => f.Name, Operator.Like, input.Keywords));
+                predicateGroup.Predicates.Add(Predicates.Field<Product>(f => f.Title, Operator.Like, input.Keywords));
             }
             if (input.State != ProductState.未知)
             {
-                predicate.Predicates.Add(Predicates.Field<Product>(f => f.State, Operator.Eq, input.State));
+                predicateGroup.Predicates.Add(Predicates.Field<Product>(f => f.State, Operator.Eq, input.State));
             }
 
             IList<ISort> sort = new List<ISort> { Predicates.Sort<Product>(f => f.Id, false) };
-            var list = _database.GetPage<Product>(predicate, sort, input.PageIndex, input.PageSize);
-            var count = _database.Count<Product>(predicate);
+            var list = _database.GetPage<Product>(predicateGroup, sort, input.PageIndex, input.PageSize);
+            var count = _database.Count<Product>(predicateGroup);
             return new PageResult<Product>(list, count);
         }
 

@@ -79,12 +79,12 @@ namespace Hsiaye.Web.Controllers
         [Authorize(PermissionNames.问答)]
         public PageResult<Question> ListQuestion(QuestionListInput input)
         {
-            IPredicateGroup predicate = new PredicateGroup()
+            IPredicateGroup predicateGroup = new PredicateGroup()
             {
                 Operator = GroupOperator.And,
             };
 
-            predicate.Predicates = new List<IPredicate>
+            predicateGroup.Predicates = new List<IPredicate>
             {
                 Predicates.Field<Question>(f => f.Deleted, Operator.Eq, false),
                 Predicates.Field<Question>(f => f.OrganizationUnitId, Operator.Eq, _accessor.OrganizationUnitId),
@@ -92,12 +92,12 @@ namespace Hsiaye.Web.Controllers
 
             if (!string.IsNullOrEmpty(input.Keywords))
             {
-                predicate.Predicates.Add(Predicates.Field<Question>(f => f.Title, Operator.Like, input.Keywords));
-                //predicate.Predicates.Add(Predicates.Field<Question>(f => f.Description, Operator.Like, input.Keywords));
+                predicateGroup.Predicates.Add(Predicates.Field<Question>(f => f.Title, Operator.Like, input.Keywords));
+                //predicateGroup.Predicates.Add(Predicates.Field<Question>(f => f.Description, Operator.Like, input.Keywords));
             }
             if (input.CategoryId > 0)
             {
-                predicate.Predicates.Add(Predicates.Field<Question>(f => f.CategoryId, Operator.Eq, input.CategoryId));
+                predicateGroup.Predicates.Add(Predicates.Field<Question>(f => f.CategoryId, Operator.Eq, input.CategoryId));
             }
 
             List<ISort> sort = new List<ISort>();
@@ -117,8 +117,8 @@ namespace Hsiaye.Web.Controllers
                     break;
             }
 
-            var list = _database.GetPage<Question>(predicate, sort, input.PageIndex, input.PageSize);
-            var count = _database.Count<Question>(predicate);
+            var list = _database.GetPage<Question>(predicateGroup, sort, input.PageIndex, input.PageSize);
+            var count = _database.Count<Question>(predicateGroup);
             return new PageResult<Question>(list, count);
         }
 
@@ -179,13 +179,13 @@ namespace Hsiaye.Web.Controllers
         [Authorize(PermissionNames.问答)]
         public PageResult<Answer> ListAnswer(AnswerListInput input)
         {
-            IPredicateGroup predicate = new PredicateGroup()
+            IPredicateGroup predicateGroup = new PredicateGroup()
             {
                 Operator = GroupOperator.And,
                 Predicates = new List<IPredicate>()
             };
-            predicate.Predicates.Add(Predicates.Field<Answer>(f => f.QuestionId, Operator.Eq, input.QuestionId));
-            predicate.Predicates.Add(Predicates.Field<Answer>(f => f.Deleted, Operator.Eq, false));
+            predicateGroup.Predicates.Add(Predicates.Field<Answer>(f => f.QuestionId, Operator.Eq, input.QuestionId));
+            predicateGroup.Predicates.Add(Predicates.Field<Answer>(f => f.Deleted, Operator.Eq, false));
             List<ISort> sort = new List<ISort>();
             switch (input.SortField)
             {
@@ -197,8 +197,8 @@ namespace Hsiaye.Web.Controllers
                     break;
             }
 
-            var list = _database.GetPage<Answer>(predicate, sort, input.PageIndex, input.PageSize);
-            var count = _database.Count<Answer>(predicate);
+            var list = _database.GetPage<Answer>(predicateGroup, sort, input.PageIndex, input.PageSize);
+            var count = _database.Count<Answer>(predicateGroup);
             return new PageResult<Answer>(list, count);
         }
 

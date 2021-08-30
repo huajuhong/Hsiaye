@@ -107,19 +107,19 @@ namespace Hsiaye.Web.Controllers
         [Authorize(PermissionNames.组织机构)]
         public PageResult<OrganizationUnit> List(KeywordsListInput input)
         {
-            IPredicateGroup predicate = new PredicateGroup()
+            IPredicateGroup predicateGroup = new PredicateGroup()
             {
                 Operator = GroupOperator.And,
                 Predicates = new List<IPredicate>()
             };
             if (!string.IsNullOrEmpty(input.Keywords))
             {
-                predicate.Predicates.Add( Predicates.Field<OrganizationUnit>(f => f.Name, Operator.Like, input.Keywords));
+                predicateGroup.Predicates.Add( Predicates.Field<OrganizationUnit>(f => f.Name, Operator.Like, input.Keywords));
             }
 
             IList<ISort> sort = new List<ISort> { Predicates.Sort<OrganizationUnit>(f => f.Id, false) };
-            var list = _database.GetPage<OrganizationUnit>(predicate, sort, input.PageIndex, input.PageSize);
-            var count = _database.Count<OrganizationUnit>(predicate);
+            var list = _database.GetPage<OrganizationUnit>(predicateGroup, sort, input.PageIndex, input.PageSize);
+            var count = _database.Count<OrganizationUnit>(predicateGroup);
             return new PageResult<OrganizationUnit>(list, count);
         }
 

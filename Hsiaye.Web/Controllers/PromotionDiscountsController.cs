@@ -65,27 +65,27 @@ namespace Hsiaye.Web.Controllers
         [Authorize(PermissionNames.促销活动_列表)]
         public PageResult<PromotionDiscounts> List(PromotionDiscountsListInput input)
         {
-            IPredicateGroup predicate = new PredicateGroup()
+            IPredicateGroup predicateGroup = new PredicateGroup()
             {
                 Operator = GroupOperator.And,
                 Predicates = new List<IPredicate>()
             };
             if (_accessor.Member.UserName != PermissionNames.AdminUserName)
             {
-                predicate.Predicates.Add(Predicates.Field<PromotionDiscounts>(f => f.OrganizationUnitId, Operator.Eq, _accessor.OrganizationUnitId));
+                predicateGroup.Predicates.Add(Predicates.Field<PromotionDiscounts>(f => f.OrganizationUnitId, Operator.Eq, _accessor.OrganizationUnitId));
             }
             if (!string.IsNullOrEmpty(input.Keywords))
             {
-                predicate.Predicates.Add(Predicates.Field<PromotionDiscounts>(f => f.Name, Operator.Like, input.Keywords));
+                predicateGroup.Predicates.Add(Predicates.Field<PromotionDiscounts>(f => f.Name, Operator.Like, input.Keywords));
             }
             if (input.Rule != PromotionDiscountsRule.未知)
             {
-                predicate.Predicates.Add(Predicates.Field<PromotionDiscounts>(f => f.Rule, Operator.Eq, input.Rule));
+                predicateGroup.Predicates.Add(Predicates.Field<PromotionDiscounts>(f => f.Rule, Operator.Eq, input.Rule));
             }
 
             IList<ISort> sort = new List<ISort> { Predicates.Sort<PromotionDiscounts>(f => f.Id, false) };
-            var list = _database.GetPage<PromotionDiscounts>(predicate, sort, input.PageIndex, input.PageSize);
-            var count = _database.Count<PromotionDiscounts>(predicate);
+            var list = _database.GetPage<PromotionDiscounts>(predicateGroup, sort, input.PageIndex, input.PageSize);
+            var count = _database.Count<PromotionDiscounts>(predicateGroup);
             return new PageResult<PromotionDiscounts>(list, count);
         }
 

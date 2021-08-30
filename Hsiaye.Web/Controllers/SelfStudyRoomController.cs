@@ -86,22 +86,37 @@ namespace Hsiaye.Web.Controllers
         [HttpPost]
         public PageResult<SeatCategory> SeatCategory_List(KeywordsListInput input)
         {
-            IPredicateGroup predicate = new PredicateGroup()
+            IPredicateGroup predicateGroup = new PredicateGroup()
             {
                 Operator = GroupOperator.And,
                 Predicates = new List<IPredicate>()
             };
-            predicate.Predicates.Add(Predicates.Field<SeatCategory>(e => e.OrganizationUnitId, Operator.Eq, _accessor.OrganizationUnitId));
+            predicateGroup.Predicates.Add(Predicates.Field<SeatCategory>(e => e.OrganizationUnitId, Operator.Eq, _accessor.OrganizationUnitId));
             if (!string.IsNullOrEmpty(input.Keywords))
             {
-                predicate.Predicates.Add(Predicates.Field<SeatCategory>(e => e.Name, Operator.Like, input.Keywords));
-                predicate.Predicates.Add(Predicates.Field<SeatCategory>(e => e.Description, Operator.Like, input.Keywords));
+                predicateGroup.Predicates.Add(Predicates.Field<SeatCategory>(e => e.Name, Operator.Like, input.Keywords));
+                predicateGroup.Predicates.Add(Predicates.Field<SeatCategory>(e => e.Description, Operator.Like, input.Keywords));
             }
             var sort = new List<ISort> { Predicates.Sort<SeatCategory>(x => x.CreateTime) };
-            var list = _database.GetPage<SeatCategory>(Predicates.Group(GroupOperator.Or, predicate.Predicates.ToArray()), sort, input.PageIndex, input.PageSize);
+            var list = _database.GetPage<SeatCategory>(predicateGroup, sort, input.PageIndex, input.PageSize);
 
-            var count = _database.Count<SeatCategory>(predicate);
+            var count = _database.Count<SeatCategory>(predicateGroup);
             return new PageResult<SeatCategory>(list, count);
+        }
+
+        [HttpPost]
+        public IEnumerable<SeatCategory> SeatCategory_Options()
+        {
+            IPredicateGroup predicateGroup = new PredicateGroup()
+            {
+                Operator = GroupOperator.And,
+                Predicates = new List<IPredicate>()
+            };
+            predicateGroup.Predicates.Add(Predicates.Field<SeatCategory>(f => f.OrganizationUnitId, Operator.Eq, _accessor.OrganizationUnitId));
+            predicateGroup.Predicates.Add(Predicates.Field<SeatCategory>(f => f.Normal, Operator.Eq, true));
+            var sort = new List<ISort> { Predicates.Sort<SeatCategory>(x => x.CreateTime) };
+            var list = _database.GetList<SeatCategory>(predicateGroup, sort);
+            return list;
         }
         #endregion
 
@@ -120,6 +135,7 @@ namespace Hsiaye.Web.Controllers
                 throw new UserFriendlyException($"已存在：{input.Name}");
             }
             input.OrganizationUnitId = _accessor.OrganizationUnitId;
+            input.CreateTime = DateTime.Now;
             _database.Insert(input);
             return true;
         }
@@ -156,21 +172,29 @@ namespace Hsiaye.Web.Controllers
         [HttpPost]
         public PageResult<Seat> Seat_List(KeywordsListInput input)
         {
-            IPredicateGroup predicate = new PredicateGroup()
+            IPredicateGroup predicateGroup = new PredicateGroup()
             {
                 Operator = GroupOperator.And,
                 Predicates = new List<IPredicate>()
             };
-            predicate.Predicates.Add(Predicates.Field<Seat>(e => e.OrganizationUnitId, Operator.Eq, _accessor.OrganizationUnitId));
+            predicateGroup.Predicates.Add(Predicates.Field<Seat>(e => e.OrganizationUnitId, Operator.Eq, _accessor.OrganizationUnitId));
             if (!string.IsNullOrEmpty(input.Keywords))
             {
-                predicate.Predicates.Add(Predicates.Field<Seat>(e => e.Name, Operator.Like, input.Keywords));
-                predicate.Predicates.Add(Predicates.Field<Seat>(e => e.Description, Operator.Like, input.Keywords));
+                predicateGroup.Predicates.Add(Predicates.Field<Seat>(e => e.Name, Operator.Like, input.Keywords));
+                predicateGroup.Predicates.Add(Predicates.Field<Seat>(e => e.Description, Operator.Like, input.Keywords));
             }
-            var sort = new List<ISort> { Predicates.Sort<Seat>(x => x.CreateTime) };
-            var list = _database.GetPage<Seat>(Predicates.Group(GroupOperator.Or, predicate.Predicates.ToArray()), sort, input.PageIndex, input.PageSize);
 
-            var count = _database.Count<Seat>(predicate);
+            var sort = new List<ISort> { Predicates.Sort<Seat>(x => x.CreateTime) };
+
+            var list = _database.GetPage<Seat>(predicateGroup, sort, input.PageIndex, input.PageSize);
+            //todo:1和2交换位置会报错
+            //1
+            var count = _database.Count<Seat>(predicateGroup);
+            //2
+            foreach (var item in list)
+            {
+                MapToEntity(item);
+            }
             return new PageResult<Seat>(list, count);
         }
 
@@ -183,6 +207,25 @@ namespace Hsiaye.Web.Controllers
             //座位类型
             var seatCategory = _database.Get<SeatCategory>(Predicates.Field<SeatCategory>(f => f.Id, Operator.Eq, model.SeatCategoryId));
             model.SeatCategory = seatCategory;
+        }
+
+        [HttpPost]
+        public IEnumerable<Seat> Seat_Options()
+        {
+            IPredicateGroup predicateGroup = new PredicateGroup()
+            {
+                Operator = GroupOperator.And,
+                Predicates = new List<IPredicate>()
+            };
+            predicateGroup.Predicates.Add(Predicates.Field<Seat>(f => f.OrganizationUnitId, Operator.Eq, _accessor.OrganizationUnitId));
+            predicateGroup.Predicates.Add(Predicates.Field<Seat>(f => f.Normal, Operator.Eq, true));
+            var sort = new List<ISort> { Predicates.Sort<Seat>(x => x.CreateTime) };
+            var list = _database.GetList<Seat>(predicateGroup, sort);
+            foreach (var item in list)
+            {
+                MapToEntity(item);
+            }
+            return list;
         }
         #endregion
 
@@ -217,9 +260,10 @@ namespace Hsiaye.Web.Controllers
             {
                 throw new UserFriendlyException($"预约失败（该座位已被预约【姓名：{model.Name}；电话：{model.Phone}；时段：{model.Begin:yyyyMMdd HHmm}至{model.End:yyyyMMdd HHmm}】）");
             }
+            input.OrganizationUnitId = _accessor.OrganizationUnitId;
+            input.CreateTime = DateTime.Now;
             input.OperatorId = _accessor.MemberId;
             input.Normal = true;
-            input.OrganizationUnitId = _accessor.OrganizationUnitId;
             _database.Insert(input);
             return true;
         }
@@ -256,24 +300,24 @@ namespace Hsiaye.Web.Controllers
         [HttpPost]
         public PageResult<SeatReservation> SeatReservation_List(KeywordsListInput input)
         {
-            IPredicateGroup predicate = new PredicateGroup()
+            IPredicateGroup predicateGroup = new PredicateGroup()
             {
                 Operator = GroupOperator.And,
                 Predicates = new List<IPredicate>()
             };
-            predicate.Predicates.Add(Predicates.Field<SeatReservation>(e => e.OrganizationUnitId, Operator.Eq, _accessor.OrganizationUnitId));
+            predicateGroup.Predicates.Add(Predicates.Field<SeatReservation>(e => e.OrganizationUnitId, Operator.Eq, _accessor.OrganizationUnitId));
             if (!string.IsNullOrEmpty(input.Keywords))
             {
-                predicate.Predicates.Add(Predicates.Field<SeatReservation>(e => e.Name, Operator.Like, input.Keywords));
-                predicate.Predicates.Add(Predicates.Field<SeatReservation>(e => e.Description, Operator.Like, input.Keywords));
+                predicateGroup.Predicates.Add(Predicates.Field<SeatReservation>(e => e.Name, Operator.Like, input.Keywords));
+                predicateGroup.Predicates.Add(Predicates.Field<SeatReservation>(e => e.Description, Operator.Like, input.Keywords));
             }
             var sort = new List<ISort> { Predicates.Sort<SeatReservation>(x => x.CreateTime) };
-            var list = _database.GetPage<SeatReservation>(Predicates.Group(GroupOperator.Or, predicate.Predicates.ToArray()), sort, input.PageIndex, input.PageSize);
+            var list = _database.GetPage<SeatReservation>(predicateGroup, sort, input.PageIndex, input.PageSize);
             foreach (var item in list)
             {
                 MapToEntity(item);
             }
-            var count = _database.Count<SeatReservation>(predicate);
+            var count = _database.Count<SeatReservation>(predicateGroup);
             return new PageResult<SeatReservation>(list, count);
         }
 

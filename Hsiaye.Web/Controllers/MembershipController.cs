@@ -67,29 +67,29 @@ namespace Hsiaye.Web.Controllers
         [Authorize(PermissionNames.会员_列表)]
         public PageResult<Membership> List(MembershipListInput input)
         {
-            IPredicateGroup predicate = new PredicateGroup()
+            IPredicateGroup predicateGroup = new PredicateGroup()
             {
                 Operator = GroupOperator.And,
                 Predicates = new List<IPredicate>()
             };
             if (_accessor.Member.UserName != PermissionNames.AdminUserName)
             {
-                predicate.Predicates.Add(Predicates.Field<Membership>(f => f.OrganizationUnitId, Operator.Eq, _accessor.OrganizationUnitId));
+                predicateGroup.Predicates.Add(Predicates.Field<Membership>(f => f.OrganizationUnitId, Operator.Eq, _accessor.OrganizationUnitId));
             }
             if (!string.IsNullOrEmpty(input.Keywords))
             {
-                predicate.Predicates.Add(Predicates.Field<Membership>(f => f.Name, Operator.Like, input.Keywords));
-                predicate.Predicates.Add(Predicates.Field<Membership>(f => f.Phone, Operator.Like, input.Keywords));
-                predicate.Predicates.Add(Predicates.Field<Membership>(f => f.IDCard, Operator.Like, input.Keywords));
+                predicateGroup.Predicates.Add(Predicates.Field<Membership>(f => f.Name, Operator.Like, input.Keywords));
+                predicateGroup.Predicates.Add(Predicates.Field<Membership>(f => f.Phone, Operator.Like, input.Keywords));
+                predicateGroup.Predicates.Add(Predicates.Field<Membership>(f => f.IDCard, Operator.Like, input.Keywords));
             }
             if (input.State != MembershipState.未知)
             {
-                predicate.Predicates.Add(Predicates.Field<Membership>(f => f.State, Operator.Eq, input.State));
+                predicateGroup.Predicates.Add(Predicates.Field<Membership>(f => f.State, Operator.Eq, input.State));
             }
 
             IList<ISort> sort = new List<ISort> { Predicates.Sort<Membership>(f => f.Id, false) };
-            var list = _database.GetPage<Membership>(predicate, sort, input.PageIndex, input.PageSize);
-            var count = _database.Count<Membership>(predicate);
+            var list = _database.GetPage<Membership>(predicateGroup, sort, input.PageIndex, input.PageSize);
+            var count = _database.Count<Membership>(predicateGroup);
             return new PageResult<Membership>(list, count);
         }
 

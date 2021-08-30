@@ -112,26 +112,26 @@ namespace Hsiaye.Web.Controllers
         [Authorize(PermissionNames.角色_列表)]
         public PageResult<Role> List(KeywordsListInput input)
         {
-            IPredicateGroup predicate = new PredicateGroup()
+            IPredicateGroup predicateGroup = new PredicateGroup()
             {
                 Operator = GroupOperator.And,
                 Predicates = new List<IPredicate>()
             };
             if (!string.IsNullOrEmpty(input.Keywords))
             {
-                predicate.Predicates.Add(Predicates.Field<Role>(e => e.Name, Operator.Like, input.Keywords));
-                predicate.Predicates.Add(Predicates.Field<Role>(e => e.DisplayName, Operator.Like, input.Keywords));
-                predicate.Predicates.Add(Predicates.Field<Role>(e => e.Description, Operator.Like, input.Keywords));
+                predicateGroup.Predicates.Add(Predicates.Field<Role>(e => e.Name, Operator.Like, input.Keywords));
+                predicateGroup.Predicates.Add(Predicates.Field<Role>(e => e.DisplayName, Operator.Like, input.Keywords));
+                predicateGroup.Predicates.Add(Predicates.Field<Role>(e => e.Description, Operator.Like, input.Keywords));
             }
             var sort = new List<ISort> { Predicates.Sort<Role>(x => x.CreateTime) };
-            var list = _database.GetPage<Role>(Predicates.Group(GroupOperator.Or, predicate.Predicates.ToArray()), sort, input.PageIndex, input.PageSize).ToList();
+            var list = _database.GetPage<Role>(predicateGroup, sort, input.PageIndex, input.PageSize).ToList();
 
             foreach (var model in list)
             {
                 MapToEntity(model);
             }
 
-            var count = _database.Count<Role>(predicate);
+            var count = _database.Count<Role>(predicateGroup);
             return new PageResult<Role>(list, count);
         }
 

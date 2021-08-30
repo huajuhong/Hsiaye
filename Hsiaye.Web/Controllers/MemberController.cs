@@ -46,26 +46,25 @@ namespace Hsiaye.Web.Controllers
         [Authorize(PermissionNames.成员_列表)]
         public PageResult<Member> List(MemberListInput input)
         {
-            IPredicateGroup predicate = new PredicateGroup()
+            IPredicateGroup predicateGroup = new PredicateGroup()
             {
                 Operator = GroupOperator.And,
                 Predicates = new List<IPredicate>()
             };
             if (!string.IsNullOrEmpty(input.Keywords))
             {
-                predicate.Predicates.Add(Predicates.Field<Member>(f => f.UserName, Operator.Like, input.Keywords));
-                predicate.Predicates.Add(Predicates.Field<Member>(f => f.Name, Operator.Like, input.Keywords));
-                predicate.Predicates.Add(Predicates.Field<Member>(f => f.Phone, Operator.Like, input.Keywords));
-                predicate.Predicates.Add(Predicates.Field<Member>(f => f.EmailAddress, Operator.Like, input.Keywords));
+                predicateGroup.Predicates.Add(Predicates.Field<Member>(f => f.UserName, Operator.Like, input.Keywords));
+                predicateGroup.Predicates.Add(Predicates.Field<Member>(f => f.Name, Operator.Like, input.Keywords));
+                predicateGroup.Predicates.Add(Predicates.Field<Member>(f => f.Phone, Operator.Like, input.Keywords));
+                predicateGroup.Predicates.Add(Predicates.Field<Member>(f => f.EmailAddress, Operator.Like, input.Keywords));
             }
             if (input.State != MemberState.未知)
             {
-                predicate.Predicates.Add(Predicates.Field<Member>(f => f.State, Operator.Eq, input.State));
+                predicateGroup.Predicates.Add(Predicates.Field<Member>(f => f.State, Operator.Eq, input.State));
             }
-
             IList<ISort> sort = new List<ISort> { Predicates.Sort<Member>(f => f.Id, false) };
-            var list = _database.GetPage<Member>(predicate, sort, input.PageIndex, input.PageSize);
-            var count = _database.Count<Member>(predicate);
+            var list = _database.GetPage<Member>(predicateGroup, sort, input.PageIndex, input.PageSize);
+            var count = _database.Count<Member>(predicateGroup);
             return new PageResult<Member>(list, count);
         }
 

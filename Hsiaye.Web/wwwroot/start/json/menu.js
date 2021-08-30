@@ -404,12 +404,12 @@
               "title": "座位分类"
             },
             {
-              "name": "Seat",
-              "title": "座位管理"
+              "name": "Seat/list",
+              "title": "座位"
             },
             {
-              "name": "SeatReservation",
-              "title": "预约管理"
+              "name": "SeatReservation/list",
+              "title": "预约"
             }
           ]
         },

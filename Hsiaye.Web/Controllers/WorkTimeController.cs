@@ -64,27 +64,27 @@ namespace Hsiaye.Web.Controllers
         [Authorize(PermissionNames.工时)]
         public PageResult<WorkTime> List(WorkTimeListInput input)
         {
-            IPredicateGroup predicate = new PredicateGroup()
+            IPredicateGroup predicateGroup = new PredicateGroup()
             {
                 Operator = GroupOperator.And,
                 Predicates = new List<IPredicate>()
             };
             if (input.ProjectId > 0)
             {
-                predicate.Predicates.Add(Predicates.Field<WorkTime>(f => f.ProjectId, Operator.Eq, input.ProjectId));
+                predicateGroup.Predicates.Add(Predicates.Field<WorkTime>(f => f.ProjectId, Operator.Eq, input.ProjectId));
             }
             if (input.MembershipId > 0)
             {
-                predicate.Predicates.Add(Predicates.Field<WorkTime>(f => f.MembershipId, Operator.Eq, input.MembershipId));
+                predicateGroup.Predicates.Add(Predicates.Field<WorkTime>(f => f.MembershipId, Operator.Eq, input.MembershipId));
             }
             if (input.Overtime != WorkTimeOvertime.未知)
             {
-                predicate.Predicates.Add(Predicates.Field<WorkTime>(f => f.Overtime, Operator.Eq, input.Overtime));
+                predicateGroup.Predicates.Add(Predicates.Field<WorkTime>(f => f.Overtime, Operator.Eq, input.Overtime));
             }
 
             IList<ISort> sort = new List<ISort> { Predicates.Sort<WorkTime>(f => f.Id, false) };
-            var list = _database.GetPage<WorkTime>(predicate, sort, input.PageIndex, input.PageSize);
-            var count = _database.Count<WorkTime>(predicate);
+            var list = _database.GetPage<WorkTime>(predicateGroup, sort, input.PageIndex, input.PageSize);
+            var count = _database.Count<WorkTime>(predicateGroup);
             return new PageResult<WorkTime>(list, count);
         }
 

@@ -1,0 +1,155 @@
+<title>座位</title>
+
+<div class="layui-card layadmin-header">
+  <div class="layui-breadcrumb" lay-filter="breadcrumb">
+    <a><cite>应用</cite></a>
+    <a><cite>自习室预约系统</cite></a>
+    <a><cite>座位</cite></a>
+  </div>
+</div>
+
+<div class="layui-fluid">
+  <div class="layui-card">
+    <div class="layui-form layui-card-header layuiadmin-card-header-auto" lay-filter="app-Seat-list">
+      <div class="layui-form-item">
+        <div class="layui-inline">
+          <label class="layui-form-label">ID</label>
+          <div class="layui-input-block">
+            <input type="text" name="id" placeholder="请输入" autocomplete="off" class="layui-input">
+          </div>
+        </div>
+        <div class="layui-inline">
+          <label class="layui-form-label">发帖人</label>
+          <div class="layui-input-block">
+            <input type="text" name="poster" placeholder="请输入" autocomplete="off" class="layui-input">
+          </div>
+        </div>
+        <div class="layui-inline">
+          <label class="layui-form-label">发帖内容</label>
+          <div class="layui-input-block">
+            <input type="text" name="content" placeholder="请输入" autocomplete="off" class="layui-input">
+          </div>
+        </div>
+        <div class="layui-inline">
+          <label class="layui-form-label">帖子状态</label>
+          <div class="layui-input-block">
+            <select name="top">
+              <option value="0">正常</option>
+              <option value="1">置顶</option>
+              <option value="2">封禁</option>
+            </select>
+          </div>
+        </div>
+        <div class="layui-inline">
+          <button class="layui-btn layuiadmin-btn-Seat-list" lay-submit lay-filter="LAY-app-list-search">
+            <i class="layui-icon layui-icon-search layuiadmin-button-btn"></i>
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <div class="layui-card-body">
+      <div style="padding-bottom: 10px;">
+        <button class="layui-btn layuiadmin-btn-list" data-type="batchdel">删除</button>
+        <button class="layui-btn layuiadmin-btn-list" data-type="add">添加</button>
+      </div>
+      <table id="LAY-app-Seat-list" lay-filter="LAY-app-Seat-list"></table>
+      <script type="text/html" id="buttonTpl-Normal">
+        {{#  if(d.Normal == true){ }}
+          <button class="layui-btn layui-btn-xs">正常</button>
+        {{#  } else { }}
+          <button class="layui-btn layui-btn-danger layui-btn-xs">停用</button>
+        {{#  } }}
+      </script>
+      <script type="text/html" id="textTpl-SeatCategory">
+        {{ d.SeatCategory.Name }} [{{ d.SeatCategory.BeginTime }} - {{ d.SeatCategory.EndTime }}] [{{d.SeatCategory.Price}}元]
+      </script>
+      <script type="text/html" id="table-Seat-list">
+        <a class="layui-btn layui-btn-normal layui-btn-xs" lay-event="edit"><i class="layui-icon layui-icon-edit"></i>编辑</a>
+        <a class="layui-btn layui-btn-danger layui-btn-xs" lay-event="del"><i class="layui-icon layui-icon-delete"></i>删除</a>
+      </script>
+    </div>
+  </div>
+</div>
+
+<script>
+  layui.use('SelfStudyRoom', layui.factory('SelfStudyRoom')).use(['admin', 'table', 'SelfStudyRoom'], function () {
+    var $ = layui.$
+      , admin = layui.admin
+      , view = layui.view
+      , form = layui.form
+      , table = layui.table;
+
+    form.render(null, 'app-Seat-list');
+
+    //搜索
+    form.on('submit(LAY-app-list-search)', function (data) {
+      var field = data.field;
+
+      //执行重载
+      table.reload('LAY-app-Seat-list', {
+        where: field
+      });
+    });
+
+    //事件
+    var active = {
+      batchdel: function () {
+        var checkStatus = table.checkStatus('LAY-app-Seat-list')
+          , checkData = checkStatus.data; //得到选中的数据
+
+        if (checkData.length === 0) {
+          return layer.msg('请选择数据');
+        }
+
+        layer.confirm('确定删除吗？', function (index) {
+
+          //执行 Ajax 后重载
+          /*
+          admin.req({
+            url: 'xxx'
+            //,……
+          });
+          */
+          table.reload('LAY-app-Seat-list');
+          layer.msg('已删除');
+        });
+      }
+
+      //添加
+      , add: function (othis) {
+        admin.popup({
+          title: '添加'
+          , area: ['550px', '550px']
+          , id: 'LAY-popup-Seat-add'
+          , success: function (layero, index) {
+            view(this.id).render('app/SelfStudyRoom/Seat/listform').done(function () {
+              form.render(null, 'layuiadmin-form-list');
+
+              //提交
+              form.on('submit(layuiadmin-app-Seat-submit)', function (data) {
+                //提交 Ajax 成功后，关闭当前弹层并重载表格
+                admin.req({
+                  url: '/api/SelfStudyRoom/Seat_Create'
+                  , type: 'post'
+                  , contentType: 'application/json'
+                  , data: data.field
+                  , done: function (res) {
+                    console.log(res)
+                  }
+                });
+                layui.table.reload('LAY-app-Seat-list'); //重载表格
+                layer.close(index); //执行关闭 
+              });
+            });
+          }
+        });
+      }
+    }
+
+    $('.layui-btn.layuiadmin-btn-list').on('click', function () {
+      var type = $(this).data('type');
+      active[type] ? active[type].call(this) : '';
+    });
+  });
+</script>

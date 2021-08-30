@@ -1,4 +1,5 @@
-﻿using System;
+﻿using DapperExtensions.Mapper;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
@@ -12,10 +13,10 @@ namespace Hsiaye.Domain
     /// </summary>
     public class Seat
     {
-        public int Id { get; set; }
-        public int OrganizationUnitId { get; set; }
+        public long Id { get; set; }
+        public long OrganizationUnitId { get; set; }
         public DateTime CreateTime { get; set; }
-        public int SeatCategoryId { get; set; }
+        public long SeatCategoryId { get; set; }
         [StringLength(64)]
         public string Name { get; set; }
         [StringLength(256)]
@@ -23,5 +24,14 @@ namespace Hsiaye.Domain
         public bool Normal { get; set; }
 
         public SeatCategory SeatCategory { get; set; }
+    }
+    public class SeatMap : ClassMapper<Seat>
+    {
+        public SeatMap()
+        {
+            Map(t => t.SeatCategory).Ignore();
+            AutoMap();
+            //ReferenceMap(t => t.SeatCategory).Reference<SeatCategory>((seatCategory, seat) => seatCategory.Id == seat.SeatCategoryId);
+        }
     }
 }

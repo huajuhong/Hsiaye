@@ -73,11 +73,11 @@ namespace Hsiaye.Web.Controllers
             List<Permission> permissionsByAdmin = new List<Permission>();
             foreach (var item in permissions)
             {
-                var predicate = Predicates.Group(GroupOperator.And,
+                var predicateGroup = Predicates.Group(GroupOperator.And,
                     Predicates.Field<Permission>(f => f.Name, Operator.Eq, item.Name),
                     Predicates.Field<Permission>(f => f.MemberId, Operator.Eq, member.Id)
                     );
-                int count = _database.Count<Permission>(predicate);
+                int count = _database.Count<Permission>(predicateGroup);
                 if (count > 0)
                     continue;
                 permissionsByAdmin.Add(new Permission

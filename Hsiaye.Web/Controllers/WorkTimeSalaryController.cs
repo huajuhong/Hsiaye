@@ -56,27 +56,27 @@ namespace Hsiaye.Web.Controllers
         [Authorize(PermissionNames.工时)]
         public PageResult<WorkTimeSalary> List(WorkTimeSalaryListInput input)
         {
-            IPredicateGroup predicate = new PredicateGroup()
+            IPredicateGroup predicateGroup = new PredicateGroup()
             {
                 Operator = GroupOperator.And,
                 Predicates = new List<IPredicate>()
             };
             if (!string.IsNullOrEmpty(input.Keywords))
             {
-                predicate.Predicates.Add(Predicates.Field<WorkTimeSalary>(f => f.Name, Operator.Like, input.Keywords));
+                predicateGroup.Predicates.Add(Predicates.Field<WorkTimeSalary>(f => f.Name, Operator.Like, input.Keywords));
             }
             if (input.ProjectId > 0)
             {
-                predicate.Predicates.Add(Predicates.Field<WorkTimeSalary>(f => f.ProjectId, Operator.Eq, input.ProjectId));
+                predicateGroup.Predicates.Add(Predicates.Field<WorkTimeSalary>(f => f.ProjectId, Operator.Eq, input.ProjectId));
             }
             if (input.MembershipId > 0)
             {
-                predicate.Predicates.Add(Predicates.Field<WorkTimeSalary>(f => f.MembershipId, Operator.Eq, input.MembershipId));
+                predicateGroup.Predicates.Add(Predicates.Field<WorkTimeSalary>(f => f.MembershipId, Operator.Eq, input.MembershipId));
             }
 
             IList<ISort> sort = new List<ISort> { Predicates.Sort<WorkTimeSalary>(f => f.Id, false) };
-            var list = _database.GetPage<WorkTimeSalary>(predicate, sort, input.PageIndex, input.PageSize);
-            var count = _database.Count<WorkTimeSalary>(predicate);
+            var list = _database.GetPage<WorkTimeSalary>(predicateGroup, sort, input.PageIndex, input.PageSize);
+            var count = _database.Count<WorkTimeSalary>(predicateGroup);
             return new PageResult<WorkTimeSalary>(list, count);
         }
 

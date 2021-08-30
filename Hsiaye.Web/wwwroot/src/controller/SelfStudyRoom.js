@@ -69,6 +69,126 @@ layui.define(['table', 'form', 'laydate'], function (exports) {
   });
 
 
+  //座位
+  table.render({
+    elem: '#LAY-app-Seat-list'
+    , url: '/api/SelfStudyRoom/Seat_List'
+    , cols: [[
+      { type: 'checkbox', fixed: 'left' }
+      , { field: 'Id', width: 80, title: 'ID', sort: true }
+      , { field: 'SeatCategoryId', title: '分类', templet: '#textTpl-SeatCategory' }
+      , { field: 'CreateTime', width: 160, title: '时间' }
+      , { field: 'Name', width: 160, title: '名称' }
+      , { field: 'Description', title: '说明' }
+      , { field: 'Normal', width: 80, title: '状态', templet: '#buttonTpl-Normal' }
+      , { title: '操作', width: 150, align: 'center', fixed: 'right', toolbar: '#table-Seat-list' }
+    ]]
+    , page: true
+    , limit: 10
+    , limits: [10, 15, 20, 25, 30]
+    , text: '对不起，加载出现异常！'
+  });
+
+  //工具条
+  table.on('tool(LAY-app-Seat-list)', function (obj) {
+    var data = obj.data;
+    if (obj.event === 'del') {
+      layer.confirm('确定删除此条记录？', function (index) {
+        obj.del();
+        layer.close(index);
+      });
+    } else if (obj.event === 'edit') {
+      admin.popup({
+        title: '编辑'
+        , area: ['550px', '550px']
+        , id: 'LAY-popup-Seat-edit'
+        , resize: false
+        , success: function (layero, index) {
+          view(this.id).render('app/SelfStudyRoom/Seat/listform', data).done(function () {
+            form.val('layuiadmin-form-list', data);
+            form.render(null, 'layuiadmin-form-list');
+            //提交
+            form.on('submit(layuiadmin-app-Seat-submit)', function (data) {
+              var field = data.field;
+              field.Id = obj.data.Id;
+              //提交 Ajax 成功后，关闭当前弹层并重载表格
+              admin.req({
+                url: '/api/SelfStudyRoom/Seat_Update'
+                , type: 'post'
+                , contentType: 'application/json'
+                , data: field
+                , done: function (res) {
+                  layui.table.reload('LAY-app-Seat-list'); //重载表格
+                  layer.close(index); //执行关闭 
+                }
+              });
+            });
+          });
+        }
+      });
+    }
+  });
+
+  //预约
+  table.render({
+    elem: '#LAY-app-SeatReservation-list'
+    , url: '/api/SelfStudyRoom/SeatReservation_List'
+    , cols: [[
+      { type: 'checkbox', fixed: 'left' }
+      , { field: 'Id', width: 80, title: 'ID', sort: true }
+      , { field: 'SeatCategoryId', title: '分类', templet: '#textTpl-SeatCategory' }
+      , { field: 'CreateTime', width: 160, title: '时间' }
+      , { field: 'Name', width: 160, title: '名称' }
+      , { field: 'Description', title: '说明' }
+      , { field: 'Normal', width: 80, title: '状态', templet: '#buttonTpl-Normal' }
+      , { title: '操作', width: 150, align: 'center', fixed: 'right', toolbar: '#table-SeatReservation-list' }
+    ]]
+    , page: true
+    , limit: 10
+    , limits: [10, 15, 20, 25, 30]
+    , text: '对不起，加载出现异常！'
+  });
+
+  //工具条
+  table.on('tool(LAY-app-SeatReservation-list)', function (obj) {
+    var data = obj.data;
+    if (obj.event === 'del') {
+      layer.confirm('确定删除此条记录？', function (index) {
+        obj.del();
+        layer.close(index);
+      });
+    } else if (obj.event === 'edit') {
+      admin.popup({
+        title: '编辑'
+        , area: ['550px', '850px']
+        , id: 'LAY-popup-SeatReservation-edit'
+        , resize: false
+        , success: function (layero, index) {
+          view(this.id).render('app/SelfStudyRoom/SeatReservation/listform', data).done(function () {
+            form.val('layuiadmin-form-list', data);
+            form.render(null, 'layuiadmin-form-list');
+            //提交
+            form.on('submit(layuiadmin-app-SeatReservation-submit)', function (data) {
+              var field = data.field;
+              field.Id = obj.data.Id;
+              //提交 Ajax 成功后，关闭当前弹层并重载表格
+              admin.req({
+                url: '/api/SelfStudyRoom/SeatReservation_Update'
+                , type: 'post'
+                , contentType: 'application/json'
+                , data: field
+                , done: function (res) {
+                  layui.table.reload('LAY-app-SeatReservation-list'); //重载表格
+                  layer.close(index); //执行关闭 
+                }
+              });
+            });
+          });
+        }
+      });
+    }
+  });
+
 
   exports('SelfStudyRoom', {})
 });
