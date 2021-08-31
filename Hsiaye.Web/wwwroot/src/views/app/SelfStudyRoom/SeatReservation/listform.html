@@ -5,21 +5,9 @@
       <script type="text/html" template lay-url="/api/SelfStudyRoom/Seat_Options" lay-type="post"
         lay-done="layui.data.done(d);">
         <select name="SeatId" lay-verify="required" lay-search>
+          <option value="">请选择</option>
           {{#  layui.each(d.Data, function(index, item){ }}
           <option value="{{ item.Id }}">{{ item.Name }} [{{item.SeatCategory.Name}}] [{{ item.SeatCategory.BeginTime }} - {{ item.SeatCategory.EndTime }}] [{{item.SeatCategory.Price}}元]</option>
-          {{#  }); }}
-        </select>
-      </script>
-    </div>
-  </div>
-  <div class="layui-form-item">
-    <label class="layui-form-label">学科</label>
-    <div class="layui-input-block">
-      <script type="text/html" template lay-url="/api/SelfStudyRoom/SeatSubject_Options" lay-type="post"
-        lay-done="layui.data.done(d);">
-        <select name="SeatSubjectId" lay-verify="required">
-          {{#  layui.each(d.Data, function(index, item){ }}
-          <option value="{{ item.Id }}">{{ item.Name }}</option>
           {{#  }); }}
         </select>
       </script>
@@ -47,6 +35,20 @@
     <label class="layui-form-label">结束时间</label>
     <div class="layui-input-block">
       <input type="text" id="End" name="End" lay-verify="required" placeholder="请选择预约结束时间" autocomplete="off" class="layui-input">
+    </div>
+  </div>
+  <div class="layui-form-item">
+    <label class="layui-form-label">学科</label>
+    <div class="layui-input-block">
+      <script type="text/html" template lay-url="/api/SelfStudyRoom/SeatSubject_Options" lay-type="post"
+        lay-done="layui.data.done(d);">
+        <select name="SeatSubjectId" lay-verify="required">
+          <option value="">请选择</option>
+          {{#  layui.each(d.Data, function(index, item){ }}
+          <option value="{{ item.Id }}">{{ item.Name }}</option>
+          {{#  }); }}
+        </select>
+      </script>
     </div>
   </div>
   <div class="layui-form-item">

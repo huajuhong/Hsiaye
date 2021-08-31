@@ -397,23 +397,27 @@
       "list": [
         {
           "name": "SelfStudyRoom",
-          "title": "自习室预约系统",
+          "title": "自习室系统",
           "list": [
             {
-              "name": "SeatSubject/list",
-              "title": "座位学科"
+              "name": "SeatSubject",
+              "title": "座位学科",
+              "jump": "app/SelfStudyRoom/SeatSubject/list"
             },
             {
-              "name": "SeatCategory/list",
-              "title": "座位分类"
+              "name": "SeatCategory",
+              "title": "座位分类",
+              "jump": "app/SelfStudyRoom/SeatCategory/list"
             },
             {
-              "name": "Seat/list",
-              "title": "座位"
+              "name": "Seat",
+              "title": "现有座位",
+              "jump": "app/SelfStudyRoom/Seat/list"
             },
             {
-              "name": "SeatReservation/list",
-              "title": "预约"
+              "name": "SeatReservation",
+              "title": "座位预约",
+              "jump": "app/SelfStudyRoom/SeatReservation/list"
             }
           ]
         },

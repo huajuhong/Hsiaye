@@ -13,7 +13,7 @@ layui.define(['table', 'form', 'laydate'], function (exports) {
     , cols: [[
       { type: 'checkbox', fixed: 'left' }
       , { field: 'Id', width: 80, title: 'ID', sort: true }
-      , { field: 'CreateTime', title: '时间' }
+      , { field: 'CreateTime', title: '创建时间' }
       , { field: 'Name', title: '名称' }
       , { field: 'Description', title: '说明', minWidth: 80, align: 'center' }
       , { field: 'Normal', title: '状态', templet: '#buttonTpl-Normal' }
@@ -72,7 +72,7 @@ layui.define(['table', 'form', 'laydate'], function (exports) {
     , cols: [[
       { type: 'checkbox', fixed: 'left' }
       , { field: 'Id', width: 80, title: 'ID', sort: true }
-      , { field: 'CreateTime', title: '时间' }
+      , { field: 'CreateTime', title: '创建时间' }
       , { field: 'Name', title: '名称' }
       , { field: 'BeginTime', title: '开始时段', width: 100 }
       , { field: 'EndTime', title: '结束时段', width: 100 }
@@ -136,7 +136,7 @@ layui.define(['table', 'form', 'laydate'], function (exports) {
       { type: 'checkbox', fixed: 'left' }
       , { field: 'Id', width: 80, title: 'ID', sort: true }
       , { field: 'SeatCategoryId', title: '分类', templet: '#textTpl-SeatCategory' }
-      , { field: 'CreateTime', width: 160, title: '时间' }
+      , { field: 'CreateTime', width: 160, title: '创建时间' }
       , { field: 'Name', width: 160, title: '名称' }
       , { field: 'Description', title: '说明' }
       , { field: 'Normal', width: 80, title: '状态', templet: '#buttonTpl-Normal' }
@@ -196,7 +196,7 @@ layui.define(['table', 'form', 'laydate'], function (exports) {
       { type: 'checkbox', fixed: 'left' }
       , { field: 'Id', width: 80, title: 'ID', sort: true }
       , { field: 'SeatId', width: 200, title: '座位', templet: '#textTpl-SeatCategory' }
-      , { field: 'CreateTime', width: 160, title: '时间' }
+      , { field: 'CreateTime', width: 160, title: '创建时间' }
       , { field: 'Name', width: 120, title: '名称' }
       , { field: 'Phone', width: 120, title: '电话' }
       , { field: 'Begin', width: 120, title: '开始时间', templet: function (d) { return d.Begin.substring(0, 10); } }

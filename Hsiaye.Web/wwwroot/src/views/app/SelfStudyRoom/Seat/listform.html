@@ -5,6 +5,7 @@
       <script type="text/html" template lay-url="/api/SelfStudyRoom/SeatCategory_Options" lay-type="post"
         lay-done="layui.data.done(d);">
         <select name="SeatCategoryId" lay-verify="required" lay-search>
+          <option value="">请选择</option>
           {{#  layui.each(d.Data, function(index, item){ }}
           <option value="{{ item.Id }}">{{ item.Name }} [{{ item.BeginTime }} - {{ item.EndTime }}] [{{item.Price}}元]</option>
           {{#  }); }}
