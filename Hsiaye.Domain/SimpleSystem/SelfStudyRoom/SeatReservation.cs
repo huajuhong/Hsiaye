@@ -20,13 +20,13 @@ namespace Hsiaye.Domain
         public int OrganizationUnitId { get; set; }
         public DateTime CreateTime { get; set; }
         public int SeatId { get; set; }//座位Id
+        public int SeatSubjectId { get; set; }//座位科目Id
         [StringLength(64)]
         public string Name { get; set; }//姓名
         [StringLength(64)]
         public string Phone { get; set; }//电话
         public DateTime Begin { get; set; }//预约开始时间
         public DateTime End { get; set; }//预约结束时间
-        public string Subject { get; set; }//科目
         [StringLength(256)]
         public string Description { get; set; }
         public int OperatorId { get; set; }//操作者Id
@@ -36,12 +36,15 @@ namespace Hsiaye.Domain
         public bool Reported { get; set; }//默认false,未签到false,已签到true
 
         public Seat Seat { get; set; }
+        public SeatSubject SeatSubject { get; set; }
+        
     }
     public class SeatReservationMap : ClassMapper<SeatReservation>
     {
         public SeatReservationMap()
         {
             Map(t => t.Seat).Ignore();
+            Map(t => t.SeatSubject).Ignore();
             AutoMap();
         }
     }

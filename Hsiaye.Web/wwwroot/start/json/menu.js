@@ -400,6 +400,10 @@
           "title": "自习室预约系统",
           "list": [
             {
+              "name": "SeatSubject/list",
+              "title": "座位学科"
+            },
+            {
               "name": "SeatCategory/list",
               "title": "座位分类"
             },

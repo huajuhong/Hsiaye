@@ -13,6 +13,19 @@
     </div>
   </div>
   <div class="layui-form-item">
+    <label class="layui-form-label">学科</label>
+    <div class="layui-input-block">
+      <script type="text/html" template lay-url="/api/SelfStudyRoom/SeatSubject_Options" lay-type="post"
+        lay-done="layui.data.done(d);">
+        <select name="SeatSubjectId" lay-verify="required">
+          {{#  layui.each(d.Data, function(index, item){ }}
+          <option value="{{ item.Id }}">{{ item.Name }}</option>
+          {{#  }); }}
+        </select>
+      </script>
+    </div>
+  </div>
+  <div class="layui-form-item">
     <label class="layui-form-label">名称</label>
     <div class="layui-input-block">
       <input type="text" name="Name" lay-verify="required" placeholder="请输入名称" autocomplete="off" class="layui-input">
@@ -27,20 +40,13 @@
   <div class="layui-form-item">
     <label class="layui-form-label">开始时间</label>
     <div class="layui-input-block">
-      <input type="text" id="Begin" name="Begin" lay-verify="phone" placeholder="请选择预约开始时间" autocomplete="off" class="layui-input">
+      <input type="text" id="Begin" name="Begin" lay-verify="required" placeholder="请选择预约开始时间" autocomplete="off" class="layui-input">
     </div>
   </div>
   <div class="layui-form-item">
     <label class="layui-form-label">结束时间</label>
     <div class="layui-input-block">
-      <input type="text" id="End" name="End" lay-verify="phone" placeholder="请选择预约结束时间" autocomplete="off" class="layui-input">
-    </div>
-  </div>
-  <div class="layui-form-item">
-    <label class="layui-form-label">科目</label>
-    <div class="layui-input-block">
-      <input type="text" name="Subject" lay-verify="required" placeholder="请选择科目" autocomplete="off"
-        class="layui-input">
+      <input type="text" id="End" name="End" lay-verify="required" placeholder="请选择预约结束时间" autocomplete="off" class="layui-input">
     </div>
   </div>
   <div class="layui-form-item">
@@ -64,20 +70,19 @@
   <div class="layui-form-item">
     <label class="layui-form-label">签到</label>
     <div class="layui-input-block">
-      <input type="checkbox" name="Reported" lay-skin="switch" lay-text="待签|签到" value="false" checked>
+      <input type="checkbox" name="Reported" lay-skin="switch" lay-text="已签|待签" value="true" checked>
     </div>
   </div>
   <div class="layui-form-item">
     <label class="layui-form-label"></label>
     <div class="layui-input-block">
-      <input type="button" lay-submit lay-filter="layuiadmin-app-Seat-submit" value="确认" class="layui-btn">
+      <input type="button" lay-submit lay-filter="layuiadmin-app-SeatReservation-submit" value="确认" class="layui-btn">
     </div>
   </div>
 </form>
 
 <script>
   layui.data.done = function (d) {
-    console.log(d)
     layui.use(['admin', 'form', 'laydate'], function () {
       var $ = layui.$
         , admin = layui.admin
@@ -89,6 +94,7 @@
       laydate.render({ elem: '#Begin' });
       laydate.render({ elem: '#End' });
 
+      form.val("layuiadmin-form-list", { "SeatSubjectId": d.params.SeatSubjectId });
       form.val("layuiadmin-form-list", { "SeatId": d.params.SeatId });
 
       form.render('select'); //刷新select选择框渲染

@@ -1,16 +1,16 @@
-<title>预约</title>
+<title>座位学科</title>
 
 <div class="layui-card layadmin-header">
   <div class="layui-breadcrumb" lay-filter="breadcrumb">
     <a><cite>应用</cite></a>
     <a><cite>自习室预约系统</cite></a>
-    <a><cite>预约</cite></a>
+    <a><cite>座位学科</cite></a>
   </div>
 </div>
 
 <div class="layui-fluid">
   <div class="layui-card">
-    <div class="layui-form layui-card-header layuiadmin-card-header-auto" lay-filter="app-SeatReservation-list">
+    <div class="layui-form layui-card-header layuiadmin-card-header-auto" lay-filter="app-list">
       <div class="layui-form-item">
         <div class="layui-inline">
           <label class="layui-form-label">ID</label>
@@ -41,7 +41,7 @@
           </div>
         </div>
         <div class="layui-inline">
-          <button class="layui-btn layuiadmin-btn-SeatReservation-list" lay-submit lay-filter="LAY-app-list-search">
+          <button class="layui-btn layuiadmin-btn-list" lay-submit lay-filter="LAY-app-list-search">
             <i class="layui-icon layui-icon-search layuiadmin-button-btn"></i>
           </button>
         </div>
@@ -53,10 +53,7 @@
         <button class="layui-btn layuiadmin-btn-list" data-type="batchdel">删除</button>
         <button class="layui-btn layuiadmin-btn-list" data-type="add">添加</button>
       </div>
-      <table id="LAY-app-SeatReservation-list" lay-filter="LAY-app-SeatReservation-list"></table>
-      <script type="text/html" id="textTpl-SeatCategory">
-        {{ d.Seat.SeatCategory.Name }} [{{ d.Seat.SeatCategory.BeginTime }} - {{ d.Seat.SeatCategory.EndTime }}] [{{d.Seat.SeatCategory.Price}}元]
-      </script>
+      <table id="LAY-app-list" lay-filter="LAY-app-list"></table>
       <script type="text/html" id="buttonTpl-Normal">
         {{#  if(d.Normal == true){ }}
           <button class="layui-btn layui-btn-xs">正常</button>
@@ -64,14 +61,7 @@
           <button class="layui-btn layui-btn-danger layui-btn-xs">停用</button>
         {{#  } }}
       </script>
-      <script type="text/html" id="buttonTpl-Reported">
-        {{#  if(d.Reported == true){ }}
-          <button class="layui-btn layui-btn-xs">已签</button>
-        {{#  } else { }}
-          <button class="layui-btn layui-btn-danger layui-btn-xs">待签</button>
-        {{#  } }}
-      </script>
-      <script type="text/html" id="table-SeatReservation-list">
+      <script type="text/html" id="table-list">
         <a class="layui-btn layui-btn-normal layui-btn-xs" lay-event="edit"><i class="layui-icon layui-icon-edit"></i>编辑</a>
         <a class="layui-btn layui-btn-danger layui-btn-xs" lay-event="del"><i class="layui-icon layui-icon-delete"></i>删除</a>
       </script>
@@ -87,14 +77,14 @@
       , form = layui.form
       , table = layui.table;
 
-    form.render(null, 'app-SeatReservation-list');
+    form.render(null, 'app-list');
 
     //搜索
     form.on('submit(LAY-app-list-search)', function (data) {
       var field = data.field;
 
       //执行重载
-      table.reload('LAY-app-SeatReservation-list', {
+      table.reload('LAY-app-list', {
         where: field
       });
     });
@@ -102,7 +92,7 @@
     //事件
     var active = {
       batchdel: function () {
-        var checkStatus = table.checkStatus('LAY-app-SeatReservation-list')
+        var checkStatus = table.checkStatus('LAY-app-list')
           , checkData = checkStatus.data; //得到选中的数据
 
         if (checkData.length === 0) {
@@ -118,7 +108,7 @@
             //,……
           });
           */
-          table.reload('LAY-app-SeatReservation-list');
+          table.reload('LAY-app-list');
           layer.msg('已删除');
         });
       }
@@ -127,17 +117,17 @@
       , add: function (othis) {
         admin.popup({
           title: '添加'
-          , area: ['550px', '850px']
-          , id: 'LAY-popup-SeatReservation-add'
+          , area: ['550px', '550px']
+          , id: 'LAY-popup-add'
           , success: function (layero, index) {
-            view(this.id).render('app/SelfStudyRoom/SeatReservation/listform').done(function () {
+            view(this.id).render('app/SelfStudyRoom/SeatSubject/listform').done(function () {
               form.render(null, 'layuiadmin-form-list');
 
               //提交
-              form.on('submit(layuiadmin-app-SeatReservation-submit)', function (data) {
+              form.on('submit(layuiadmin-app-submit)', function (data) {
                 //提交 Ajax 成功后，关闭当前弹层并重载表格
                 admin.req({
-                  url: '/api/SelfStudyRoom/SeatReservation_Create'
+                  url: '/api/SelfStudyRoom/SeatSubject_Create'
                   , type: 'post'
                   , contentType: 'application/json'
                   , data: data.field
@@ -145,7 +135,7 @@
                     console.log(res)
                   }
                 });
-                layui.table.reload('LAY-app-SeatReservation-list'); //重载表格
+                layui.table.reload('LAY-app-list'); //重载表格
                 layer.close(index); //执行关闭 
               });
             });

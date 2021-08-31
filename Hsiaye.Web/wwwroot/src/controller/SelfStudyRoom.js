@@ -6,6 +6,65 @@ layui.define(['table', 'form', 'laydate'], function (exports) {
     , form = layui.form
     , laydate = layui.laydate;
 
+  //座位学科
+  table.render({
+    elem: '#LAY-app-list'
+    , url: '/api/SelfStudyRoom/SeatSubject_List'
+    , cols: [[
+      { type: 'checkbox', fixed: 'left' }
+      , { field: 'Id', width: 80, title: 'ID', sort: true }
+      , { field: 'CreateTime', title: '时间' }
+      , { field: 'Name', title: '名称' }
+      , { field: 'Description', title: '说明', minWidth: 80, align: 'center' }
+      , { field: 'Normal', title: '状态', templet: '#buttonTpl-Normal' }
+      , { title: '操作', width: 150, align: 'center', fixed: 'right', toolbar: '#table-list' }
+    ]]
+    , page: true
+    , limit: 10
+    , limits: [10, 15, 20, 25, 30]
+    , text: '对不起，加载出现异常！'
+  });
+
+  //工具条
+  table.on('tool(LAY-app-list)', function (obj) {
+    var data = obj.data;
+    if (obj.event === 'del') {
+      layer.confirm('确定删除此条记录？', function (index) {
+        obj.del();
+        layer.close(index);
+      });
+    } else if (obj.event === 'edit') {
+      admin.popup({
+        title: '编辑'
+        , area: ['550px', '550px']
+        , id: 'LAY-popup-edit'
+        , resize: false
+        , success: function (layero, index) {
+          view(this.id).render('app/SelfStudyRoom/SeatSubject/listform', data).done(function () {
+            form.val('layuiadmin-form-list', data);
+            form.render(null, 'layuiadmin-form-list');
+            //提交
+            form.on('submit(layuiadmin-app-submit)', function (data) {
+              var field = data.field;
+              field.Id = obj.data.Id;
+              //提交 Ajax 成功后，关闭当前弹层并重载表格
+              admin.req({
+                url: '/api/SelfStudyRoom/SeatSubject_Update'
+                , type: 'post'
+                , contentType: 'application/json'
+                , data: field
+                , done: function (res) {
+                  layui.table.reload('LAY-app-list'); //重载表格
+                  layer.close(index); //执行关闭 
+                }
+              });
+            });
+          });
+        }
+      });
+    }
+  });
+
   //座位分类
   table.render({
     elem: '#LAY-app-SeatCategory-list'
@@ -136,11 +195,18 @@ layui.define(['table', 'form', 'laydate'], function (exports) {
     , cols: [[
       { type: 'checkbox', fixed: 'left' }
       , { field: 'Id', width: 80, title: 'ID', sort: true }
-      , { field: 'SeatCategoryId', title: '分类', templet: '#textTpl-SeatCategory' }
+      , { field: 'SeatId', width: 200, title: '座位', templet: '#textTpl-SeatCategory' }
       , { field: 'CreateTime', width: 160, title: '时间' }
-      , { field: 'Name', width: 160, title: '名称' }
+      , { field: 'Name', width: 120, title: '名称' }
+      , { field: 'Phone', width: 120, title: '电话' }
+      , { field: 'Begin', width: 120, title: '开始时间', templet: function (d) { return d.Begin.substring(0, 10); } }
+      , { field: 'End', width: 120, title: '结束时间', templet: function (d) { return d.End.substring(0, 10); } }
+      , { field: 'SeatSubjectId', width: 120, title: '科目', templet: function (d) { return d.SeatSubject.Name; }  }
       , { field: 'Description', title: '说明' }
+      , { field: 'OperatorId', width: 80, title: '操作者ID' }
+      , { field: 'OperatorRemark', title: '操作者备注' }
       , { field: 'Normal', width: 80, title: '状态', templet: '#buttonTpl-Normal' }
+      , { field: 'Reported', width: 80, title: '签到', templet: '#buttonTpl-Reported' }
       , { title: '操作', width: 150, align: 'center', fixed: 'right', toolbar: '#table-SeatReservation-list' }
     ]]
     , page: true
@@ -165,6 +231,8 @@ layui.define(['table', 'form', 'laydate'], function (exports) {
         , resize: false
         , success: function (layero, index) {
           view(this.id).render('app/SelfStudyRoom/SeatReservation/listform', data).done(function () {
+            data.Begin = data.Begin.substring(0, 10);
+            data.End = data.End.substring(0, 10);
             form.val('layuiadmin-form-list', data);
             form.render(null, 'layuiadmin-form-list');
             //提交
