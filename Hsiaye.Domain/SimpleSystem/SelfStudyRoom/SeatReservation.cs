@@ -16,11 +16,11 @@ namespace Hsiaye.Domain
     /// </summary>
     public class SeatReservation
     {
-        public int Id { get; set; }
-        public int OrganizationUnitId { get; set; }
+        public long Id { get; set; }
+        public long OrganizationUnitId { get; set; }
         public DateTime CreateTime { get; set; }
-        public int SeatId { get; set; }//座位Id
-        public int SeatSubjectId { get; set; }//座位科目Id
+        public long SeatId { get; set; }//座位Id
+        public long SeatSubjectId { get; set; }//座位科目Id
         [StringLength(64)]
         public string Name { get; set; }//姓名
         [StringLength(64)]
@@ -29,11 +29,12 @@ namespace Hsiaye.Domain
         public DateTime End { get; set; }//预约结束时间
         [StringLength(256)]
         public string Description { get; set; }
-        public int OperatorId { get; set; }//操作者Id
+        public long OperatorId { get; set; }//操作者Id
         [StringLength(64)]
         public string OperatorRemark { get; set; }//操作者备注
         public bool Normal { get; set; }//默认true,取消false,预约true
         public bool Reported { get; set; }//默认false,未签到false,已签到true
+        public bool Deleted { get; set; }
 
         public Seat Seat { get; set; }
         public SeatSubject SeatSubject { get; set; }

@@ -22,7 +22,7 @@ namespace Hsiaye.Web.Extensions
 #if DEBUG
                 result = new ApiResult { Success = false, Code = 500, Message = context.Exception.Message };
 #else
-                result = new ApiResult { Success = false, ErrorCode = 500, ErrorMessage = "服务器内部错误" };
+                result = new ApiResult { Success = false, Code = 500, Message = "服务器内部错误" };
 #endif
             }
             context.Result = new JsonResult(result);

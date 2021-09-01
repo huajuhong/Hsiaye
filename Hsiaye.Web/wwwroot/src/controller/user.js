@@ -42,7 +42,7 @@ layui.define('form', function (exports) {
 
 
   //更换图形验证码
-  $body.on('click', '#LAY-user-get-vercode', function () {
+  $body.on('click', '#LAY-get-imageCode', function () {
     var othis = $(this);
     admin.req({
       url: '/api/Captcha/Get?t=' + new Date().getTime(), success: function (res) {

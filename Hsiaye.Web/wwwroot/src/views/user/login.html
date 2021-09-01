@@ -30,7 +30,7 @@
           </div>
           <div class="layui-col-xs5">
             <div style="margin-left: 10px;">
-              <img class="layadmin-user-login-codeimg" id="LAY-user-get-vercode">
+              <img class="layadmin-user-login-codeimg" id="LAY-get-imageCode">
             </div>
           </div>
         </div>
@@ -82,10 +82,10 @@
       , search = router.search;
 
     form.render();
-    $('#LAY-user-get-vercode').trigger('click');
+    $('#LAY-get-imageCode').trigger('click');
     //提交
     form.on('submit(LAY-user-login-submit)', function (obj) {
-      var VerifyKey = $('#LAY-user-get-vercode').attr('data-key');
+      var VerifyKey = $('#LAY-get-imageCode').attr('data-key');
       //扩展
       Object.assign(obj.field, { VerifyKey })
       //请求登入接口

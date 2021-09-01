@@ -6,17 +6,16 @@ layui.define(['table', 'form', 'laydate'], function (exports) {
     , form = layui.form
     , laydate = layui.laydate;
 
-  //座位学科
+  //自习学科
   table.render({
     elem: '#LAY-app-list'
     , url: '/api/SelfStudyRoom/SeatSubject_List'
     , cols: [[
-      { type: 'checkbox', fixed: 'left' }
-      , { field: 'Id', width: 80, title: 'ID', sort: true }
-      , { field: 'CreateTime', title: '创建时间' }
+      { field: 'Id', width: 80, title: 'ID', sort: true }
       , { field: 'Name', title: '名称' }
       , { field: 'Description', title: '说明', minWidth: 80, align: 'center' }
       , { field: 'Normal', title: '状态', templet: '#buttonTpl-Normal' }
+      , { field: 'CreateTime', title: '创建时间' }
       , { title: '操作', width: 150, align: 'center', fixed: 'right', toolbar: '#table-list' }
     ]]
     , page: true
@@ -70,15 +69,14 @@ layui.define(['table', 'form', 'laydate'], function (exports) {
     elem: '#LAY-app-SeatCategory-list'
     , url: '/api/SelfStudyRoom/SeatCategory_List'
     , cols: [[
-      { type: 'checkbox', fixed: 'left' }
-      , { field: 'Id', width: 80, title: 'ID', sort: true }
-      , { field: 'CreateTime', title: '创建时间' }
+      { field: 'Id', width: 80, title: 'ID', sort: true }
       , { field: 'Name', title: '名称' }
       , { field: 'BeginTime', title: '开始时段', width: 100 }
       , { field: 'EndTime', title: '结束时段', width: 100 }
       , { field: 'Price', title: '价格', sort: true }
       , { field: 'Description', title: '说明', minWidth: 80, align: 'center' }
       , { field: 'Normal', title: '状态', templet: '#buttonTpl-Normal' }
+      , { field: 'CreateTime', title: '创建时间' }
       , { title: '操作', width: 150, align: 'center', fixed: 'right', toolbar: '#table-SeatCategory-list' }
     ]]
     , page: true
@@ -133,13 +131,12 @@ layui.define(['table', 'form', 'laydate'], function (exports) {
     elem: '#LAY-app-Seat-list'
     , url: '/api/SelfStudyRoom/Seat_List'
     , cols: [[
-      { type: 'checkbox', fixed: 'left' }
-      , { field: 'Id', width: 80, title: 'ID', sort: true }
+      { field: 'Id', width: 80, title: 'ID', sort: true }
       , { field: 'SeatCategoryId', title: '分类', templet: '#textTpl-SeatCategory' }
-      , { field: 'CreateTime', width: 160, title: '创建时间' }
       , { field: 'Name', width: 160, title: '名称' }
       , { field: 'Description', title: '说明' }
       , { field: 'Normal', width: 80, title: '状态', templet: '#buttonTpl-Normal' }
+      , { field: 'CreateTime', width: 160, title: '创建时间' }
       , { title: '操作', width: 150, align: 'center', fixed: 'right', toolbar: '#table-Seat-list' }
     ]]
     , page: true
@@ -193,20 +190,20 @@ layui.define(['table', 'form', 'laydate'], function (exports) {
     elem: '#LAY-app-SeatReservation-list'
     , url: '/api/SelfStudyRoom/SeatReservation_List'
     , cols: [[
-      { type: 'checkbox', fixed: 'left' }
-      , { field: 'Id', width: 80, title: 'ID', sort: true }
-      , { field: 'SeatId', width: 200, title: '座位', templet: '#textTpl-SeatCategory' }
-      , { field: 'CreateTime', width: 160, title: '创建时间' }
-      , { field: 'Name', width: 120, title: '名称' }
+      // { type: 'checkbox', fixed: 'left' }
+      // , { field: 'Id', width: 80, title: 'ID', sort: true }
+      { field: 'Name', width: 120, title: '名称' }
       , { field: 'Phone', width: 120, title: '电话' }
-      , { field: 'Begin', width: 120, title: '开始时间', templet: function (d) { return d.Begin.substring(0, 10); } }
-      , { field: 'End', width: 120, title: '结束时间', templet: function (d) { return d.End.substring(0, 10); } }
-      , { field: 'SeatSubjectId', width: 120, title: '科目', templet: function (d) { return d.SeatSubject.Name; }  }
-      , { field: 'Description', title: '说明' }
-      , { field: 'OperatorId', width: 80, title: '操作者ID' }
-      , { field: 'OperatorRemark', title: '操作者备注' }
-      , { field: 'Normal', width: 80, title: '状态', templet: '#buttonTpl-Normal' }
-      , { field: 'Reported', width: 80, title: '签到', templet: '#buttonTpl-Reported' }
+      , { field: 'Begin', width: 110, title: '开始时间', templet: function (d) { return d.Begin.substring(0, 10); } }
+      , { field: 'End', width: 110, title: '结束时间', templet: function (d) { return d.End.substring(0, 10); } }
+      , { field: 'SeatId', title: '座位', templet: '#textTpl-SeatCategory' }
+      , { field: 'SeatSubjectId', width: 200, title: '科目', templet: function (d) { return d.SeatSubject.Name; } }
+      // , { field: 'Description', title: '说明' }
+      // , { field: 'OperatorId', width: 80, title: '操作者ID' }
+      // , { field: 'OperatorRemark', title: '操作者备注' }
+      , { field: 'Normal', width: 70, title: '状态', templet: '#buttonTpl-Normal' }
+      , { field: 'Reported', width: 70, title: '签到', templet: '#buttonTpl-Reported' }
+      , { field: 'CreateTime', width: 160, title: '创建时间' }
       , { title: '操作', width: 150, align: 'center', fixed: 'right', toolbar: '#table-SeatReservation-list' }
     ]]
     , page: true
@@ -220,13 +217,23 @@ layui.define(['table', 'form', 'laydate'], function (exports) {
     var data = obj.data;
     if (obj.event === 'del') {
       layer.confirm('确定删除此条记录？', function (index) {
-        obj.del();
-        layer.close(index);
+
+
+        //提交 Ajax 成功后，关闭当前弹层并重载表格
+        admin.req({
+          url: '/api/SelfStudyRoom/SeatReservation_Delete?id=' + data.Id
+          , type: 'post'
+          , done: function (res) {
+            obj.del();
+            layui.table.reload('LAY-app-SeatReservation-list'); //重载表格
+            layer.close(index); //执行关闭 
+          }
+        });
       });
     } else if (obj.event === 'edit') {
       admin.popup({
         title: '编辑'
-        , area: ['550px', '850px']
+        , area: ['650px', '850px']
         , id: 'LAY-popup-SeatReservation-edit'
         , resize: false
         , success: function (layero, index) {

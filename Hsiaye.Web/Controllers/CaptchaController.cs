@@ -1,4 +1,5 @@
 ﻿using Hsiaye.Domain.Shared;
+using Hsiaye.Extensions;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Caching.Memory;
 using System;
@@ -9,6 +10,7 @@ using System.Drawing.Text;
 using System.IO;
 using System.Linq;
 using System.Numerics;
+using System.Text;
 using System.Threading.Tasks;
 
 namespace Hsiaye.Web.Controllers
@@ -36,7 +38,7 @@ namespace Hsiaye.Web.Controllers
             var image = "data:image/png;base64," + Convert.ToBase64String(fileContents);
 
             string key = "CaptchaImage" + Guid.NewGuid().ToString("N");
-            _cache.Set(key, code, new TimeSpan(0, 3, 0));
+            _cache.Set(key, code, new TimeSpan(0, 5, 0));
             return Ok(new { key, image, code });
             //return File(fileContents, "image/png");
         }
@@ -84,18 +86,66 @@ namespace Hsiaye.Web.Controllers
             return ms.ToArray();
         }
 
+        /// <summary>
+        /// 验证测试
+        /// </summary>
+        /// <param name="key"></param>
+        /// <param name="code"></param>
+        /// <returns></returns>
         [HttpGet]
         [ApiExplorerSettings(IgnoreApi = true)]
         public IActionResult Verify(string key, string code)
         {
             string value = _cache.Get<string>(key);
             if (string.IsNullOrEmpty(value))
-                throw new UserFriendlyException("图形验证码已过期");
+                throw new UserFriendlyException("key已过期");
             if (!value.Equals(code, StringComparison.OrdinalIgnoreCase))
-                throw new UserFriendlyException("图形验证码错误");
+                throw new UserFriendlyException("code错误");
             //业务代码
             _cache.Remove(key);
             return Ok();
+        }
+
+        [HttpPost]
+        public bool SMS(string imageKey, string imageCode, string phone)
+        {
+            //校验图形验证码
+            string value = _cache.Get<string>(imageKey);
+            if (string.IsNullOrEmpty(value))
+                throw new UserFriendlyException("图形验证码已过期");
+            if (!value.Equals(imageCode, StringComparison.OrdinalIgnoreCase))
+                throw new UserFriendlyException("图形验证码错误");
+            _cache.Remove(imageKey);
+
+            string smsCode = new Random(Guid.NewGuid().GetHashCode()).Next(0, 9999).ToString().PadLeft(4, '0');
+            _cache.Set(phone, smsCode, new TimeSpan(0, 5, 0));
+
+            AlibabaCloud.SDK.Dysmsapi20170525.Client client = CreateClient();
+            AlibabaCloud.SDK.Dysmsapi20170525.Models.SendSmsRequest sendSmsRequest = new AlibabaCloud.SDK.Dysmsapi20170525.Models.SendSmsRequest
+            {
+                PhoneNumbers = phone,
+                SignName = "大数据服务云平台",
+                TemplateCode = "SMS_175530372",
+                TemplateParam = Newtonsoft.Json.JsonConvert.SerializeObject(new { code = smsCode })
+            };
+            // 复制代码运行请自行打印 API 的返回值
+            var response = client.SendSms(sendSmsRequest);
+            return response.Body.Code == "OK";
+        }
+        public static AlibabaCloud.SDK.Dysmsapi20170525.Client CreateClient()
+        {
+            string accessKeyId = "LTAI5tLaEXg4JCM4yJRGdzep";
+            string accessKeySecret = "Lpei1KBH0JCxkCPYQKHv6GMwsUb1tG";
+            AlibabaCloud.OpenApiClient.Models.Config config = new AlibabaCloud.OpenApiClient.Models.Config
+            {
+                // 您的AccessKey ID
+                AccessKeyId = accessKeyId,
+                // 您的AccessKey Secret
+                AccessKeySecret = accessKeySecret,
+            };
+            // 访问的域名
+            config.Endpoint = "dysmsapi.aliyuncs.com";
+            return new AlibabaCloud.SDK.Dysmsapi20170525.Client(config);
         }
     }
 }

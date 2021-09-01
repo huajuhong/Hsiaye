@@ -69,8 +69,8 @@ layui.define(['view', 'table', 'upload'], function(exports){
     ,sendAuthCode: function(options){
       options = $.extend({
         seconds: 60
-        ,elemPhone: '#LAY_phone'
-        ,elemVercode: '#LAY_vercode'
+        ,elemPhone: '#Phone'
+        ,elemImageCode: '#ImageCode'
       }, options);
 
       var seconds = options.seconds
@@ -95,37 +95,46 @@ layui.define(['view', 'table', 'upload'], function(exports){
 
       $body.off('click', options.elem).on('click', options.elem, function(){
         options.elemPhone = $(options.elemPhone);
-        options.elemVercode = $(options.elemVercode);
+        options.elemImageCode = $(options.elemImageCode);
         
         var elemPhone = options.elemPhone
-        ,value = elemPhone.val();
+        ,phone = elemPhone.val();
+        var elemImageCode = options.elemImageCode
+        ,imageCode = elemImageCode.val();
 
         if(seconds !== options.seconds || $(this).hasClass(DISABLED)) return;
 
-        if(!/^1\d{10}$/.test(value)){
+        if(!/^1\d{10}$/.test(phone)){
           elemPhone.focus();
           return layer.msg('请输入正确的手机号')
         };
+
+        if (!imageCode) {
+          elemImageCode.focus();
+          return layer.msg('请输入图形验证码')
+        };
+
+        var imageKey = $('#LAY-get-imageCode').attr('data-key');
         
         if(typeof options.ajax === 'object'){
           var success = options.ajax.success;
           delete options.ajax.success;
         }
-        
+      
         admin.req($.extend(true, {
-          url: '/auth/code'
-          ,type: 'get'
-          ,data: {
-            phone: value
-          }
-          ,success: function(res){
-            layer.msg('验证码已发送至你的手机，请注意查收', {
-              icon: 1
-              ,shade: 0
-            });
-            options.elemVercode.focus();
-            countDown();
-            success && success(res);
+          url: '/api/Captcha/SMS?imageKey=' + imageKey + '&imageCode=' + imageCode + '&phone=' + phone
+          , type: 'post'
+          , contentType: 'application/json'
+          , success: function (res) {
+            if (res.Code == 200) {
+              layer.msg('验证码已发送至你的手机，请注意查收', {
+                icon: 1
+                , shade: 0
+              });
+              options.elemImageCode.focus();
+              countDown();
+              success && success(res);
+            }
           }
         }, options.ajax));
       });

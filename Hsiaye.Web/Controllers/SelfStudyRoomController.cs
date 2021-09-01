@@ -4,13 +4,19 @@ using Hsiaye.Application.Contracts;
 using Hsiaye.Domain;
 using Hsiaye.Domain.Shared;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Caching.Memory;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text;
 using System.Threading.Tasks;
 
 namespace Hsiaye.Web.Controllers
 {
+    public class SeatSubject_ListInput : KeywordsListInput
+    {
+        public DateTime? ReservationDate { get; set; }
+    }
     /// <summary>
     /// 自习室
     /// 使用教程：
@@ -24,11 +30,13 @@ namespace Hsiaye.Web.Controllers
     {
         private readonly IDatabase _database;
         private readonly IAccessor _accessor;
+        private readonly IMemoryCache _cache;
 
-        public SelfStudyRoomController(IDatabase database, IAccessor accessor)
+        public SelfStudyRoomController(IDatabase database, IAccessor accessor, IMemoryCache cache)
         {
             _database = database;
             _accessor = accessor;
+            _cache = cache;
         }
 
         #region 座位学科 管理
@@ -109,7 +117,7 @@ namespace Hsiaye.Web.Controllers
                 Operator = GroupOperator.And,
                 Predicates = new List<IPredicate>()
             };
-            predicateGroup.Predicates.Add(Predicates.Field<SeatSubject>(f => f.OrganizationUnitId, Operator.Eq, _accessor.OrganizationUnitId));
+            //predicateGroup.Predicates.Add(Predicates.Field<SeatSubject>(f => f.OrganizationUnitId, Operator.Eq, _accessor.OrganizationUnitId));
             predicateGroup.Predicates.Add(Predicates.Field<SeatSubject>(f => f.Normal, Operator.Eq, true));
             var sort = new List<ISort> { Predicates.Sort<SeatSubject>(x => x.CreateTime) };
             var list = _database.GetList<SeatSubject>(predicateGroup, sort);
@@ -198,7 +206,7 @@ namespace Hsiaye.Web.Controllers
                 Operator = GroupOperator.And,
                 Predicates = new List<IPredicate>()
             };
-            predicateGroup.Predicates.Add(Predicates.Field<SeatCategory>(f => f.OrganizationUnitId, Operator.Eq, _accessor.OrganizationUnitId));
+            //predicateGroup.Predicates.Add(Predicates.Field<SeatCategory>(f => f.OrganizationUnitId, Operator.Eq, _accessor.OrganizationUnitId));
             predicateGroup.Predicates.Add(Predicates.Field<SeatCategory>(f => f.Normal, Operator.Eq, true));
             var sort = new List<ISort> { Predicates.Sort<SeatCategory>(x => x.CreateTime) };
             var list = _database.GetList<SeatCategory>(predicateGroup, sort);
@@ -303,7 +311,7 @@ namespace Hsiaye.Web.Controllers
                 Operator = GroupOperator.And,
                 Predicates = new List<IPredicate>()
             };
-            predicateGroup.Predicates.Add(Predicates.Field<Seat>(f => f.OrganizationUnitId, Operator.Eq, _accessor.OrganizationUnitId));
+            //predicateGroup.Predicates.Add(Predicates.Field<Seat>(f => f.OrganizationUnitId, Operator.Eq, _accessor.OrganizationUnitId));
             predicateGroup.Predicates.Add(Predicates.Field<Seat>(f => f.Normal, Operator.Eq, true));
             var sort = new List<ISort> { Predicates.Sort<Seat>(x => x.CreateTime) };
             var list = _database.GetList<Seat>(predicateGroup, sort);
@@ -327,24 +335,60 @@ namespace Hsiaye.Web.Controllers
             //预约成功的条件：选中的座位在选择的时段内没有预约记录
             List<IPredicate> predicates = new List<IPredicate>
             {
-                Predicates.Field<SeatReservation>(f => f.OrganizationUnitId, Operator.Eq, _accessor.OrganizationUnitId),
+                //Predicates.Field<SeatReservation>(f => f.OrganizationUnitId, Operator.Eq, _accessor.OrganizationUnitId),
+                Predicates.Field<SeatReservation>(f => f.Deleted, Operator.Eq, false),
                 Predicates.Field<SeatReservation>(f => f.SeatId, Operator.Eq, input.SeatId),
                 Predicates.Field<SeatReservation>(f => f.Normal, Operator.Eq, true),
             };
 
 
-            //时间条件，输入时间时段不可有记录才可预约成功
-            List<IPredicate> predicates1 = new List<IPredicate>
+            //时间条件：查找输入的开始时间和结束时间范围内是否有记录，包含临界值
+            IPredicate[] predicates1 = new IPredicate[]
             {
-                Predicates.Field<SeatReservation>(f => f.Begin, Operator.Gt, input.Begin.Add(seatCategory.BeginTime)),
-                Predicates.Field<SeatReservation>(f => f.End, Operator.Lt, input.End.Add(seatCategory.EndTime)),
+                Predicates.Field<SeatReservation>(f => f.Begin, Operator.Ge, input.Begin),
+                Predicates.Field<SeatReservation>(f => f.Begin, Operator.Le, input.End),
             };
-            predicates.Add(Predicates.Group(GroupOperator.Or, predicates1.ToArray()));
-
-            var model = _database.Get<SeatReservation>(Predicates.Group(GroupOperator.And, predicates.ToArray()));
-            if (model != null)
+            IPredicate[] predicates2 = new IPredicate[]
             {
-                throw new UserFriendlyException($"预约失败（该座位已被预约【姓名：{model.Name}；电话：{model.Phone}；时段：{model.Begin:yyyyMMdd HHmm}至{model.End:yyyyMMdd HHmm}】）");
+                Predicates.Field<SeatReservation>(f => f.End, Operator.Ge, input.Begin),
+                Predicates.Field<SeatReservation>(f => f.End, Operator.Le, input.End),
+            };
+            IPredicate[] predicatesByBetween = new IPredicate[]
+            {
+                Predicates.Group(GroupOperator.And, predicates1),
+                Predicates.Group(GroupOperator.And, predicates2)
+            };
+
+            predicates.Add(Predicates.Group(GroupOperator.Or, predicatesByBetween));
+
+            var list = _database.GetList<SeatReservation>(Predicates.Group(GroupOperator.And, predicates.ToArray()));
+            if (list.Any())
+            {
+                foreach (var item in list)
+                {
+                    MapToEntity(item);
+                }
+                StringBuilder errorMessage = new StringBuilder();
+                foreach (var item in list)
+                {
+                    //检查时间段是否冲突
+                    //如果现有时间的开始时间在
+
+                    if (seatCategory.BeginTime >= item.Seat.SeatCategory.BeginTime && seatCategory.BeginTime <= item.Seat.SeatCategory.EndTime)
+                    {
+                        //开始时间冲突
+                        errorMessage.AppendLine($"开始时间冲突：{item.Name}-{item.Phone}已预约{item.Begin:yyyyMMdd}至{item.End:yyyyMMdd}期间的{item.Seat.SeatCategory.BeginTime}-{item.Seat.SeatCategory.EndTime}时段。");
+                    }
+                    if (seatCategory.EndTime >= item.Seat.SeatCategory.BeginTime && seatCategory.EndTime <= item.Seat.SeatCategory.EndTime)
+                    {
+                        //结束时间冲突
+                        errorMessage.AppendLine($"结束时间冲突：{item.Name}-{item.Phone}已预约{item.Begin:yyyyMMdd}至{item.End:yyyyMMdd}期间的{item.Seat.SeatCategory.BeginTime}-{item.Seat.SeatCategory.EndTime}时段。");
+                    }
+                }
+                if (errorMessage.Length > 0)
+                {
+                    throw new UserFriendlyException($"预约失败（该座位已被预约），预约信息：" + errorMessage.ToString());
+                }
             }
             input.OrganizationUnitId = _accessor.OrganizationUnitId;
             input.CreateTime = DateTime.Now;
@@ -360,17 +404,6 @@ namespace Hsiaye.Web.Controllers
             if (model.OrganizationUnitId != _accessor.OrganizationUnitId)
             {
                 throw new UserFriendlyException("非法请求");
-            }
-            List<IPredicate> predicates = new List<IPredicate>
-            {
-                Predicates.Field<SeatReservation>(f => f.Id, Operator.Eq,input.Id,true),
-                Predicates.Field<SeatReservation>(f => f.OrganizationUnitId, Operator.Eq, _accessor.OrganizationUnitId),
-                Predicates.Field<SeatReservation>(f => f.Name, Operator.Eq, input.Name),
-            };
-            int count = _database.Count<SeatReservation>(Predicates.Group(GroupOperator.And, predicates.ToArray()));
-            if (count > 0)
-            {
-                throw new UserFriendlyException($"已存在：{input.Name}");
             }
 
             model.SeatId = input.SeatId;
@@ -388,18 +421,37 @@ namespace Hsiaye.Web.Controllers
         }
 
         [HttpPost]
-        public PageResult<SeatReservation> SeatReservation_List(KeywordsListInput input)
+        public bool SeatReservation_Delete(long id)
+        {
+            var model = _database.Get<SeatReservation>(new { Id = id });
+            //if (model.Deleted == true || model.OrganizationUnitId != _accessor.OrganizationUnitId)
+            //{
+            //    throw new UserFriendlyException("非法请求");
+            //}
+            model.Deleted = true;
+            _database.Update(model);
+            return true;
+        }
+
+        [HttpPost]
+        public PageResult<SeatReservation> SeatReservation_List(SeatSubject_ListInput input)
         {
             IPredicateGroup predicateGroup = new PredicateGroup()
             {
                 Operator = GroupOperator.And,
                 Predicates = new List<IPredicate>()
             };
-            predicateGroup.Predicates.Add(Predicates.Field<SeatReservation>(e => e.OrganizationUnitId, Operator.Eq, _accessor.OrganizationUnitId));
+            //predicateGroup.Predicates.Add(Predicates.Field<SeatReservation>(e => e.OrganizationUnitId, Operator.Eq, _accessor.OrganizationUnitId));
+            predicateGroup.Predicates.Add(Predicates.Field<SeatReservation>(e => e.Deleted, Operator.Eq, false));
             if (!string.IsNullOrEmpty(input.Keywords))
             {
                 predicateGroup.Predicates.Add(Predicates.Field<SeatReservation>(e => e.Name, Operator.Like, input.Keywords));
                 predicateGroup.Predicates.Add(Predicates.Field<SeatReservation>(e => e.Description, Operator.Like, input.Keywords));
+            }
+            if (input.ReservationDate.HasValue)
+            {
+                predicateGroup.Predicates.Add(Predicates.Field<SeatReservation>(e => e.Begin, Operator.Le, input.ReservationDate.Value));
+                predicateGroup.Predicates.Add(Predicates.Field<SeatReservation>(e => e.End, Operator.Ge, input.ReservationDate.Value));
             }
             var sort = new List<ISort> { Predicates.Sort<SeatReservation>(x => x.CreateTime) };
             var list = _database.GetPage<SeatReservation>(predicateGroup, sort, input.PageIndex, input.PageSize);
@@ -428,6 +480,92 @@ namespace Hsiaye.Web.Controllers
 
             //座位类型
             MapToEntity(seat);
+        }
+
+        //座位预约接口
+        [HttpPost]
+        public bool SeatReservation(SeatReservation input, string smsCode)
+        {
+            //校验图形验证码
+            string value = _cache.Get<string>(input.Phone);
+            if (string.IsNullOrEmpty(value))
+                throw new UserFriendlyException("短信验证码已过期");
+            if (!value.Equals(smsCode, StringComparison.OrdinalIgnoreCase))
+                throw new UserFriendlyException("短信验证码错误");
+            _cache.Remove(input.Phone);
+
+            var seat = _database.Get<Seat>(Predicates.Field<Seat>(f => f.Id, Operator.Eq, input.SeatId));
+
+            var seatCategory = _database.Get<SeatCategory>(Predicates.Field<SeatCategory>(f => f.Id, Operator.Eq, seat.SeatCategoryId));
+
+            //预约成功的条件：选中的座位在选择的时段内没有预约记录
+            List<IPredicate> predicates = new List<IPredicate>
+            {
+                //Predicates.Field<SeatReservation>(f => f.OrganizationUnitId, Operator.Eq, input.OrganizationUnitId),
+                Predicates.Field<SeatReservation>(f => f.Deleted, Operator.Eq, false),
+                Predicates.Field<SeatReservation>(f => f.SeatId, Operator.Eq, input.SeatId),
+                Predicates.Field<SeatReservation>(f => f.Normal, Operator.Eq, true),
+            };
+
+
+            //时间条件：查找输入的开始时间和结束时间范围内是否有记录，包含临界值
+            IPredicate[] predicates1 = new IPredicate[]
+            {
+                Predicates.Field<SeatReservation>(f => f.Begin, Operator.Ge, input.Begin),
+                Predicates.Field<SeatReservation>(f => f.Begin, Operator.Le, input.End),
+            };
+            IPredicate[] predicates2 = new IPredicate[]
+            {
+                Predicates.Field<SeatReservation>(f => f.End, Operator.Ge, input.Begin),
+                Predicates.Field<SeatReservation>(f => f.End, Operator.Le, input.End),
+            };
+            IPredicate[] predicatesByBetween = new IPredicate[]
+            {
+                Predicates.Group(GroupOperator.And, predicates1),
+                Predicates.Group(GroupOperator.And, predicates2)
+            };
+
+            predicates.Add(Predicates.Group(GroupOperator.Or, predicatesByBetween));
+
+            var list = _database.GetList<SeatReservation>(Predicates.Group(GroupOperator.And, predicates.ToArray()));
+            if (list.Any())
+            {
+                foreach (var item in list)
+                {
+                    MapToEntity(item);
+                }
+                StringBuilder errorMessage = new StringBuilder();
+                foreach (var item in list)
+                {
+                    //检查时间段是否冲突
+                    //如果现有时间的开始时间在
+
+                    if (seatCategory.BeginTime >= item.Seat.SeatCategory.BeginTime && seatCategory.BeginTime <= item.Seat.SeatCategory.EndTime)
+                    {
+                        //开始时间冲突
+                        errorMessage.AppendLine($"开始时间冲突：{item.Name}-{item.Phone}已预约{item.Begin:yyyyMMdd}至{item.End:yyyyMMdd}期间的{item.Seat.SeatCategory.BeginTime}-{item.Seat.SeatCategory.EndTime}时段。");
+                    }
+                    if (seatCategory.EndTime >= item.Seat.SeatCategory.BeginTime && seatCategory.EndTime <= item.Seat.SeatCategory.EndTime)
+                    {
+                        //结束时间冲突
+                        errorMessage.AppendLine($"结束时间冲突：{item.Name}-{item.Phone}已预约{item.Begin:yyyyMMdd}至{item.End:yyyyMMdd}期间的{item.Seat.SeatCategory.BeginTime}-{item.Seat.SeatCategory.EndTime}时段。");
+                    }
+                }
+                if (errorMessage.Length > 0)
+                {
+                    throw new UserFriendlyException($"预约失败（该座位已被预约），预约信息：" + errorMessage.ToString());
+                }
+            }
+            //input.OrganizationUnitId = _accessor.OrganizationUnitId;
+            input.CreateTime = DateTime.Now;
+            input.OperatorId = 0;
+            //补充默认字段
+            input.Description = "";
+            input.OperatorRemark = "";
+            input.Normal = true;
+            input.Reported = false;
+            _database.Insert(input);
+            return true;
         }
         #endregion
     }

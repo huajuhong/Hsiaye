@@ -13,31 +13,15 @@
     <div class="layui-form layui-card-header layuiadmin-card-header-auto" lay-filter="app-SeatReservation-list">
       <div class="layui-form-item">
         <div class="layui-inline">
-          <label class="layui-form-label">ID</label>
+          <label class="layui-form-label">关键字</label>
           <div class="layui-input-block">
-            <input type="text" name="id" placeholder="请输入" autocomplete="off" class="layui-input">
+            <input type="text" name="Keywords" placeholder="请输入名称、说明" autocomplete="off" class="layui-input">
           </div>
         </div>
         <div class="layui-inline">
-          <label class="layui-form-label">发帖人</label>
+          <label class="layui-form-label">预约日期</label>
           <div class="layui-input-block">
-            <input type="text" name="poster" placeholder="请输入" autocomplete="off" class="layui-input">
-          </div>
-        </div>
-        <div class="layui-inline">
-          <label class="layui-form-label">发帖内容</label>
-          <div class="layui-input-block">
-            <input type="text" name="content" placeholder="请输入" autocomplete="off" class="layui-input">
-          </div>
-        </div>
-        <div class="layui-inline">
-          <label class="layui-form-label">帖子状态</label>
-          <div class="layui-input-block">
-            <select name="top">
-              <option value="0">正常</option>
-              <option value="1">置顶</option>
-              <option value="2">封禁</option>
-            </select>
+            <input type="text" id="ReservationDate" name="ReservationDate" placeholder="请选择" autocomplete="off" class="layui-input">
           </div>
         </div>
         <div class="layui-inline">
@@ -50,7 +34,7 @@
 
     <div class="layui-card-body">
       <div style="padding-bottom: 10px;">
-        <button class="layui-btn layuiadmin-btn-list" data-type="batchdel">删除</button>
+        <!-- <button class="layui-btn layuiadmin-btn-list" data-type="batchdel">删除</button> -->
         <button class="layui-btn layuiadmin-btn-list" data-type="add">添加</button>
       </div>
       <table id="LAY-app-SeatReservation-list" lay-filter="LAY-app-SeatReservation-list"></table>
@@ -80,12 +64,15 @@
 </div>
 
 <script>
-  layui.use('SelfStudyRoom', layui.factory('SelfStudyRoom')).use(['admin', 'table', 'SelfStudyRoom'], function () {
+  layui.use('SelfStudyRoom', layui.factory('SelfStudyRoom')).use(['admin', 'table', 'SelfStudyRoom', 'laydate'], function () {
     var $ = layui.$
       , admin = layui.admin
       , view = layui.view
       , form = layui.form
-      , table = layui.table;
+      , table = layui.table
+      , laydate = layui.laydate;
+
+    laydate.render({ elem: '#ReservationDate' });
 
     form.render(null, 'app-SeatReservation-list');
 
@@ -127,7 +114,7 @@
       , add: function (othis) {
         admin.popup({
           title: '添加'
-          , area: ['550px', '850px']
+          , area: ['650px', '850px']
           , id: 'LAY-popup-SeatReservation-add'
           , success: function (layero, index) {
             view(this.id).render('app/SelfStudyRoom/SeatReservation/listform').done(function () {

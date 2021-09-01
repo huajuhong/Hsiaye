@@ -13,31 +13,9 @@
     <div class="layui-form layui-card-header layuiadmin-card-header-auto" lay-filter="app-Seat-list">
       <div class="layui-form-item">
         <div class="layui-inline">
-          <label class="layui-form-label">ID</label>
+          <label class="layui-form-label">关键字</label>
           <div class="layui-input-block">
-            <input type="text" name="id" placeholder="请输入" autocomplete="off" class="layui-input">
-          </div>
-        </div>
-        <div class="layui-inline">
-          <label class="layui-form-label">发帖人</label>
-          <div class="layui-input-block">
-            <input type="text" name="poster" placeholder="请输入" autocomplete="off" class="layui-input">
-          </div>
-        </div>
-        <div class="layui-inline">
-          <label class="layui-form-label">发帖内容</label>
-          <div class="layui-input-block">
-            <input type="text" name="content" placeholder="请输入" autocomplete="off" class="layui-input">
-          </div>
-        </div>
-        <div class="layui-inline">
-          <label class="layui-form-label">帖子状态</label>
-          <div class="layui-input-block">
-            <select name="top">
-              <option value="0">正常</option>
-              <option value="1">置顶</option>
-              <option value="2">封禁</option>
-            </select>
+            <input type="text" name="Keywords" placeholder="请输入名称" autocomplete="off" class="layui-input">
           </div>
         </div>
         <div class="layui-inline">
@@ -50,7 +28,7 @@
 
     <div class="layui-card-body">
       <div style="padding-bottom: 10px;">
-        <button class="layui-btn layuiadmin-btn-list" data-type="batchdel">删除</button>
+        <!-- <button class="layui-btn layuiadmin-btn-list" data-type="batchdel">删除</button> -->
         <button class="layui-btn layuiadmin-btn-list" data-type="add">添加</button>
       </div>
       <table id="LAY-app-Seat-list" lay-filter="LAY-app-Seat-list"></table>
@@ -66,7 +44,7 @@
       </script>
       <script type="text/html" id="table-Seat-list">
         <a class="layui-btn layui-btn-normal layui-btn-xs" lay-event="edit"><i class="layui-icon layui-icon-edit"></i>编辑</a>
-        <a class="layui-btn layui-btn-danger layui-btn-xs" lay-event="del"><i class="layui-icon layui-icon-delete"></i>删除</a>
+        <!-- <a class="layui-btn layui-btn-danger layui-btn-xs" lay-event="del"><i class="layui-icon layui-icon-delete"></i>删除</a> -->
       </script>
     </div>
   </div>
