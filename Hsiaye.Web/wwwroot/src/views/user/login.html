@@ -73,11 +73,12 @@
 </div>
 
 <script>
-  layui.use(['admin', 'form', 'user'], function () {
+  layui.use(['admin', 'form', 'table', 'user'], function () {
     var $ = layui.$
       , setter = layui.setter
       , admin = layui.admin
       , form = layui.form
+      , table = layui.table
       , router = layui.router()
       , search = router.search;
 
@@ -101,6 +102,11 @@
             key: setter.request.tokenName
             , value: res.Data.ProviderKey
           });
+          
+          // 此处必须再覆盖一次token，否则登入后表格请求数据不带新token
+          var obj = {};
+          obj[setter.request.tokenName] = layui.data(setter.tableName)[setter.request.tokenName] || ''
+          table.set({ headers: obj });
 
           //登入成功的提示与跳转
           layer.msg('登入成功', {

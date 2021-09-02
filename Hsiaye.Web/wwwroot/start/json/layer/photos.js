@@ -1,6 +1,6 @@
 {
-  "code": 0,
-  "msg": "",
+  "Code": 200,
+  "Message": "",
   "title": "JSON请求的相册",
   "id": 8,
   "start": 0,

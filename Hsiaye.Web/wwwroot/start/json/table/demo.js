@@ -1,9 +1,9 @@
 
 {
-  "code": 0
-  ,"msg": ""
-  ,"count": 3000000
-  ,"data": [{
+  "Code": 200
+  ,"Message": ""
+  ,"Count": 3000000
+  ,"Data": [{
     "id": "10001"
     ,"username": "杜甫"
     ,"email": "test@email.com"

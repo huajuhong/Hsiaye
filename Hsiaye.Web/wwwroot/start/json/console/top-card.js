@@ -1,8 +1,8 @@
 {
-  "code": 0
-  ,"msg": ""
-  ,"count": "100"
-  ,"data": [{
+  "Code": 200
+  ,"Message": ""
+  ,"Count": "100"
+  ,"Data": [{
     "id": 111
     ,"title": "热帖测试"
     ,"username": "test"

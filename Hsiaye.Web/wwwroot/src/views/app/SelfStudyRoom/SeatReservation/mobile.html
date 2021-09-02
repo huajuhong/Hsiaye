@@ -117,8 +117,6 @@
 
       form.val("layuiadmin-form-list", { "SeatSubjectId": d.params.SeatSubjectId });
       form.val("layuiadmin-form-list", { "SeatId": d.params.SeatId });
-
-      form.render('select'); //刷新select选择框渲染
     })
   };
 
@@ -144,7 +142,9 @@
         , contentType: 'application/json'
         , data: data.field
         , done: function (res) {
-          layer.alert("预约成功！")
+          layer.alert("预约成功！", function () {
+            location.reload();
+          })
         }
       });
     });

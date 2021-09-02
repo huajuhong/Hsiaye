@@ -1,6 +1,6 @@
 {
-  "code": 0
-  ,"msg": ""
+  "Code": 200
+  ,"Message": ""
   ,"data": {
     "mine": {
       "username": "测试名称"

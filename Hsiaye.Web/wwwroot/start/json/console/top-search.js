@@ -1,8 +1,8 @@
 {
-  "code": 0
-  ,"msg": ""
-  ,"count": "100"
-  ,"data": [{
+  "Code": 200
+  ,"Message": ""
+  ,"Count": "100"
+  ,"Data": [{
     "keywords": "UI"
     ,"frequency": 8520
     ,"userNums": 2216

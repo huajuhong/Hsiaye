@@ -21,9 +21,40 @@ namespace Hsiaye.Application
         }
 
         public string ProviderKey => _httpContextAccessor.GetProviderKey();
-        public int MemberId => _database.GetList<MemberToken>(Predicates.Field<MemberToken>(f => f.ProviderKey, Operator.Eq, ProviderKey)).FirstOrDefault().MemberId;
+        public int MemberId
+        {
+            get
+            {
+                var list = _database.GetList<MemberToken>(Predicates.Field<MemberToken>(f => f.ProviderKey, Operator.Eq, ProviderKey));
+                if (list.Any())
+                {
+                    return list.FirstOrDefault().MemberId;
+                }
+                else
+                {
+                    //todo:ProviderKey失效
+                    return 0;
+                }
+            }
+        }
         public Member Member => _database.Get<Member>(MemberId);
-        public int OrganizationUnitId => _database.GetList<MemberOrganizationUnit>(Predicates.Field<MemberOrganizationUnit>(f => f.MemberId, Operator.Eq, MemberId)).FirstOrDefault().OrganizationUnitId;
+        public int OrganizationUnitId
+        {
+            get
+            {
+
+                var list = _database.GetList<MemberOrganizationUnit>(Predicates.Field<MemberOrganizationUnit>(f => f.MemberId, Operator.Eq, MemberId));
+                if (list.Any())
+                {
+                    return list.FirstOrDefault().OrganizationUnitId;
+                }
+                else
+                {
+                    //todo:ProviderKey失效
+                    return 0;
+                }
+            }
+        }
         public Permission[] Permissions
         {
             get

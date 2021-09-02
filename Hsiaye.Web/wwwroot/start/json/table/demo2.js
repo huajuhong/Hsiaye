@@ -1,9 +1,9 @@
 
 {
-  "code": 0
-  ,"msg": ""
-  ,"count": 66
-  ,"data": [{
+  "Code": 200
+  ,"Message": ""
+  ,"Count": 66
+  ,"Data": [{
     "username": "张小三"
     ,"amount": 18
     ,"province": "浙江"

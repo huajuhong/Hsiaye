@@ -855,7 +855,7 @@ layui.define(['view', 'table', 'upload'], function(exports){
       //table
       table.set({
         headers: obj, //通过 request 头传递
-        where: obj, //通过参数传递
+        // where: obj, //通过参数传递
         method: 'post',
         contentType: 'application/json',
         request: {
@@ -869,11 +869,12 @@ layui.define(['view', 'table', 'upload'], function(exports){
           return {
             "code": res.Code, //解析接口状态
             "msg": res.Message, //解析提示文本
-            "count": res.Data.Count, //解析数据长度
-            "data": res.Data.List //解析数据列表
+            "count": res.Count, //解析数据长度
+            "data": res.Data //解析数据列表
           };
         }
       });
+
       //upload
       upload.set({
         headers: obj, //通过 request 头传递

@@ -1,8 +1,8 @@
 {
-  "code": 0
-  ,"msg": ""
-  ,"count": "100"
-  ,"data": [{
+  "Code": 200
+  ,"Message": ""
+  ,"Count": "100"
+  ,"Data": [{
     "id": "1001"
     ,"poster": "赵"
     ,"avatar": "https://sentsin.gitee.io/res/images/layui/avatar.png"

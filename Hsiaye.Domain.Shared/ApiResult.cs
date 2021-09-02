@@ -38,6 +38,7 @@ namespace Hsiaye.Domain.Shared
         /// </summary>
         public string Message { get; set; }
 
+        public int Count { get; set; }
         public object Data { get; set; }
     }
 }

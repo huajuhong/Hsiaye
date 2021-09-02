@@ -1,6 +1,6 @@
 {
-  "code": 0
-  ,"msg": ""
+  "Code": 200
+  ,"Message": ""
   ,"data": {
     "list": [{
       "username": "测试1"

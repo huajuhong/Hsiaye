@@ -1,8 +1,8 @@
 {
-  "code": 0
-  ,"msg": ""
-  ,"count": "100"
-  ,"data": [{
+  "Code": 200
+  ,"Message": ""
+  ,"Count": "100"
+  ,"Data": [{
     "id": "1"
     ,"rolename": "超级管理员"
     ,"limits": "管理所有的管理员"
