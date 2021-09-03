@@ -292,6 +292,16 @@ namespace Hsiaye.Web.Controllers
             return new PageResult<Seat>(list, count);
         }
 
+        /// <summary>
+        /// 可预约的座位
+        /// </summary>
+        /// <returns></returns>
+        [HttpPost]
+        public IEnumerable<Seat> SeatSurplus()
+        {
+            return null;
+        }
+
         private void MapToEntity(Seat model)
         {
             if (model == null)
