@@ -41,7 +41,7 @@ layui.define(['laytpl', 'layer', 'element', 'util'], function (exports) {
       '/user/login' //登入页
       , '/user/reg' //注册页
       , '/user/forget' //找回密码
-      , '/app/SelfStudyRoom/SeatReservation/mobile' //自习室座位预约（手机端）
+      , '/app/SelfStudyRoom/reservation' //自习室座位预约（手机端）
       , '/template/tips/test' //独立页的一个测试 demo
     ]
 

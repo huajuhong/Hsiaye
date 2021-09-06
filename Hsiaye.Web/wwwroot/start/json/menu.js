@@ -124,6 +124,11 @@
               "name": "SeatReservation",
               "title": "座位预约",
               "jump": "app/SelfStudyRoom/SeatReservation/list"
+            },
+            {
+              "name": "Set",
+              "title": "设置",
+              "jump": "app/SelfStudyRoom/set"
             }
           ]
         },

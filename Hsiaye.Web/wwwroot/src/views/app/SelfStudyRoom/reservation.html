@@ -6,20 +6,33 @@
 
       <!-- <input type="hidden" name="OrganizationUnitId" value="1"> -->
 
-      <div class="layui-form-item">
-        <label class="layui-form-label">座位</label>
-        <div class="layui-input-block">
-          <script type="text/html" template lay-url="/api/SelfStudyRoom/Seat_Options" lay-type="post"
-            lay-done="layui.data.done(d);">
-            <select name="SeatId" lay-verify="required" lay-search>
-              <option value="">请选择</option>
-              {{#  layui.each(d.Data, function(index, item){ }}
-              <option value="{{ item.Id }}">{{ item.Name }} [{{item.SeatCategory.Name}}] [{{ item.SeatCategory.BeginTime }} - {{ item.SeatCategory.EndTime }}] [{{item.SeatCategory.Price}}元]</option>
-              {{#  }); }}
-            </select>
-          </script>
+      <div class="layui-form-item" id="DateRange">
+        <div class="layui-inline">
+          <label class="layui-form-label">预约日期</label>
+          <div class="layui-input-inline" style="width: 100px;">
+            <input type="text" id="Begin" name="Begin" lay-verify="required" placeholder="开始日期" autocomplete="off"
+              class="layui-input">
+          </div>
+          <div class="layui-form-mid">-</div>
+          <div class="layui-input-inline" style="width: 100px;">
+            <input type="text" id="End" name="End" lay-verify="required" placeholder="结束日期" autocomplete="off"
+              class="layui-input">
+          </div>
         </div>
       </div>
+
+      <div class="layui-form-item">
+        <label class="layui-form-label">可选座位</label>
+        <div class="layui-input-block">
+          <script type="text/html" template id="tmp_SeatId" lay-url="/api/SelfStudyRoom/Seat_Options" lay-type="post"
+            lay-done="layui.data.done(d);">
+            {{#  layui.each(d.Data, function(index, item){ }}
+            <input type="radio" name="SeatId" value="{{ item.Id }}" title="[{{ item.SeatCategory.BeginTime }} - {{ item.SeatCategory.EndTime }}] [{{item.SeatCategory.Name}}] {{ item.Name }} [{{item.SeatCategory.Price}}元]"><br>
+            {{#  }); }}
+        </script>
+        </div>
+      </div>
+
       <div class="layui-form-item">
         <label class="layui-form-label">姓名</label>
         <div class="layui-input-block">
@@ -34,20 +47,7 @@
             class="layui-input">
         </div>
       </div>
-      <div class="layui-form-item">
-        <label class="layui-form-label">开始日期</label>
-        <div class="layui-input-block">
-          <input type="text" id="Begin" name="Begin" lay-verify="required" placeholder="请选择预约开始日期" autocomplete="off"
-            class="layui-input">
-        </div>
-      </div>
-      <div class="layui-form-item">
-        <label class="layui-form-label">结束日期</label>
-        <div class="layui-input-block">
-          <input type="text" id="End" name="End" lay-verify="required" placeholder="请选择预约结束日期" autocomplete="off"
-            class="layui-input">
-        </div>
-      </div>
+
       <div class="layui-form-item">
         <label class="layui-form-label">学科</label>
         <div class="layui-input-block">
@@ -89,6 +89,7 @@
           </div>
         </div>
       </div>
+
       <div class="layui-form-item">
         <label class="layui-form-label"></label>
         <div class="layui-input-block">
@@ -104,16 +105,11 @@
 <script>
 
   layui.data.done = function (d) {
-    layui.use(['admin', 'form', 'laydate'], function () {
+    layui.use(['admin', 'form'], function () {
       var $ = layui.$
         , admin = layui.admin
         , view = layui.view
-        , table = layui.table
-        , form = layui.form
-        , laydate = layui.laydate;
-
-      laydate.render({ elem: '#Begin' });
-      laydate.render({ elem: '#End' });
+        , form = layui.form;
 
       form.val("layuiadmin-form-list", { "SeatSubjectId": d.params.SeatSubjectId });
       form.val("layuiadmin-form-list", { "SeatId": d.params.SeatId });
@@ -126,6 +122,22 @@
       , view = layui.view
       , form = layui.form
       , laydate = layui.laydate;
+    var today = new Date();
+    //开始时间
+    laydate.render({
+      elem: '#Begin', value: today, done: function (value, date, endDate) {
+        laydate.render({ elem: '#End', value: value });
+      }
+    });
+
+    //结束时间
+    laydate.render({
+      elem: '#End', value: today, done: function (value, date, endDate) {
+        console.log(value); //得到日期生成的值，如：2017-08-18
+        console.log(date); //得到日期时间对象：{year: 2017, month: 8, date: 18, hours: 0, minutes: 0, seconds: 0}
+        console.log(endDate); //得结束的日期时间对象，开启范围选择（range: true）才会返回。对象成员同上。
+      }
+    });
 
     // 获取图形验证码
     $('#LAY-get-imageCode').trigger('click');

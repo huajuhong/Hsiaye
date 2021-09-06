@@ -292,16 +292,6 @@ namespace Hsiaye.Web.Controllers
             return new PageResult<Seat>(list, count);
         }
 
-        /// <summary>
-        /// 可预约的座位
-        /// </summary>
-        /// <returns></returns>
-        [HttpPost]
-        public IEnumerable<Seat> SeatSurplus()
-        {
-            return null;
-        }
-
         private void MapToEntity(Seat model)
         {
             if (model == null)
@@ -313,8 +303,12 @@ namespace Hsiaye.Web.Controllers
             model.SeatCategory = seatCategory;
         }
 
+        /// <summary>
+        /// 可预约的座位
+        /// </summary>
+        /// <returns></returns>
         [HttpPost]
-        public IEnumerable<Seat> Seat_Options()
+        public IEnumerable<Seat> Seat_Options(DateTime begin, DateTime end)
         {
             IPredicateGroup predicateGroup = new PredicateGroup()
             {
@@ -576,6 +570,66 @@ namespace Hsiaye.Web.Controllers
             input.Reported = false;
             _database.Insert(input);
             return true;
+        }
+        #endregion
+
+        #region 设置
+        public bool SetSetting(SelfStudyRoomSetInput input)
+        {
+            Setting setting = new Setting
+            {
+                CreateTime = DateTime.Now,
+                ControllerName = nameof(SelfStudyRoomController),
+                Name = "座位分布图",
+                Value = input.SeatMap,
+            };
+
+            IPredicateGroup predicateGroup = new PredicateGroup()
+            {
+                Operator = GroupOperator.And,
+                Predicates = new List<IPredicate>()
+            };
+            predicateGroup.Predicates.Add(Predicates.Field<Setting>(e => e.ControllerName, Operator.Eq, setting.ControllerName));
+            predicateGroup.Predicates.Add(Predicates.Field<Setting>(e => e.Name, Operator.Eq, setting.Name));
+
+            var list = _database.GetList<Setting>(predicateGroup);
+            if (list.Any())
+            {
+                var entity = list.First();
+                entity.Value = setting.Value;
+                _database.Update(entity);
+            }
+            else
+            {
+                _database.Insert(setting);
+            }
+            return true;
+        }
+
+        public SelfStudyRoomSetOutput GetSetting()
+        {
+            SelfStudyRoomSetOutput output = new SelfStudyRoomSetOutput();
+            Setting setting = new Setting
+            {
+                CreateTime = DateTime.Now,
+                ControllerName = nameof(SelfStudyRoomController),
+                Name = "座位分布图",
+            };
+
+            IPredicateGroup predicateGroup = new PredicateGroup()
+            {
+                Operator = GroupOperator.And,
+                Predicates = new List<IPredicate>()
+            };
+            predicateGroup.Predicates.Add(Predicates.Field<Setting>(e => e.ControllerName, Operator.Eq, setting.ControllerName));
+            predicateGroup.Predicates.Add(Predicates.Field<Setting>(e => e.Name, Operator.Eq, setting.Name));
+            var list = _database.GetList<Setting>(predicateGroup);
+            if (list.Any())
+            {
+                var entity = list.First();
+                output.SeatMap = entity.Value;
+            }
+            return output;
         }
         #endregion
     }
