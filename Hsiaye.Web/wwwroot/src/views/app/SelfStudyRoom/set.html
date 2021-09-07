@@ -3,44 +3,120 @@
 <div class="layui-card layadmin-header">
     <div class="layui-breadcrumb" lay-filter="breadcrumb">
         <a><cite>应用</cite></a>
-        <a><cite>自习室预约系统</cite></a>
+        <a><cite>自习室系统</cite></a>
         <a><cite>设置</cite></a>
     </div>
 </div>
 
 <div class="layui-fluid">
-    <div class="layui-card">
-        <div class="layui-card-header">座位分布图</div>
-        <div class="layui-card-body">
-            <button type="button" class="layui-btn" id="SeatMap">
-                <i class="layui-icon">&#xe67c;</i>上传图片
-            </button>
+
+    <form class="layui-form" lay-filter="setting" style="padding: 20px 30px 0 0;">
+        <div class="layui-form-item">
+            <div class="layui-inline">
+                <label class="layui-form-label">座位分布图</label>
+                <div class="layui-input-inline">
+                    <input type="text" id="SeatMap" name="SeatMap" lay-verify="required" autocomplete="off"
+                        class="layui-input">
+                    <div class="layui-upload-list">
+                        <img class="layui-upload-img" id="uploadImage" width="190" height="80">
+                        <p id="uploadText"></p>
+                    </div>
+                    <div style="width: 190;">
+                        <div class="layui-progress" lay-showpercent="yes" lay-filter="uploadProgress">
+                            <div class="layui-progress-bar" lay-percent=""></div>
+                        </div>
+                    </div>
+                </div>
+                <div class="layui-input-inline">
+                    <button type="button" class="layui-btn" id="btnSeatMap">
+                        <i class="layui-icon">&#xe67c;</i>上传图片
+                    </button>
+                </div>
+                <div class="layui-form-mid layui-word-aux">最佳尺寸：1000px*500px</div>
+            </div>
         </div>
-    </div>
+
+        <div class="layui-form-item">
+            <div class="layui-input-block">
+                <button type="submit" class="layui-btn" lay-submit lay-filter="setting-submit">保存</button>
+            </div>
+        </div>
+    </form>
+
 </div>
 
 <script>
-    layui.use(['admin', 'upload'], function () {
+    layui.use(['admin', 'form', 'upload'], function () {
         var $ = layui.$
             , admin = layui.admin
             , view = layui.view
+            , element = layui.element
+            , form = layui.form
             , upload = layui.upload;
-
-        //执行实例
-        var uploadInst = upload.render({
-            elem: '#SeatMap' //绑定元素
-            , url: '/upload/' //上传接口
+        // 初始化设置数据
+        admin.req({
+            url: '/api/SelfStudyRoom/GetSetting'
+            , type: 'post'
+            , contentType: 'application/json'
             , done: function (res) {
-                //上传完毕回调
-            }
-            , error: function () {
-                //请求异常回调
+                form.val('setting', res.Data);
+                $('#uploadImage').attr('src', res.Data.SeatMap);
             }
         });
 
-        $('.layui-btn.layuiadmin-btn-list').on('click', function () {
-            var type = $(this).data('type');
-            active[type] ? active[type].call(this) : '';
+        //执行实例
+        upload.render({
+            elem: '#btnSeatMap' //绑定元素
+            , url: '/api/Attachment/upload/' //上传接口
+            , before: function (obj) {
+                //预读本地文件示例，不支持ie8
+                obj.preview(function (index, file, result) {
+                    $('#uploadImage').attr('src', result); //图片链接（base64）
+                });
+
+                element.progress('uploadProgress', '0%'); //进度条复位
+                layer.msg('上传中', { icon: 16, time: 0 });
+            }
+            , done: function (res) {
+                $('#SeatMap').val(res.Data.RelativePath)
+                //如果上传失败
+                if (res.code > 0) {
+                    return layer.msg('上传失败');
+                }
+                //上传成功的一些操作
+                //……
+                $('#uploadText').html(''); //置空上传失败的状态
+            }
+            , error: function () {
+                //演示失败状态，并实现重传
+                var uploadText = $('#uploadText');
+                uploadText.html('<span style="color: #FF5722;">上传失败</span> <a class="layui-btn layui-btn-xs uploadProgress-reload">重试</a>');
+                uploadText.find('.uploadProgress-reload').on('click', function () {
+                    uploadInst.upload();
+                });
+            }
+            //进度条
+            , progress: function (n, elem, e) {
+                element.progress('uploadProgress', n + '%'); //可配合 layui 进度条元素使用
+                if (n == 100) {
+                    layer.msg('上传完毕', { icon: 1 });
+                }
+            }
+        });
+
+        //提交
+        form.on('submit(setting-submit)', function (data) {
+            admin.req({
+                url: '/api/SelfStudyRoom/SetSetting'
+                , type: 'post'
+                , data: {}
+                , contentType: 'application/json'
+                , data: data.field
+                , done: function (res) {
+                    layer.msg('保存成功', { icon: 1 });
+                }
+            });
+            return false;
         });
     });
 </script>

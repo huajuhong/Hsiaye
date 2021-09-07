@@ -15,6 +15,7 @@ namespace Hsiaye.Web.Controllers
 {
     public class SeatSubject_ListInput : KeywordsListInput
     {
+        public long SeatId { get; set; }
         public DateTime? ReservationDate { get; set; }
     }
     /// <summary>
@@ -167,9 +168,6 @@ namespace Hsiaye.Web.Controllers
             }
 
             model.Name = input.Name;
-            model.BeginTime = input.BeginTime;
-            model.EndTime = input.EndTime;
-            model.Price = input.Price;
             model.Description = input.Description;
             model.Normal = input.Normal;
 
@@ -222,6 +220,7 @@ namespace Hsiaye.Web.Controllers
             {
                 Predicates.Field<Seat>(f => f.OrganizationUnitId, Operator.Eq, _accessor.OrganizationUnitId),
                 Predicates.Field<Seat>(f => f.Name, Operator.Eq, input.Name),
+                Predicates.Field<Seat>(f => f.SeatCategoryId, Operator.Eq, input.SeatCategoryId),
             };
             int count = _database.Count<Seat>(Predicates.Group(GroupOperator.And, predicates.ToArray()));
             if (count > 0)
@@ -244,9 +243,10 @@ namespace Hsiaye.Web.Controllers
             }
             List<IPredicate> predicates = new List<IPredicate>
             {
-                Predicates.Field<Seat>(f => f.Id, Operator.Eq,input.Id,true),
+                Predicates.Field<Seat>(f => f.Id, Operator.Eq, input.Id, true),
                 Predicates.Field<Seat>(f => f.OrganizationUnitId, Operator.Eq, _accessor.OrganizationUnitId),
                 Predicates.Field<Seat>(f => f.Name, Operator.Eq, input.Name),
+                Predicates.Field<Seat>(f => f.SeatCategoryId, Operator.Eq, input.SeatCategoryId),
             };
             int count = _database.Count<Seat>(Predicates.Group(GroupOperator.And, predicates.ToArray()));
             if (count > 0)
@@ -256,6 +256,9 @@ namespace Hsiaye.Web.Controllers
 
             model.SeatCategoryId = input.SeatCategoryId;
             model.Name = input.Name;
+            model.BeginTime = input.BeginTime;
+            model.EndTime = input.EndTime;
+            model.Price = input.Price;
             model.Description = input.Description;
             model.Normal = input.Normal;
 
@@ -308,8 +311,9 @@ namespace Hsiaye.Web.Controllers
         /// </summary>
         /// <returns></returns>
         [HttpPost]
-        public IEnumerable<Seat> Seat_Options(DateTime begin, DateTime end)
+        public IEnumerable<Seat> Seat_Options(DateTime? begin, DateTime? end)
         {
+            //查询所有座位
             IPredicateGroup predicateGroup = new PredicateGroup()
             {
                 Operator = GroupOperator.And,
@@ -323,6 +327,38 @@ namespace Hsiaye.Web.Controllers
             {
                 MapToEntity(item);
             }
+
+            if (begin.HasValue && end.HasValue)
+            {
+                //查询已被预约的座位
+                predicateGroup = new PredicateGroup()
+                {
+                    Operator = GroupOperator.And,
+                    Predicates = new List<IPredicate>()
+                };
+
+                //时间条件：查找输入的开始时间和结束时间范围内是否有记录，包含临界值
+                predicateGroup.Predicates.Add(Predicates.Field<SeatReservation>(f => f.Begin, Operator.Le, begin));
+                predicateGroup.Predicates.Add(Predicates.Field<SeatReservation>(f => f.End, Operator.Ge, begin));
+
+                predicateGroup.Predicates.Add(Predicates.Field<SeatReservation>(f => f.Begin, Operator.Le, end));
+                predicateGroup.Predicates.Add(Predicates.Field<SeatReservation>(f => f.End, Operator.Ge, end));
+
+                var reservations = _database.GetList<SeatReservation>(predicateGroup);
+                if (reservations.Any())
+                {
+                    var reservationSeatIds = reservations.Select(x => x.SeatId);
+                    foreach (var item in list)
+                    {
+                        if (reservationSeatIds.Contains(item.Id))
+                        {
+                            //用作界面不可选标记
+                            item.Id = 0;
+                        }
+                    }
+                }
+            }
+
             return list;
         }
         #endregion
@@ -345,25 +381,16 @@ namespace Hsiaye.Web.Controllers
                 Predicates.Field<SeatReservation>(f => f.Normal, Operator.Eq, true),
             };
 
-
             //时间条件：查找输入的开始时间和结束时间范围内是否有记录，包含临界值
-            IPredicate[] predicates1 = new IPredicate[]
-            {
-                Predicates.Field<SeatReservation>(f => f.Begin, Operator.Ge, input.Begin),
-                Predicates.Field<SeatReservation>(f => f.Begin, Operator.Le, input.End),
-            };
-            IPredicate[] predicates2 = new IPredicate[]
-            {
-                Predicates.Field<SeatReservation>(f => f.End, Operator.Ge, input.Begin),
-                Predicates.Field<SeatReservation>(f => f.End, Operator.Le, input.End),
-            };
             IPredicate[] predicatesByBetween = new IPredicate[]
             {
-                Predicates.Group(GroupOperator.And, predicates1),
-                Predicates.Group(GroupOperator.And, predicates2)
+                Predicates.Field<SeatReservation>(f => f.Begin, Operator.Le, input.Begin),
+                Predicates.Field<SeatReservation>(f => f.End, Operator.Ge, input.Begin),
+                Predicates.Field<SeatReservation>(f => f.Begin, Operator.Le, input.End),
+                Predicates.Field<SeatReservation>(f => f.End, Operator.Ge, input.End),
             };
 
-            predicates.Add(Predicates.Group(GroupOperator.Or, predicatesByBetween));
+            predicates.Add(Predicates.Group(GroupOperator.And, predicatesByBetween));
 
             var list = _database.GetList<SeatReservation>(Predicates.Group(GroupOperator.And, predicates.ToArray()));
             if (list.Any())
@@ -378,15 +405,15 @@ namespace Hsiaye.Web.Controllers
                     //检查时间段是否冲突
                     //如果现有时间的开始时间在
 
-                    if (seatCategory.BeginTime >= item.Seat.SeatCategory.BeginTime && seatCategory.BeginTime <= item.Seat.SeatCategory.EndTime)
+                    if (seat.BeginTime >= item.Seat.BeginTime && seat.BeginTime <= item.Seat.EndTime)
                     {
                         //开始时间冲突
-                        errorMessage.AppendLine($"开始时间冲突：{item.Name}-{item.Phone}已预约{item.Begin:yyyyMMdd}至{item.End:yyyyMMdd}期间的{item.Seat.SeatCategory.BeginTime}-{item.Seat.SeatCategory.EndTime}时段。");
+                        errorMessage.AppendLine($"开始时间冲突：{item.Name}-{item.Phone}已预约{item.Begin:yyyyMMdd}至{item.End:yyyyMMdd}期间的{item.Seat.BeginTime}-{item.Seat.EndTime}时段。");
                     }
-                    if (seatCategory.EndTime >= item.Seat.SeatCategory.BeginTime && seatCategory.EndTime <= item.Seat.SeatCategory.EndTime)
+                    if (seat.EndTime >= item.Seat.BeginTime && seat.EndTime <= item.Seat.EndTime)
                     {
                         //结束时间冲突
-                        errorMessage.AppendLine($"结束时间冲突：{item.Name}-{item.Phone}已预约{item.Begin:yyyyMMdd}至{item.End:yyyyMMdd}期间的{item.Seat.SeatCategory.BeginTime}-{item.Seat.SeatCategory.EndTime}时段。");
+                        errorMessage.AppendLine($"结束时间冲突：{item.Name}-{item.Phone}已预约{item.Begin:yyyyMMdd}至{item.End:yyyyMMdd}期间的{item.Seat.BeginTime}-{item.Seat.EndTime}时段。");
                     }
                 }
                 if (errorMessage.Length > 0)
@@ -405,10 +432,10 @@ namespace Hsiaye.Web.Controllers
         public bool SeatReservation_Update(SeatReservation input)
         {
             var model = _database.Get<SeatReservation>(new { input.Id });
-            if (model.OrganizationUnitId != _accessor.OrganizationUnitId)
-            {
-                throw new UserFriendlyException("非法请求");
-            }
+            //if (model.OrganizationUnitId != _accessor.OrganizationUnitId)
+            //{
+            //    throw new UserFriendlyException("非法请求");
+            //}
 
             model.SeatId = input.SeatId;
             model.SeatSubjectId = input.SeatSubjectId;
@@ -451,6 +478,10 @@ namespace Hsiaye.Web.Controllers
             {
                 predicateGroup.Predicates.Add(Predicates.Field<SeatReservation>(e => e.Name, Operator.Like, input.Keywords));
                 predicateGroup.Predicates.Add(Predicates.Field<SeatReservation>(e => e.Description, Operator.Like, input.Keywords));
+            }
+            if (input.SeatId > 0)
+            {
+                predicateGroup.Predicates.Add(Predicates.Field<SeatReservation>(e => e.SeatId, Operator.Eq, input.SeatId));
             }
             if (input.ReservationDate.HasValue)
             {
@@ -544,15 +575,15 @@ namespace Hsiaye.Web.Controllers
                     //检查时间段是否冲突
                     //如果现有时间的开始时间在
 
-                    if (seatCategory.BeginTime >= item.Seat.SeatCategory.BeginTime && seatCategory.BeginTime <= item.Seat.SeatCategory.EndTime)
+                    if (seat.BeginTime >= item.Seat.BeginTime && seat.BeginTime <= item.Seat.EndTime)
                     {
                         //开始时间冲突
-                        errorMessage.AppendLine($"开始时间冲突：{item.Name}-{item.Phone}已预约{item.Begin:yyyyMMdd}至{item.End:yyyyMMdd}期间的{item.Seat.SeatCategory.BeginTime}-{item.Seat.SeatCategory.EndTime}时段。");
+                        errorMessage.AppendLine($"开始时间冲突：{item.Name}-{item.Phone}已预约{item.Begin:yyyyMMdd}至{item.End:yyyyMMdd}期间的{item.Seat.BeginTime}-{item.Seat.EndTime}时段。");
                     }
-                    if (seatCategory.EndTime >= item.Seat.SeatCategory.BeginTime && seatCategory.EndTime <= item.Seat.SeatCategory.EndTime)
+                    if (seat.EndTime >= item.Seat.BeginTime && seat.EndTime <= item.Seat.EndTime)
                     {
                         //结束时间冲突
-                        errorMessage.AppendLine($"结束时间冲突：{item.Name}-{item.Phone}已预约{item.Begin:yyyyMMdd}至{item.End:yyyyMMdd}期间的{item.Seat.SeatCategory.BeginTime}-{item.Seat.SeatCategory.EndTime}时段。");
+                        errorMessage.AppendLine($"结束时间冲突：{item.Name}-{item.Phone}已预约{item.Begin:yyyyMMdd}至{item.End:yyyyMMdd}期间的{item.Seat.BeginTime}-{item.Seat.EndTime}时段。");
                     }
                 }
                 if (errorMessage.Length > 0)
@@ -574,6 +605,7 @@ namespace Hsiaye.Web.Controllers
         #endregion
 
         #region 设置
+        [HttpPost]
         public bool SetSetting(SelfStudyRoomSetInput input)
         {
             Setting setting = new Setting
@@ -606,6 +638,7 @@ namespace Hsiaye.Web.Controllers
             return true;
         }
 
+        [HttpPost]
         public SelfStudyRoomSetOutput GetSetting()
         {
             SelfStudyRoomSetOutput output = new SelfStudyRoomSetOutput();
@@ -630,6 +663,39 @@ namespace Hsiaye.Web.Controllers
                 output.SeatMap = entity.Value;
             }
             return output;
+        }
+
+        /// <summary>
+        /// 座位分布图
+        /// </summary>
+        /// <returns></returns>
+        [HttpGet]
+        public string SeatMap()
+        {
+            Setting setting = new Setting
+            {
+                CreateTime = DateTime.Now,
+                ControllerName = nameof(SelfStudyRoomController),
+                Name = "座位分布图",
+            };
+
+            IPredicateGroup predicateGroup = new PredicateGroup()
+            {
+                Operator = GroupOperator.And,
+                Predicates = new List<IPredicate>()
+            };
+            predicateGroup.Predicates.Add(Predicates.Field<Setting>(e => e.ControllerName, Operator.Eq, setting.ControllerName));
+            predicateGroup.Predicates.Add(Predicates.Field<Setting>(e => e.Name, Operator.Eq, setting.Name));
+
+            var list = _database.GetList<Setting>(predicateGroup);
+            if (list.Any())
+            {
+                return list.First().Value;
+            }
+            else
+            {
+                return "";
+            }
         }
         #endregion
     }

@@ -19,6 +19,9 @@ namespace Hsiaye.Domain
         public long SeatCategoryId { get; set; }
         [StringLength(64)]
         public string Name { get; set; }
+        public TimeSpan BeginTime { get; set; }//开始时段
+        public TimeSpan EndTime { get; set; }//结束时段
+        public decimal Price { get; set; }//价格
         [StringLength(256)]
         public string Description { get; set; }
         public bool Normal { get; set; }

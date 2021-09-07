@@ -59,6 +59,10 @@ namespace Hsiaye.NUnitTest
             modelBuilder.Entity<Seat>();
             modelBuilder.Entity<SeatCategory>();
             modelBuilder.Entity<SeatReservation>();
+
+            modelBuilder.Entity<Attachment>();
+            modelBuilder.Entity<Setting>();
+
         }
         public DbSet<Member> Member { get; set; }
         public DbSet<Role> Role { get; set; }

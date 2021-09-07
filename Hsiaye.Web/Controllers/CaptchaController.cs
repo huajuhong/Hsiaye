@@ -58,7 +58,7 @@ namespace Hsiaye.Web.Controllers
             Font ft = new Font("consolas", fontSize);
             //Font ft = new Font("SimHei", fontSize); 
             //颜色列表，用于验证码、噪线、噪点 
-            Color[] color = { Color.Black, Color.Red, Color.Blue, Color.Green, Color.Orange, Color.Brown, Color.Brown, Color.DarkBlue };
+            Color[] color = { Color.FromArgb(255, 184, 0), Color.FromArgb(255, 87, 34), Color.FromArgb(0, 150, 136) };
 
             //创建画布
             using Bitmap bmp = new Bitmap(width, height);

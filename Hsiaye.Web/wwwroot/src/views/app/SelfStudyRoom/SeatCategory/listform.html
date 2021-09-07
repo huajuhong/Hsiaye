@@ -6,28 +6,9 @@
     </div>
   </div>
   <div class="layui-form-item">
-    <label class="layui-form-label">开始时段</label>
-    <div class="layui-input-block">
-      <input id="BeginTime" name="BeginTime" lay-verify="required" placeholder="请选择" autocomplete="off" class="layui-input">
-    </div>
-  </div>
-  <div class="layui-form-item">
-    <label class="layui-form-label">结束时段</label>
-    <div class="layui-input-block">
-      <input id="EndTime" name="EndTime" lay-verify="required" placeholder="请选择" autocomplete="off" class="layui-input">
-    </div>
-  </div>
-  <div class="layui-form-item">
-    <label class="layui-form-label">价格</label>
-    <div class="layui-input-block">
-      <input type="number" name="Price" lay-verify="required" placeholder="请输入价格" autocomplete="off"
-        class="layui-input">
-    </div>
-  </div>
-  <div class="layui-form-item">
     <label class="layui-form-label">说明</label>
     <div class="layui-input-block">
-      <textarea name="Description" lay-verify="required" autocomplete="off" class="layui-textarea"></textarea>
+      <textarea name="Description" lay-verify="required" autocomplete="off" class="layui-textarea">无</textarea>
     </div>
   </div>
   <div class="layui-form-item">
@@ -45,27 +26,13 @@
 </form>
 
 <script>
-  layui.use(['admin', 'form', 'laydate'], function () {
+  layui.use(['admin', 'form'], function () {
     var $ = layui.$
       , admin = layui.admin
       , view = layui.view
       , table = layui.table
-      , form = layui.form
-      , laydate = layui.laydate;
+      , form = layui.form;
 
-    laydate.render({
-      elem: '#BeginTime'
-      , type: 'time'
-      , min: '08:00:00'
-      , max: '22:00:00'
-    });
-
-    laydate.render({
-      elem: '#EndTime'
-      , type: 'time'
-      , min: '08:00:00'
-      , max: '22:00:00'
-    });
 
 
   })

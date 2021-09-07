@@ -3,7 +3,7 @@
 <div class="layui-card layadmin-header">
   <div class="layui-breadcrumb" lay-filter="breadcrumb">
     <a><cite>应用</cite></a>
-    <a><cite>自习室预约系统</cite></a>
+    <a><cite>自习室系统</cite></a>
     <a><cite>座位</cite></a>
   </div>
 </div>
@@ -40,7 +40,7 @@
         {{#  } }}
       </script>
       <script type="text/html" id="textTpl-SeatCategory">
-        {{ d.SeatCategory.Name }} [{{ d.SeatCategory.BeginTime }} - {{ d.SeatCategory.EndTime }}] [{{d.SeatCategory.Price}}元]
+        {{ d.SeatCategory.Name }}
       </script>
       <script type="text/html" id="table-Seat-list">
         <a class="layui-btn layui-btn-normal layui-btn-xs" lay-event="edit"><i class="layui-icon layui-icon-edit"></i>编辑</a>
@@ -98,7 +98,7 @@
       , add: function (othis) {
         admin.popup({
           title: '添加'
-          , area: ['550px', '550px']
+          , area: ['600px', '600px']
           , id: 'LAY-popup-Seat-add'
           , success: function (layero, index) {
             view(this.id).render('app/SelfStudyRoom/Seat/listform').done(function () {

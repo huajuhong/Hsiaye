@@ -27,7 +27,7 @@ namespace Hsiaye.Web.Controllers
         private readonly IDatabase _database;
         private readonly IWebHostEnvironment _env;
         //存放文件夹
-        private static readonly string FOLDER = "Attachment";
+        private static readonly string FOLDER = "upload";
 
         public AttachmentController(IWebHostEnvironment env, IDatabase database)
         {
@@ -35,6 +35,7 @@ namespace Hsiaye.Web.Controllers
             _database = database;
         }
 
+        [HttpPost]
         public Attachment Upload()
         {
             if (Request.Form == null || Request.Form.Files == null || Request.Form.Files.Count < 1)
@@ -49,7 +50,7 @@ namespace Hsiaye.Web.Controllers
 
             //物理路径
             string physicalPath = Path.Combine(_env.WebRootPath, FOLDER);
-            //.Replace("/", "\\")
+
             if (!Directory.Exists(physicalPath))
                 Directory.CreateDirectory(physicalPath);
 
@@ -67,7 +68,7 @@ namespace Hsiaye.Web.Controllers
                 FieldName = "",
                 FileName = fileName,
                 PhysicalPath = path,
-                RelativePath = Path.Combine(fileName, fileName),
+                RelativePath = "/" + FOLDER + "/" + fileName,
                 Extension = extension,
                 FileSize = file.Length / 1024,
                 MD5 = "",

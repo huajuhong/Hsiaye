@@ -71,9 +71,6 @@ layui.define(['table', 'form', 'laydate'], function (exports) {
     , cols: [[
       { field: 'Id', width: 80, title: 'ID', sort: true }
       , { field: 'Name', title: '名称' }
-      , { field: 'BeginTime', title: '开始时段', width: 100 }
-      , { field: 'EndTime', title: '结束时段', width: 100 }
-      , { field: 'Price', title: '价格', sort: true }
       , { field: 'Description', title: '说明', minWidth: 80, align: 'center' }
       , { field: 'Normal', title: '状态', templet: '#buttonTpl-Normal' }
       , { field: 'CreateTime', title: '创建时间' }
@@ -132,8 +129,11 @@ layui.define(['table', 'form', 'laydate'], function (exports) {
     , url: '/api/SelfStudyRoom/Seat_List'
     , cols: [[
       { field: 'Id', width: 80, title: 'ID', sort: true }
-      , { field: 'SeatCategoryId', title: '分类', templet: '#textTpl-SeatCategory' }
+      , { field: 'SeatCategoryId', width: 160, title: '分类', templet: '#textTpl-SeatCategory' }
       , { field: 'Name', width: 160, title: '名称' }
+      , { field: 'BeginTime', title: '开始时段', width: 100 }
+      , { field: 'EndTime', title: '结束时段', width: 100 }
+      , { field: 'Price', width: 120, title: '价格（元）', sort: true }
       , { field: 'Description', title: '说明' }
       , { field: 'Normal', width: 80, title: '状态', templet: '#buttonTpl-Normal' }
       , { field: 'CreateTime', width: 160, title: '创建时间' }
@@ -156,7 +156,7 @@ layui.define(['table', 'form', 'laydate'], function (exports) {
     } else if (obj.event === 'edit') {
       admin.popup({
         title: '编辑'
-        , area: ['550px', '550px']
+        , area: ['600px', '600px']
         , id: 'LAY-popup-Seat-edit'
         , resize: false
         , success: function (layero, index) {
@@ -196,7 +196,7 @@ layui.define(['table', 'form', 'laydate'], function (exports) {
       , { field: 'Phone', width: 120, title: '电话' }
       , { field: 'Begin', width: 110, title: '开始时间', templet: function (d) { return d.Begin.substring(0, 10); } }
       , { field: 'End', width: 110, title: '结束时间', templet: function (d) { return d.End.substring(0, 10); } }
-      , { field: 'SeatId', title: '座位', templet: '#textTpl-SeatCategory' }
+      , { field: 'SeatId', title: '座位', templet: '#textTpl-Seat' }
       , { field: 'SeatSubjectId', width: 200, title: '科目', templet: function (d) { return d.SeatSubject.Name; } }
       // , { field: 'Description', title: '说明' }
       // , { field: 'OperatorId', width: 80, title: '操作者ID' }

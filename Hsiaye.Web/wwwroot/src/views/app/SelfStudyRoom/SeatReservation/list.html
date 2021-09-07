@@ -3,7 +3,7 @@
 <div class="layui-card layadmin-header">
   <div class="layui-breadcrumb" lay-filter="breadcrumb">
     <a><cite>应用</cite></a>
-    <a><cite>自习室预约系统</cite></a>
+    <a><cite>自习室系统</cite></a>
     <a><cite>预约</cite></a>
   </div>
 </div>
@@ -21,7 +21,21 @@
         <div class="layui-inline">
           <label class="layui-form-label">预约日期</label>
           <div class="layui-input-block">
-            <input type="text" id="ReservationDate" name="ReservationDate" placeholder="请选择" autocomplete="off" class="layui-input">
+            <input type="text" id="ReservationDate" name="ReservationDate" placeholder="请选择" autocomplete="off"
+              class="layui-input">
+          </div>
+        </div>
+        <div class="layui-inline">
+          <label class="layui-form-label">座位</label>
+          <div class="layui-input-block">
+            <script type="text/html" id="tmp_SeatId" template lay-url="/api/SelfStudyRoom/Seat_Options" lay-type="post">
+              <select name="SeatId">
+                <option value="0">请选择座位</option>
+                {{#  layui.each(d.Data, function(index, item){ }}
+                <option value="{{ item.Id }}">{{ item.BeginTime }} - {{ item.EndTime }} {{ item.Name }} [{{item.SeatCategory.Name}}] [{{item.Price}}元]</option>
+                {{# }); }}
+              </select>
+            </script>
           </div>
         </div>
         <div class="layui-inline">
@@ -38,8 +52,8 @@
         <button class="layui-btn layuiadmin-btn-list" data-type="add">添加</button>
       </div>
       <table id="LAY-app-SeatReservation-list" lay-filter="LAY-app-SeatReservation-list"></table>
-      <script type="text/html" id="textTpl-SeatCategory">
-        {{ d.Seat.SeatCategory.Name }} [{{ d.Seat.SeatCategory.BeginTime }} - {{ d.Seat.SeatCategory.EndTime }}] [{{d.Seat.SeatCategory.Price}}元]
+      <script type="text/html" id="textTpl-Seat">
+        {{ d.Seat.BeginTime }} - {{ d.Seat.EndTime }} {{ d.Seat.Name }} [{{d.Seat.SeatCategory.Name}}] [{{d.Seat.Price}}元]
       </script>
       <script type="text/html" id="buttonTpl-Normal">
         {{#  if(d.Normal == true){ }}
