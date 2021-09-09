@@ -87,8 +87,16 @@ layui.define(['table', 'form', 'laydate'], function (exports) {
     var data = obj.data;
     if (obj.event === 'del') {
       layer.confirm('确定删除此条记录？', function (index) {
-        obj.del();
-        layer.close(index);
+        //提交 Ajax 成功后，关闭当前弹层并重载表格
+        admin.req({
+          url: '/api/SelfStudyRoom/SeatCategory_Delete?id=' + data.Id
+          , type: 'post'
+          , done: function (res) {
+            obj.del();
+            layui.table.reload('LAY-app-SeatCategory-list'); //重载表格
+            layer.close(index); //执行关闭 
+          }
+        });
       });
     } else if (obj.event === 'edit') {
       admin.popup({
@@ -150,8 +158,16 @@ layui.define(['table', 'form', 'laydate'], function (exports) {
     var data = obj.data;
     if (obj.event === 'del') {
       layer.confirm('确定删除此条记录？', function (index) {
-        obj.del();
-        layer.close(index);
+        //提交 Ajax 成功后，关闭当前弹层并重载表格
+        admin.req({
+          url: '/api/SelfStudyRoom/Seat_Delete?id=' + data.Id
+          , type: 'post'
+          , done: function (res) {
+            obj.del();
+            layui.table.reload('LAY-app-Seat-list'); //重载表格
+            layer.close(index); //执行关闭 
+          }
+        });
       });
     } else if (obj.event === 'edit') {
       admin.popup({
@@ -217,8 +233,6 @@ layui.define(['table', 'form', 'laydate'], function (exports) {
     var data = obj.data;
     if (obj.event === 'del') {
       layer.confirm('确定删除此条记录？', function (index) {
-
-
         //提交 Ajax 成功后，关闭当前弹层并重载表格
         admin.req({
           url: '/api/SelfStudyRoom/SeatReservation_Delete?id=' + data.Id

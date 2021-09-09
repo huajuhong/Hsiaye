@@ -1,219 +1,214 @@
 <div class="layui-card">
-  <div class="layui-card-header">自习室座位预约</div>
-  <div class="layui-card-body">
-    <div class="layui-field-box">
-      <form class="layui-form" lay-filter="layuiadmin-form-list" id="layuiadmin-form-list"
-        style="padding: 20px 30px 0 0;">
-        <!-- <div class="layui-form-item">
-          <label class="layui-form-label">预约须知</label>
-          <div class="layui-input-block">
-            <div class="layui-form-mid layui-word-aux">月卡用户请现场联系</div>
-          </div>
-        </div> -->
-        <div class="layui-form-item">
-          <label class="layui-form-label">座位分布图</label>
-          <div class="layui-input-inline">
-            <input type="button" id="btnSeatMap" class="layui-btn layui-btn-primary layui-border-green" value="点击查看">
-          </div>
+  <div class="layui-card-header layui-bg-cyan">
+    自习室座位预约
+  </div>
+  <div class="layui-card-body layui-bg-cyan">
+    <div class="layui-form">
+      <!-- <div class="layui-form-item layui-hide">
+        <label class="layui-form-label">座位分布图</label>
+        <div class="layui-input-block">
+          <input type="button" id="btnSeatMap" class="layui-btn layui-btn-primary layui-border-green" value="点击查看">
         </div>
-        <div class="layui-form-item" id="DateRange">
-          <div class="layui-inline">
-            <label class="layui-form-label">预约日期</label>
-            <div class="layui-input-inline" style="width: 100px;">
-              <input type="text" id="Begin" name="Begin" lay-verify="required" placeholder="开始日期" autocomplete="off"
-                class="layui-input">
-            </div>
-            <div class="layui-form-mid">-</div>
-            <div class="layui-input-inline" style="width: 100px;">
-              <input type="text" id="End" name="End" lay-verify="required" placeholder="结束日期" autocomplete="off"
-                class="layui-input">
-            </div>
-          </div>
-        </div>
+      </div> -->
 
-        <div class="layui-form-item">
-          <label class="layui-form-label">可选座位</label>
-          <div class="layui-input-block">
-            <script type="text/html" id="tmp_SeatId" template lay-type="post" lay-done="layui.data.done_SeatId(d)">
-              <div lay-templateid="tmp_SeatId">
-              <!-- 检查座位是否可选的方法 -->
-              {{# var checkSeatDisabled = function(item){return item.Id == 0?'disabled':'';};}}
-  
-              {{#  layui.each(d.Data, function(index, item){ }}
-            <input type="radio" name="SeatId" value="{{ item.Id }}" title="{{ item.BeginTime }} - {{ item.EndTime }} {{ item.Name }} [{{item.SeatCategory.Name}}] [{{item.Price}}元]" {{ checkSeatDisabled(item) }}>
-                <br>
-              {{# }); }}
-              </div>
-            </script>
-          </div>
+      <div class="layui-form-item">
+        <label class="layui-form-label">开始日期</label>
+        <div class="layui-input-inline">
+          <input type="text" id="Begin" name="Begin" lay-verify="required" placeholder="开始日期" autocomplete="off"
+            class="layui-input">
         </div>
+      </div>
+      <div class="layui-form-item">
+        <label class="layui-form-label">结束日期</label>
+        <div class="layui-input-inline">
+          <input type="text" id="End" name="End" lay-verify="required" placeholder="结束日期" autocomplete="off"
+            class="layui-input">
+        </div>
+      </div>
 
-        <div class="layui-form-item">
-          <label class="layui-form-label">姓名</label>
-          <div class="layui-input-inline">
-            <input type="text" name="Name" lay-verify="required" placeholder="请输入姓名" autocomplete="off"
-              class="layui-input">
-          </div>
-        </div>
-        <div class="layui-form-item">
-          <label class="layui-form-label">电话</label>
-          <div class="layui-input-inline">
-            <input type="text" id="Phone" name="Phone" lay-verify="phone" placeholder="请输入电话" autocomplete="off"
-              class="layui-input">
-          </div>
-        </div>
+      <div class="layui-form-item">
+        <input type="radio" name="SeatId" value="0" title="请选择座位" checked disabled>
+        <script type="text/html" id="tmp_SeatId" template lay-type="post" lay-done="layui.data.done_SeatId(d)">
+          <div lay-templateid="tmp_SeatId">
+          <!-- 检查座位是否可选的方法 -->
+          {{# var checkSeatDisabled = function(item){return item.Id == 0?'disabled':'';};}}
 
-        <div class="layui-form-item">
-          <label class="layui-form-label">自习学科</label>
-          <div class="layui-input-inline">
-            <script type="text/html" template lay-url="/api/SelfStudyRoom/SeatSubject_Options" lay-type="post"
-              lay-done="layui.data.done_SeatSubjectId(d)">
-              <select name="SeatSubjectId" lay-verify="required">
+          {{#  layui.each(d.Data, function(index, item){ }}
+          <input type="radio" name="SeatId" value="{{ item.Id }}" title="[{{item.SeatCategory.Name}}]{{ item.Name }}[{{item.Price}}元]" {{ checkSeatDisabled(item) }}>
+          <br>
+          {{# }); }}
+          </div>
+        </script>
+      </div>
+
+      <div class="layui-form-item">
+        <label class="layui-form-label">姓名</label>
+        <div class="layui-input-inline">
+          <input type="text" name="Name" lay-verify="required" placeholder="请输入姓名" autocomplete="off"
+            class="layui-input">
+        </div>
+      </div>
+      <div class="layui-form-item">
+        <label class="layui-form-label">电话</label>
+        <div class="layui-input-inline">
+          <input type="text" id="Phone" name="Phone" lay-verify="phone" placeholder="请输入电话" autocomplete="off"
+            class="layui-input">
+        </div>
+      </div>
+
+      <div class="layui-form-item">
+        <label class="layui-form-label">自习学科</label>
+        <div class="layui-input-inline">
+          <script type="text/html" template lay-url="/api/SelfStudyRoom/SeatSubject_Options" lay-type="post"
+            lay-done="layui.data.done_SeatSubjectId(d)">
+              <select name="SeatSubjectId" lay-verify="required" style="height: 38px;" lay-ignore>
                 <option value="">请选择</option>
                 {{#  layui.each(d.Data, function(index, item){ }}
                 <option value="{{ item.Id }}">{{ item.Name }}</option>
                 {{#  }); }}
               </select>
             </script>
-          </div>
         </div>
+      </div>
 
-        <div class="layui-form-item">
-          <div class="layui-inline">
-            <label class="layui-form-label">图形验证码</label>
-            <div class="layui-input-inline">
-              <input type="text" name="imageCode" id="ImageCode" lay-verify="required" placeholder="图形验证码"
-                autocomplete="off" class="layui-input">
-            </div>
-            <div class="layui-input-inline">
-              <img class="layadmin-user-login-codeimg" id="LAY-get-imageCode">
-            </div>
+      <div class="layui-form-item">
+        <div class="layui-inline">
+          <label class="layui-form-label">图形验证码</label>
+          <div class="layui-input-inline">
+            <input type="text" name="imageCode" id="ImageCode" lay-verify="required" placeholder="请输入图形验证码"
+              autocomplete="off" class="layui-input">
+          </div>
+          <div class="layui-input-inline">
+            <img class="layadmin-user-login-codeimg" id="LAY-get-imageCode">
           </div>
         </div>
+      </div>
 
-        <div class="layui-form-item">
-          <div class="layui-inline">
-            <label class="layui-form-label">短信验证码</label>
-            <div class="layui-input-inline">
-              <input type="text" name="smsCode" id="smsCode" lay-verify="required" placeholder="短信验证码"
-                autocomplete="off" class="layui-input">
-            </div>
-            <div class="layui-input-inline">
-              <button type="button" class="layui-btn layui-btn-primary layui-btn-fluid"
-                id="LAY-get-smscode">获取验证码</button>
-            </div>
+      <div class="layui-form-item">
+        <div class="layui-inline">
+          <label class="layui-form-label">短信验证码</label>
+          <div class="layui-input-inline">
+            <input type="text" name="smsCode" id="smsCode" lay-verify="required" placeholder="请 获取验证码 后输入" autocomplete="off"
+              class="layui-input">
+          </div>
+          <div class="layui-input-inline">
+            <button type="button" class="layui-btn layui-btn-primary layui-border-blue"
+              id="LAY-get-smscode">获取验证码</button>
           </div>
         </div>
+      </div>
 
-        <div class="layui-form-item">
-          <label class="layui-form-label"></label>
-          <div class="layui-input-block">
-            <input type="button" lay-submit lay-filter="layuiadmin-app-SeatReservation-submit" value="确认"
-              class="layui-btn">
-          </div>
+      <div class="layui-form-item">
+        <label class="layui-form-label"></label>
+        <div class="layui-input-block">
+          <input type="button" lay-submit lay-filter="layuiadmin-app-SeatReservation-submit" value="确认"
+            class="layui-btn layui-btn-normal">
         </div>
+      </div>
       </form>
     </div>
   </div>
-</div>
 
-<div class='hide layui-layer-wrap' id="SeatMapContent" style="display: none;">
-  <img id="SeatMap" style='max-width: 100%;'>
-</div>
-<script>
-  layui.data.done_SeatId = function (d) {
-    layui.use(['form'], function () {
+  <div class='hide layui-layer-wrap' id="SeatMapContent" style="display: none;">
+    <img id="SeatMap" style='max-width: 100%;'>
+  </div>
+
+  <script>
+    document.title = "一起自习吧（预约）";
+    layui.data.done_SeatId = function (d) {
+      layui.use(['form'], function () {
+        var $ = layui.$
+          , form = layui.form;
+        form.render('radio');
+      })
+    };
+    layui.data.done_SeatSubjectId = function (d) {
+      layui.use(['form'], function () {
+        var $ = layui.$
+          , form = layui.form;
+        form.render('select');
+      })
+    };
+
+    layui.use(['admin', 'form', 'laydate', 'user'], function () {
       var $ = layui.$
-        , form = layui.form;
-      form.render('radio');
-    })
-  };
-  layui.data.done_SeatSubjectId = function (d) {
-    layui.use(['form'], function () {
-      var $ = layui.$
-        , form = layui.form;
-      form.render('select');
-    })
-  };
+        , admin = layui.admin
+        , view = layui.view
+        , form = layui.form
+        , laydate = layui.laydate;
 
-  layui.use(['admin', 'form', 'laydate', 'user'], function () {
-    var $ = layui.$
-      , admin = layui.admin
-      , view = layui.view
-      , form = layui.form
-      , laydate = layui.laydate;
+      // // 初始化座位分布图数据
+      // admin.req({
+      //   url: '/api/SelfStudyRoom/SeatMap'
+      //   , done: function (res) {
+      //     $('#SeatMap').attr('src', res.Data);
+      //   }
+      // });
 
-    // 初始化座位分布图数据
-    admin.req({
-      url: '/api/SelfStudyRoom/SeatMap'
-      , done: function (res) {
-        $('#SeatMap').attr('src', res.Data);
+      // // 查看座位分布图
+      // $('#btnSeatMap').click(function () {
+      //   layer.open({
+      //     type: 1,
+      //     title: false,
+      //     closeBtn: 1,
+      //     // area: ['1000px', '500px'],
+      //     skin: 'layui-layer-nobg', //没有背景色
+      //     shadeClose: true,
+      //     content: $('#SeatMapContent')
+      //   });
+      // })
+
+      // 渲染座位单选表单元素
+      function renderSeatId(begin, end) {
+        $('#tmp_SeatId').attr("lay-url", "/api/SelfStudyRoom/Seat_Options?begin=" + begin + "&end=" + end + "");
+        view('tmp_SeatId').refresh();
       }
-    });
 
-    // 查看座位分布图
-    $('#btnSeatMap').click(function () {
-      layer.open({
-        type: 1,
-        title: false,
-        closeBtn: 1,
-        // area: ['1000px', '500px'],
-        skin: 'layui-layer-nobg', //没有背景色
-        shadeClose: true,
-        content: $('#SeatMapContent')
-      });
-    })
-
-    // 渲染座位单选表单元素
-    function renderSeatId(begin, end) {
-      $('#tmp_SeatId').attr("lay-url", "/api/SelfStudyRoom/Seat_Options?begin=" + begin + "&end=" + end + "");
-      view('tmp_SeatId').refresh();
-    }
-
-    var today = new Date();
-    var begin = end = today.toLocaleDateString().replace(/\//g, "-");
-    // 开始时间
-    laydate.render({
-      elem: '#Begin', value: today, done: function (value, date, endDate) {
-        laydate.render({ elem: '#End', value: value });
-        begin = end = value;
-        // 选择时间后刷新模板
-        renderSeatId(begin, end);
-      }
-    });
-
-    // 结束时间
-    laydate.render({
-      elem: '#End', value: today, done: function (value, date, endDate) {
-        end = value;
-        // 选择时间后刷新模板
-        renderSeatId(begin, end);
-      }
-    });
-
-    // 初始刷新
-    renderSeatId(begin, end);
-
-    // 获取图形验证码
-    $('#LAY-get-imageCode').trigger('click');
-
-    //发送短信验证码
-    admin.sendAuthCode({ elem: '#LAY-get-smscode' });
-
-    // 提交
-    form.on('submit(layuiadmin-app-SeatReservation-submit)', function (data) {
-      //提交 Ajax 成功后，关闭当前弹层并重载表格
-      admin.req({
-        url: '/api/SelfStudyRoom/SeatReservation?smsCode=' + $('#smsCode').val()
-        , type: 'post'
-        , contentType: 'application/json'
-        , data: data.field
-        , done: function (res) {
-          layer.alert("预约成功！", function () {
-            location.reload();
-          })
+      var today = new Date();
+      var begin = end = today.toLocaleDateString().replace(/\//g, "-");
+      // 开始时间
+      laydate.render({
+        elem: '#Begin', value: today, done: function (value, date, endDate) {
+          laydate.render({ elem: '#End', value: value });
+          begin = end = value;
+          // 选择时间后刷新模板
+          renderSeatId(begin, end);
         }
       });
+
+      // 结束时间
+      laydate.render({
+        elem: '#End', value: today, done: function (value, date, endDate) {
+          end = value;
+          // 选择时间后刷新模板
+          renderSeatId(begin, end);
+        }
+      });
+
+      // 初始刷新
+      renderSeatId(begin, end);
+
+      // 获取图形验证码
+      $('#LAY-get-imageCode').trigger('click');
+
+      //发送短信验证码
+      admin.sendAuthCode({ elem: '#LAY-get-smscode' });
+
+      // 提交
+      form.on('submit(layuiadmin-app-SeatReservation-submit)', function (data) {
+        console.log(data)
+        //提交 Ajax 成功后，关闭当前弹层并重载表格
+        admin.req({
+          url: '/api/SelfStudyRoom/SeatReservation?smsCode=' + $('#smsCode').val()
+          , type: 'post'
+          , contentType: 'application/json'
+          , data: data.field
+          , done: function (res) {
+            layer.alert("预约成功！", function () {
+              location.reload();
+            })
+          }
+        });
+      });
     });
-  });
-</script>
+  </script>

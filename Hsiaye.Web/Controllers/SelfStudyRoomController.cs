@@ -148,6 +148,19 @@ namespace Hsiaye.Web.Controllers
         }
 
         [HttpPost]
+        public bool SeatCategory_Delete(long id)
+        {
+            var model = _database.Get<SeatCategory>(new { Id = id });
+            //if (model.Deleted == true || model.OrganizationUnitId != _accessor.OrganizationUnitId)
+            //{
+            //    throw new UserFriendlyException("非法请求");
+            //}
+            _database.Delete(model);
+            return true;
+        }
+
+
+        [HttpPost]
         public bool SeatCategory_Update(SeatCategory input)
         {
             var model = _database.Get<SeatCategory>(new { input.Id });
@@ -234,6 +247,18 @@ namespace Hsiaye.Web.Controllers
         }
 
         [HttpPost]
+        public bool Seat_Delete(long id)
+        {
+            var model = _database.Get<Seat>(new { Id = id });
+            //if (model.Deleted == true || model.OrganizationUnitId != _accessor.OrganizationUnitId)
+            //{
+            //    throw new UserFriendlyException("非法请求");
+            //}
+            _database.Delete(model);
+            return true;
+        }
+
+        [HttpPost]
         public bool Seat_Update(Seat input)
         {
             var model = _database.Get<Seat>(new { input.Id });
@@ -265,6 +290,7 @@ namespace Hsiaye.Web.Controllers
             _database.Update(model);
             return true;
         }
+
 
         [HttpPost]
         public PageResult<Seat> Seat_List(KeywordsListInput input)
@@ -336,6 +362,8 @@ namespace Hsiaye.Web.Controllers
                     Operator = GroupOperator.And,
                     Predicates = new List<IPredicate>()
                 };
+                predicateGroup.Predicates.Add(Predicates.Field<SeatReservation>(f => f.Normal, Operator.Eq, true));
+                predicateGroup.Predicates.Add(Predicates.Field<SeatReservation>(f => f.Deleted, Operator.Eq, false));
 
                 //时间条件：查找输入的开始时间和结束时间范围内是否有记录，包含临界值
                 predicateGroup.Predicates.Add(Predicates.Field<SeatReservation>(f => f.Begin, Operator.Le, begin));
@@ -382,15 +410,11 @@ namespace Hsiaye.Web.Controllers
             };
 
             //时间条件：查找输入的开始时间和结束时间范围内是否有记录，包含临界值
-            IPredicate[] predicatesByBetween = new IPredicate[]
-            {
-                Predicates.Field<SeatReservation>(f => f.Begin, Operator.Le, input.Begin),
-                Predicates.Field<SeatReservation>(f => f.End, Operator.Ge, input.Begin),
-                Predicates.Field<SeatReservation>(f => f.Begin, Operator.Le, input.End),
-                Predicates.Field<SeatReservation>(f => f.End, Operator.Ge, input.End),
-            };
+            predicates.Add(Predicates.Field<SeatReservation>(f => f.Begin, Operator.Le, input.Begin));
+            predicates.Add(Predicates.Field<SeatReservation>(f => f.End, Operator.Ge, input.Begin));
+            predicates.Add(Predicates.Field<SeatReservation>(f => f.Begin, Operator.Le, input.End));
+            predicates.Add(Predicates.Field<SeatReservation>(f => f.End, Operator.Ge, input.End));
 
-            predicates.Add(Predicates.Group(GroupOperator.And, predicatesByBetween));
 
             var list = _database.GetList<SeatReservation>(Predicates.Group(GroupOperator.And, predicates.ToArray()));
             if (list.Any())

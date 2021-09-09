@@ -24,7 +24,7 @@
         {{# var checkSeatDisabled = function(item){return item.Id == 0?'disabled':'';};}}
 
         {{#  layui.each(d.Data, function(index, item){ }}
-          <input type="radio" name="SeatId" value="{{ item.Id }}" title="{{ item.BeginTime }} - {{ item.EndTime }} {{ item.Name }} [{{item.SeatCategory.Name}}] [{{item.Price}}元]" {{ checkSeatDisabled(item) }}>
+          <input type="radio" name="SeatId" value="{{ item.Id }}" title="[{{item.SeatCategory.Name}}] {{ item.BeginTime }} - {{ item.EndTime }} {{ item.Name }} [{{item.Price}}元]" {{ checkSeatDisabled(item) }}>
           <br>
         {{# }); }}
         </div>
