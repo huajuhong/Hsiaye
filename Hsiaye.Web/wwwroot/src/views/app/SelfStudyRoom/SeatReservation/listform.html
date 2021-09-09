@@ -1,6 +1,6 @@
 <form class="layui-form" lay-filter="layuiadmin-form-list" id="layuiadmin-form-list" style="padding: 20px 30px 0 0;">
 
-  <div class="layui-form-item" id="DateRange">
+  <div class="layui-form-item">
     <div class="layui-inline">
       <label class="layui-form-label">预约日期</label>
       <div class="layui-input-inline" style="width: 100px;">
@@ -16,17 +16,31 @@
   </div>
 
   <div class="layui-form-item">
-    <label class="layui-form-label">可选座位</label>
-    <div class="layui-input-block">
-      <script type="text/html" id="tmp_SeatId" template lay-type="post" lay-done="layui.data.done_SeatId(d);">
-        <div lay-templateid="tmp_SeatId">
-        <!-- 检查座位是否可选的方法 -->
-        {{# var checkSeatDisabled = function(item){return item.Id == 0?'disabled':'';};}}
-
-        {{#  layui.each(d.Data, function(index, item){ }}
-          <input type="radio" name="SeatId" value="{{ item.Id }}" title="[{{item.SeatCategory.Name}}] {{ item.BeginTime }} - {{ item.EndTime }} {{ item.Name }} [{{item.Price}}元]" {{ checkSeatDisabled(item) }}>
-          <br>
-        {{# }); }}
+    <label class="layui-form-label">座位</label>
+    <div class="layui-input-inline">
+      <script type="text/html" id="tmp_SeatCategoryId" template lay-url="/api/SelfStudyRoom/SeatCategory_Options"
+        lay-type="post" lay-done="layui.data.done_SeatCategoryId(d)">
+          <select lay-filter="SeatCategoryId" name="SeatCategoryId">
+            <option value="0">请选择座位分类</option>
+            <!-- 检查是否选择的方法 -->
+            {{# var checkSelected = function(item){return item.Id == d.params.SeatCategoryId?'selected':'';};}}
+            {{#  layui.each(d.Data, function(index, item){ }}
+            <option value="{{ item.Id }}" {{checkSelected(item)}}>{{ item.Name }}</option>
+            {{# }); }}
+          </select>
+        </script>
+    </div>
+    <div class="layui-input-inline">
+      <script type="text/html" id="form_tmp_SeatId" template lay-url="/api/SelfStudyRoom/Seat_Options?seatCategoryId={{d.params.SeatCategoryId}}&begin={{d.params.Begin}}&end={{d.params.End}}" lay-type="post" lay-done="layui.data.done_SeatId(d)">
+        <div lay-templateid="form_tmp_SeatId">
+       　 <select name="SeatId">
+            <option value="0">请选择可选座位</option>
+            <!-- 检查是否选择的方法 -->
+            {{# var checkSelected = function(item){return item.Id == d.params.SeatId?'selected':'';};}}
+            {{#  layui.each(d.Data, function(index, item){ }}
+            <option value="{{ item.Id }}" {{checkSelected(item)}} {{item.Description}}>{{ item.Name }} [{{item.Price}}元]</option>
+            {{# }); }}
+          </select>
         </div>
       </script>
     </div>
@@ -52,8 +66,10 @@
         lay-done="layui.data.done_SeatSubjectId(d);">
         <select name="SeatSubjectId" lay-verify="required">
           <option value="">请选择</option>
+          <!-- 检查是否选择的方法 -->
+          {{# var checkSelected = function(item){return item.Id == d.params.SeatSubjectId?'selected':'';};}}
           {{#  layui.each(d.Data, function(index, item){ }}
-          <option value="{{ item.Id }}">{{ item.Name }}</option>
+          <option value="{{ item.Id }}" {{checkSelected(item)}}>{{ item.Name }}</option>
           {{#  }); }}
         </select>
       </script>
@@ -93,63 +109,95 @@
 
 <script>
 
+  var today = new Date();
+  var begin = end = today.toLocaleDateString().replace(/\//g, "-");
+
+
+  layui.data.done_SeatCategoryId = function (d) {
+    layui.use(['form'], function () {
+      var $ = layui.$
+        , form = layui.form;
+      form.render('select')
+      // form.val('layuiadmin-form-list', d.params)
+      // layui.data.renderSeatOptions();//刷新座位下拉选框
+    })
+  };
+
   layui.data.done_SeatId = function (d) {
     layui.use(['form'], function () {
       var $ = layui.$
         , form = layui.form;
-      form.val("layuiadmin-form-list", { "SeatId": d.params.SeatId });
+      // console.log($('#form_tmp_SeatId').attr("lay-url"))
+      // console.log(d);
+      form.render('select')
+      // form.val('layuiadmin-form-list', d.params)
+      // form.val('layuiadmin-form-list', { 'SeatId': 15 })
     })
   };
+
   layui.data.done_SeatSubjectId = function (d) {
     layui.use(['form'], function () {
       var $ = layui.$
         , form = layui.form;
-      form.val("layuiadmin-form-list", { "SeatSubjectId": d.params.SeatSubjectId });
+      form.render('select')
+      // form.val('layuiadmin-form-list', d.params)
     })
   };
 
-  layui.data.renderSeatId = function (begin, end) {
-    layui.use(['admin', 'laydate'], function () {
-      var $ = layui.$
-        , admin = layui.admin
-        , view = layui.view
-        , laydate = layui.laydate;
-
-      // 渲染座位单选表单元素
-      $('#tmp_SeatId').attr("lay-url", "/api/SelfStudyRoom/Seat_Options?begin=" + begin + "&end=" + end + "");
-      view('tmp_SeatId').refresh();
-    });
-  }
-
-  layui.use(['laydate'], function () {
+  layui.use(['admin', 'form', 'laydate'], function () {
     var $ = layui.$
       , admin = layui.admin
       , view = layui.view
+      , form = layui.form
       , laydate = layui.laydate;
-      
-    var today = new Date();
-    var begin = end = today.toLocaleDateString().replace(/\//g, "-");
     // 开始时间
     laydate.render({
-      elem: '#Begin', value: today, done: function (value, date, endDate) {
+      elem: '#Begin', value: begin, done: function (value, date, endDate) {
         laydate.render({ elem: '#End', value: value });
         begin = end = value;
-        // 选择时间后刷新模板
-        layui.data.renderSeatId(begin, end);
+        layui.data.renderSeatOptions();//刷新座位下拉选框
       }
     });
 
     // 结束时间
     laydate.render({
-      elem: '#End', value: today, done: function (value, date, endDate) {
+      elem: '#End', value: end, done: function (value, date, endDate) {
         end = value;
-        // 选择时间后刷新模板
-        layui.data.renderSeatId(begin, end);
+        layui.data.renderSeatOptions();//刷新座位下拉选框
       }
     });
-    
-    // 初始刷新
-    layui.data.renderSeatId(begin, end);
+
+    // 监听座位类型选择
+    form.on('select(SeatCategoryId)', function (data) {
+      layui.data.renderSeatOptions();//刷新座位下拉选框
+    });
   })
+
+  layui.data.renderSeatOptions = function () {
+    layui.use(['admin', 'form', 'laydate'], function () {
+      var $ = layui.$
+        , admin = layui.admin
+        , view = layui.view
+        , form = layui.form
+        , laydate = layui.laydate;
+
+      // 渲染座位下拉选框
+      var seatCategoryId = form.val("layuiadmin-form-list")['SeatCategoryId'];
+      begin = form.val("layuiadmin-form-list")['Begin'];
+      end = form.val("layuiadmin-form-list")['End'];
+      if (seatCategoryId == false) {
+        return layer.msg("请选择座位分类");
+      }
+      if (begin == false) {
+        return layer.msg("请选择开始日期");
+      }
+      if (begin == false) {
+        return layer.msg("请选择结束日期");
+      }
+      // 渲染座位单选表单元素
+      $('#form_tmp_SeatId').attr("lay-url", "/api/SelfStudyRoom/Seat_Options?seatCategoryId=" + seatCategoryId + "&begin=" + begin + "&end=" + end);
+      view('form_tmp_SeatId').refresh();
+    });
+  };
 
 </script>

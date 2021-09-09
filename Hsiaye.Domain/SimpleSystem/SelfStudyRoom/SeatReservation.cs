@@ -19,6 +19,7 @@ namespace Hsiaye.Domain
         public long Id { get; set; }
         public long OrganizationUnitId { get; set; }
         public DateTime CreateTime { get; set; }
+        public long SeatCategoryId { get; set; }//座位分类Id
         public long SeatId { get; set; }//座位Id
         public long SeatSubjectId { get; set; }//座位科目Id
         [StringLength(64)]

@@ -26,16 +26,31 @@
           </div>
         </div>
         <div class="layui-inline">
-          <label class="layui-form-label">座位</label>
+          <label class="layui-form-label">座位分类</label>
           <div class="layui-input-block">
-            <script type="text/html" id="tmp_SeatId" template lay-url="/api/SelfStudyRoom/Seat_Options" lay-type="post"
-              lay-data-done="layui.data.done(d)">
-              <select name="SeatId">
-                <option value="0">请选择座位</option>
+            <script type="text/html" id="tmp_SeatCategoryId" template lay-url="/api/SelfStudyRoom/SeatCategory_Options"
+              lay-type="post" lay-done="layui.data.done(d)">
+              <select lay-filter="list-SeatCategoryId" name="SeatCategoryId">
+                <option value="0">请选择座位分类</option>
                 {{#  layui.each(d.Data, function(index, item){ }}
-                <option value="{{ item.Id }}">[{{item.SeatCategory.Name}}] {{ item.Name }} [{{item.Price}}元]</option>
+                <option value="{{ item.Id }}">{{ item.Name }}</option>
                 {{# }); }}
               </select>
+            </script>
+          </div>
+        </div>
+        <div class="layui-inline">
+          <label class="layui-form-label">座位</label>
+          <div class="layui-input-block">
+            <script type="text/html" id="list_tmp_SeatId" template lay-type="post" lay-done="layui.data.done(d)">
+              <div lay-templateid="list_tmp_SeatId">
+             　 <select name="SeatId">
+                  <option value="0">请选择可选座位</option>
+                  {{#  layui.each(d.Data, function(index, item){ }}
+                  <option value="{{ item.Id }}">{{ item.Name }} [{{item.Price}}元]</option>
+                  {{# }); }}
+                </select>
+              </div>
             </script>
           </div>
         </div>
@@ -54,7 +69,7 @@
       </div>
       <table id="LAY-app-SeatReservation-list" lay-filter="LAY-app-SeatReservation-list"></table>
       <script type="text/html" id="textTpl-Seat">
-        {{ d.Seat.BeginTime }} - {{ d.Seat.EndTime }} {{ d.Seat.Name }} [{{d.Seat.SeatCategory.Name}}] [{{d.Seat.Price}}元]
+        [{{d.Seat.SeatCategory.Name}}] {{ d.Seat.Name }} [{{d.Seat.Price}}元]
       </script>
       <script type="text/html" id="buttonTpl-Normal">
         {{#  if(d.Normal == true){ }}
@@ -64,11 +79,7 @@
         {{#  } }}
       </script>
       <script type="text/html" id="buttonTpl-Reported">
-        {{#  if(d.Reported == true){ }}
-          <button class="layui-btn layui-btn-xs">已签</button>
-        {{#  } else { }}
-          <button class="layui-btn layui-btn-danger layui-btn-xs">待签</button>
-        {{#  } }}
+        <input type="checkbox" value="{{d.Id}}" title="签到" lay-filter="table-Reported" {{ d.Reported ? 'checked' : '' }}>
       </script>
       <script type="text/html" id="table-SeatReservation-list">
         <a class="layui-btn layui-btn-normal layui-btn-xs" lay-event="edit"><i class="layui-icon layui-icon-edit"></i>编辑</a>
@@ -82,7 +93,7 @@
   layui.data.done = function (d) {
     layui.use(['form'], function () {
       var form = layui.form;
-      form.render(null, 'app-SeatReservation-list'); //渲染该模板下的动态表单
+      form.render('select', 'app-SeatReservation-list'); //渲染该模板下的动态表单
     });
   };
 
@@ -93,6 +104,12 @@
       , form = layui.form
       , table = layui.table
       , laydate = layui.laydate;
+    // 监听座位类型选择
+    form.on('select(list-SeatCategoryId)', function (data) {
+      // 刷新座位下拉选框
+      $('#list_tmp_SeatId').attr("lay-url", "/api/SelfStudyRoom/Seat_Options?seatCategoryId=" + data.value);
+      view('list_tmp_SeatId').refresh();
+    });
 
     laydate.render({ elem: '#ReservationDate' });
 
@@ -151,11 +168,10 @@
                   , contentType: 'application/json'
                   , data: data.field
                   , done: function (res) {
-                    console.log(res)
+                    layui.table.reload('LAY-app-SeatReservation-list'); //重载表格
+                    layer.close(index); //执行关闭 
                   }
                 });
-                layui.table.reload('LAY-app-SeatReservation-list'); //重载表格
-                layer.close(index); //执行关闭 
               });
             });
           }

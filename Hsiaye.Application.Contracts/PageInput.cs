@@ -15,11 +15,11 @@ namespace Hsiaye.Application.Contracts
             {
                 if (pageIndex < 1)
                 {
-                    return 0;
+                    return 1;
                 }
                 else
                 {
-                    return pageIndex - 1;
+                    return pageIndex;
                 }
             }
             set
@@ -36,7 +36,7 @@ namespace Hsiaye.Application.Contracts
             {
                 if (pageSize > 20)
                 {
-                    return 20;
+                    return 10;
                 }
                 else
                 {

@@ -110,11 +110,10 @@
                   , contentType: 'application/json'
                   , data: data.field
                   , done: function (res) {
-                    console.log(res)
+                    layui.table.reload('LAY-app-SeatCategory-list'); //重载表格
+                    layer.close(index); //执行关闭 
                   }
                 });
-                layui.table.reload('LAY-app-SeatCategory-list'); //重载表格
-                layer.close(index); //执行关闭 
               });
             });
           }

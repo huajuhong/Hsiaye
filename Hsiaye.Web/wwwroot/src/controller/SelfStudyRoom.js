@@ -29,8 +29,16 @@ layui.define(['table', 'form', 'laydate'], function (exports) {
     var data = obj.data;
     if (obj.event === 'del') {
       layer.confirm('确定删除此条记录？', function (index) {
-        obj.del();
-        layer.close(index);
+        //提交 Ajax 成功后，关闭当前弹层并重载表格
+        admin.req({
+          url: '/api/SelfStudyRoom/SeatSubject_Delete?id=' + data.Id
+          , type: 'post'
+          , done: function (res) {
+            obj.del();
+            layui.table.reload('LAY-app-list'); //重载表格
+            layer.close(index); //执行关闭 
+          }
+        });
       });
     } else if (obj.event === 'edit') {
       admin.popup({
@@ -208,17 +216,15 @@ layui.define(['table', 'form', 'laydate'], function (exports) {
     , cols: [[
       // { type: 'checkbox', fixed: 'left' }
       // , { field: 'Id', width: 80, title: 'ID', sort: true }
-      { field: 'Name', width: 120, title: '名称' }
-      , { field: 'Phone', width: 120, title: '电话' }
-      , { field: 'Begin', width: 110, title: '开始时间', templet: function (d) { return d.Begin.substring(0, 10); } }
-      , { field: 'End', width: 110, title: '结束时间', templet: function (d) { return d.End.substring(0, 10); } }
+      { field: 'Name', width: 170, title: '姓名-电话', templet: function (d) { return d.Name + '-' + d.Phone; } }
+      , { field: 'Begin', width: 190, title: '开始-结束日期', templet: function (d) { return d.Begin.substring(0, 10) + ' ~ ' + d.End.substring(0, 10); } }
       , { field: 'SeatId', title: '座位', templet: '#textTpl-Seat' }
-      , { field: 'SeatSubjectId', width: 200, title: '科目', templet: function (d) { return d.SeatSubject.Name; } }
+      , { field: 'SeatSubjectId', width: 100, title: '科目', templet: function (d) { return d.SeatSubject.Name; } }
       // , { field: 'Description', title: '说明' }
       // , { field: 'OperatorId', width: 80, title: '操作者ID' }
       // , { field: 'OperatorRemark', title: '操作者备注' }
       , { field: 'Normal', width: 70, title: '状态', templet: '#buttonTpl-Normal' }
-      , { field: 'Reported', width: 70, title: '签到', templet: '#buttonTpl-Reported' }
+      , { field: 'Reported', width: 110, title: '签到', templet: '#buttonTpl-Reported' }
       , { field: 'CreateTime', width: 160, title: '创建时间' }
       , { title: '操作', width: 150, align: 'center', fixed: 'right', toolbar: '#table-SeatReservation-list' }
     ]]
@@ -278,6 +284,20 @@ layui.define(['table', 'form', 'laydate'], function (exports) {
     }
   });
 
+  //监听签到操作
+  form.on('checkbox(table-Reported)', function (obj) {
+    var value = this.value;
+    var checked = obj.elem.checked;
+    //提交 Ajax 成功后，关闭当前弹层并重载表格
+    admin.req({
+      url: '/api/SelfStudyRoom/SeatReservation_Reported?id=' + value + '&value=' + checked
+      , type: 'post'
+      , done: function (res) {
+        layui.table.reload('LAY-app-SeatReservation-list'); //重载表格
+        layer.msg(checked ? '签到成功' : '等待签到', { icon: checked ? 1 : 0 });
+      }
+    });
+  });
 
   exports('SelfStudyRoom', {})
 });
