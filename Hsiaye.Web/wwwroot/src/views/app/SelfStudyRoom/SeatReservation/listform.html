@@ -31,7 +31,9 @@
         </script>
     </div>
     <div class="layui-input-inline">
-      <script type="text/html" id="form_tmp_SeatId" template lay-url="/api/SelfStudyRoom/Seat_Options?seatCategoryId={{d.params.SeatCategoryId}}&begin={{d.params.Begin}}&end={{d.params.End}}" lay-type="post" lay-done="layui.data.done_SeatId(d)">
+      <script type="text/html" id="form_tmp_SeatId" template
+        lay-url="/api/SelfStudyRoom/Seat_Options?seatCategoryId={{d.params.SeatCategoryId}}&begin={{d.params.Begin}}&end={{d.params.End}}"
+        lay-type="post" lay-done="layui.data.done_SeatId(d)">
         <div lay-templateid="form_tmp_SeatId">
        　 <select name="SeatId">
             <option value="0">请选择可选座位</option>
@@ -96,7 +98,13 @@
   <div class="layui-form-item">
     <label class="layui-form-label">签到</label>
     <div class="layui-input-block">
-      <input type="checkbox" name="Reported" lay-skin="switch" lay-text="已签|待签" value="true" checked>
+      <input type="checkbox" name="Reported" lay-skin="switch" lay-text="已签|待签" value="true">
+    </div>
+  </div>
+  <div class="layui-form-item">
+    <label class="layui-form-label">已付款</label>
+    <div class="layui-input-block">
+      <input type="checkbox" name="Paid" lay-skin="switch" lay-text="已付|待付" value="true">
     </div>
   </div>
   <div class="layui-form-item">
@@ -111,7 +119,6 @@
 
   var today = new Date();
   var begin = end = today.toLocaleDateString().replace(/\//g, "-");
-
 
   layui.data.done_SeatCategoryId = function (d) {
     layui.use(['form'], function () {

@@ -10,23 +10,18 @@
             </summary>
             <returns>返回结果中的code是为了方便调试接口，开发时使用image的实际内容</returns>
         </member>
+        <member name="M:Hsiaye.Web.Controllers.CaptchaController.Verify(System.String,System.String)">
+            <summary>
+            验证测试
+            </summary>
+            <param name="key"></param>
+            <param name="code"></param>
+            <returns></returns>
+        </member>
         <member name="T:Hsiaye.Web.Controllers.MemberController">
             <summary>
             系统成员
             </summary>
-        </member>
-        <member name="M:Hsiaye.Web.Controllers.MemberController.Login(Hsiaye.Application.Contracts.LoginDto)">
-            <summary>
-            登录
-            </summary>
-            <param name="input"></param>
-            <returns></returns>
-        </member>
-        <member name="M:Hsiaye.Web.Controllers.MemberController.Current">
-            <summary>
-            当前用户信息
-            </summary>
-            <returns></returns>
         </member>
         <member name="M:Hsiaye.Web.Controllers.MemberController.Activate(System.Int64)">
             <summary>
@@ -40,6 +35,19 @@
             停用成员
             </summary>
             <param name="id"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Hsiaye.Web.Controllers.MemberController.Login(Hsiaye.Application.Contracts.LoginDto)">
+            <summary>
+            登录
+            </summary>
+            <param name="input"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Hsiaye.Web.Controllers.MemberController.Current">
+            <summary>
+            当前用户信息
+            </summary>
             <returns></returns>
         </member>
         <member name="M:Hsiaye.Web.Controllers.MemberController.ChangePassword(Hsiaye.Application.Contracts.ChangePasswordDto)">
@@ -124,14 +132,11 @@
             <param name="id"></param>
             <returns></returns>
         </member>
-        <member name="M:Hsiaye.Web.Controllers.QAController.ListQuestion(System.String,System.String,System.Int32,System.Int32)">
+        <member name="M:Hsiaye.Web.Controllers.QAController.ListQuestion(Hsiaye.Application.Contracts.QuestionListInput)">
             <summary>
             获取问题列表
             </summary>
-            <param name="keywords"></param>
-            <param name="sortField"></param>
-            <param name="page"></param>
-            <param name="limit"></param>
+            <param name="input"></param>
             <returns></returns>
         </member>
         <member name="M:Hsiaye.Web.Controllers.QAController.UpdateQuestion(Hsiaye.Application.Contracts.QuestionEditInput)">
@@ -148,14 +153,18 @@
             <param name="id"></param>
             <returns></returns>
         </member>
-        <member name="M:Hsiaye.Web.Controllers.QAController.ListAnswer(System.Int64,System.Int32,System.Int32)">
+        <member name="M:Hsiaye.Web.Controllers.QAController.ListAnswer(Hsiaye.Application.Contracts.AnswerListInput)">
             <summary>
             获取问题答案列表
             </summary>
-            <param name="questionId"></param>
-            <param name="page"></param>
-            <param name="limit"></param>
+            <param name="input"></param>
             <returns></returns>
+        </member>
+        <member name="M:Hsiaye.Web.Controllers.QAController.VoteQuestion(System.Int32)">
+            <summary>
+            对问题投票，表示遇到该问题且支持
+            </summary>
+            <param name="id">问题Id</param>
         </member>
         <member name="M:Hsiaye.Web.Controllers.QAController.CreateAnswer(Hsiaye.Application.Contracts.AnswerInput)">
             <summary>
@@ -185,11 +194,52 @@
             <param name="id"></param>
             <returns></returns>
         </member>
+        <member name="M:Hsiaye.Web.Controllers.QAController.LikeAnswer(System.Int32)">
+            <summary>
+            对答案认可，点赞表时喜欢
+            </summary>
+            <param name="id">答案Id</param>
+        </member>
+        <member name="M:Hsiaye.Web.Controllers.QAController.AcceptedAnswer(System.Int32)">
+            <summary>
+            采纳答案
+            </summary>
+            <param name="id">答案Id</param>
+        </member>
         <member name="M:Hsiaye.Web.Controllers.RoleController.Current">
             <summary>
             当前用户的所有角色
             </summary>
             <returns></returns>
+        </member>
+        <member name="T:Hsiaye.Web.Controllers.SelfStudyRoomController">
+            <summary>
+            自习室
+            使用教程：
+            1.座位科目、类型管理
+            2.添加座位
+            3.座位预约，预约规则：不可在相同时间段内预约
+            </summary>
+        </member>
+        <member name="M:Hsiaye.Web.Controllers.SelfStudyRoomController.Seat_Options(System.Int64,System.Nullable{System.DateTime},System.Nullable{System.DateTime})">
+            <summary>
+            可预约的座位
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:Hsiaye.Web.Controllers.SelfStudyRoomController.SeatMap">
+            <summary>
+            座位分布图
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="T:Hsiaye.Web.Controllers.TodoController">
+            <summary>
+            待办
+            todo:未完
+            1.简单添加，详细编辑
+            2.详细列表
+            </summary>
         </member>
         <member name="T:Hsiaye.Web.Controllers.WorkTimeController">
             <summary>

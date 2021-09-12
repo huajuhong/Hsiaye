@@ -15,7 +15,7 @@
         <div class="layui-inline">
           <label class="layui-form-label">关键字</label>
           <div class="layui-input-block">
-            <input type="text" name="Keywords" placeholder="请输入名称、说明" autocomplete="off" class="layui-input">
+            <input type="text" name="Keywords" placeholder="请输入名称、电话" autocomplete="off" class="layui-input">
           </div>
         </div>
         <div class="layui-inline">
@@ -80,6 +80,9 @@
       </script>
       <script type="text/html" id="buttonTpl-Reported">
         <input type="checkbox" value="{{d.Id}}" title="签到" lay-filter="table-Reported" {{ d.Reported ? 'checked' : '' }}>
+      </script>
+      <script type="text/html" id="buttonTpl-Paid">
+        <input type="checkbox" value="{{d.Id}}" title="付款" lay-filter="table-Paid" {{ d.Paid ? 'checked' : '' }}>
       </script>
       <script type="text/html" id="table-SeatReservation-list">
         <a class="layui-btn layui-btn-normal layui-btn-xs" lay-event="edit"><i class="layui-icon layui-icon-edit"></i>编辑</a>
@@ -156,7 +159,15 @@
           , area: ['650px', '850px']
           , id: 'LAY-popup-SeatReservation-add'
           , success: function (layero, index) {
-            view(this.id).render('app/SelfStudyRoom/SeatReservation/listform').done(function () {
+            var today = new Date();
+            var begin = end = today.toLocaleDateString().replace(/\//g, "-");
+            var data = {
+              'Begin': begin,
+              'End': end,
+              'SeatCategoryId': 0
+            };
+            view(this.id).render('app/SelfStudyRoom/SeatReservation/listform', data).done(function () {
+              form.val('layuiadmin-form-list', data);
               form.render(null, 'layuiadmin-form-list');
 
               //提交

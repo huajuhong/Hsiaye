@@ -10,23 +10,18 @@
             </summary>
             <returns>返回结果中的code是为了方便调试接口，开发时使用image的实际内容</returns>
         </member>
+        <member name="M:Hsiaye.Web.Controllers.CaptchaController.Verify(System.String,System.String)">
+            <summary>
+            验证测试
+            </summary>
+            <param name="key"></param>
+            <param name="code"></param>
+            <returns></returns>
+        </member>
         <member name="T:Hsiaye.Web.Controllers.MemberController">
             <summary>
             系统成员
             </summary>
-        </member>
-        <member name="M:Hsiaye.Web.Controllers.MemberController.Login(Hsiaye.Application.Contracts.LoginDto)">
-            <summary>
-            登录
-            </summary>
-            <param name="input"></param>
-            <returns></returns>
-        </member>
-        <member name="M:Hsiaye.Web.Controllers.MemberController.Current">
-            <summary>
-            当前用户信息
-            </summary>
-            <returns></returns>
         </member>
         <member name="M:Hsiaye.Web.Controllers.MemberController.Activate(System.Int64)">
             <summary>
@@ -40,6 +35,19 @@
             停用成员
             </summary>
             <param name="id"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Hsiaye.Web.Controllers.MemberController.Login(Hsiaye.Application.Contracts.LoginDto)">
+            <summary>
+            登录
+            </summary>
+            <param name="input"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Hsiaye.Web.Controllers.MemberController.Current">
+            <summary>
+            当前用户信息
+            </summary>
             <returns></returns>
         </member>
         <member name="M:Hsiaye.Web.Controllers.MemberController.ChangePassword(Hsiaye.Application.Contracts.ChangePasswordDto)">
@@ -201,6 +209,27 @@
         <member name="M:Hsiaye.Web.Controllers.RoleController.Current">
             <summary>
             当前用户的所有角色
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="T:Hsiaye.Web.Controllers.SelfStudyRoomController">
+            <summary>
+            自习室
+            使用教程：
+            1.座位科目、类型管理
+            2.添加座位
+            3.座位预约，预约规则：不可在相同时间段内预约
+            </summary>
+        </member>
+        <member name="M:Hsiaye.Web.Controllers.SelfStudyRoomController.Seat_Options(System.Int64,System.Nullable{System.DateTime},System.Nullable{System.DateTime})">
+            <summary>
+            可预约的座位
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:Hsiaye.Web.Controllers.SelfStudyRoomController.SeatMap">
+            <summary>
+            座位分布图
             </summary>
             <returns></returns>
         </member>

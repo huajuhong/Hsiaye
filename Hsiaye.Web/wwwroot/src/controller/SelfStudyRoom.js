@@ -225,6 +225,7 @@ layui.define(['table', 'form', 'laydate'], function (exports) {
       // , { field: 'OperatorRemark', title: '操作者备注' }
       , { field: 'Normal', width: 70, title: '状态', templet: '#buttonTpl-Normal' }
       , { field: 'Reported', width: 110, title: '签到', templet: '#buttonTpl-Reported' }
+      , { field: 'Paid', width: 110, title: '付款', templet: '#buttonTpl-Paid' }
       , { field: 'CreateTime', width: 160, title: '创建时间' }
       , { title: '操作', width: 150, align: 'center', fixed: 'right', toolbar: '#table-SeatReservation-list' }
     ]]
@@ -298,6 +299,22 @@ layui.define(['table', 'form', 'laydate'], function (exports) {
       }
     });
   });
+
+  //监听付款操作
+  form.on('checkbox(table-Paid)', function (obj) {
+    var value = this.value;
+    var checked = obj.elem.checked;
+    //提交 Ajax 成功后，关闭当前弹层并重载表格
+    admin.req({
+      url: '/api/SelfStudyRoom/SeatReservation_Paid?id=' + value + '&value=' + checked
+      , type: 'post'
+      , done: function (res) {
+        layui.table.reload('LAY-app-SeatReservation-list'); //重载表格
+        layer.msg(checked ? '付款成功' : '等待付款', { icon: checked ? 1 : 0 });
+      }
+    });
+  });
+
 
   exports('SelfStudyRoom', {})
 });

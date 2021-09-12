@@ -529,6 +529,7 @@ namespace Hsiaye.Web.Controllers
             model.OperatorRemark = input.OperatorRemark;
             model.Normal = input.Normal;
             model.Reported = input.Reported;
+            model.Paid = input.Paid;
 
             _database.Update(model);
             return true;
@@ -543,6 +544,19 @@ namespace Hsiaye.Web.Controllers
             //    throw new UserFriendlyException("非法请求");
             //}
             model.Reported = value;
+            _database.Update(model);
+            return true;
+        }
+
+        [HttpPost]
+        public bool SeatReservation_Paid(long id, bool value)
+        {
+            var model = _database.Get<SeatReservation>(new { Id = id });
+            //if (model.OrganizationUnitId != _accessor.OrganizationUnitId)
+            //{
+            //    throw new UserFriendlyException("非法请求");
+            //}
+            model.Paid = value;
             _database.Update(model);
             return true;
         }
@@ -573,7 +587,7 @@ namespace Hsiaye.Web.Controllers
             if (!string.IsNullOrEmpty(input.Keywords))
             {
                 predicateGroup.Predicates.Add(Predicates.Field<SeatReservation>(e => e.Name, Operator.Like, input.Keywords));
-                predicateGroup.Predicates.Add(Predicates.Field<SeatReservation>(e => e.Description, Operator.Like, input.Keywords));
+                predicateGroup.Predicates.Add(Predicates.Field<SeatReservation>(e => e.Phone, Operator.Like, input.Keywords));
             }
             if (input.SeatId > 0)
             {

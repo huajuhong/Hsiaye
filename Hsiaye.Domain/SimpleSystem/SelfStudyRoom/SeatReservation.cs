@@ -35,6 +35,7 @@ namespace Hsiaye.Domain
         public string OperatorRemark { get; set; }//操作者备注
         public bool Normal { get; set; }//默认true,取消false,预约true
         public bool Reported { get; set; }//默认false,未签到false,已签到true
+        public bool Paid { get; set; }//默认false,待付款false,已付款true
         public bool Deleted { get; set; }
 
         public Seat Seat { get; set; }
