@@ -85,6 +85,14 @@
       </div>
 
       <div class="layui-form-item">
+        <label class="layui-form-label">到店时间</label>
+        <div class="layui-input-inline">
+          <input id="Description" name="Description" lay-verify="required" placeholder="请选择" autocomplete="off"
+            class="layui-input">
+        </div>
+      </div>
+
+      <div class="layui-form-item">
         <div class="layui-inline">
           <label class="layui-form-label">图形验证码</label>
           <div class="layui-input-inline">
@@ -189,7 +197,7 @@
       //     content: $('#SeatMapContent')
       //   });
       // })
-
+      laydate.render({ elem: '#Description', type: 'time' });
       // 开始时间
       laydate.render({
         elem: '#Begin', value: today, done: function (value, date, endDate) {
