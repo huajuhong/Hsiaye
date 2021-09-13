@@ -1,6 +1,6 @@
 <div class="layui-card">
   <div class="layui-card-header layui-bg-cyan">
-    自习室座位预约
+    自习室座位预约（营业时间：10点-23点）
   </div>
   <div class="layui-card-body layui-bg-cyan">
     <div class="layui-form" lay-filter="form">
@@ -87,7 +87,7 @@
       <div class="layui-form-item">
         <label class="layui-form-label">到店时间</label>
         <div class="layui-input-inline">
-          <input id="Description" name="Description" lay-verify="required" placeholder="请选择" autocomplete="off"
+          <input id="ArrivalTime" name="ArrivalTime" lay-verify="required" placeholder="请选择" autocomplete="off"
             class="layui-input">
         </div>
       </div>
@@ -124,6 +124,13 @@
         <div class="layui-input-block">
           <input type="button" lay-submit lay-filter="layuiadmin-app-SeatReservation-submit" value="确认"
             class="layui-btn layui-btn-normal">
+        </div>
+      </div>
+
+      <div class="layui-form-item">
+        <label class="layui-form-label"></label>
+        <div class="layui-input-block">
+          <p style="color: #FF5722;">如有任何问题请联系管理员：13201396383</p>
         </div>
       </div>
       </form>
@@ -197,7 +204,7 @@
       //     content: $('#SeatMapContent')
       //   });
       // })
-      laydate.render({ elem: '#Description', type: 'time' });
+      laydate.render({ elem: '#ArrivalTime', type: 'time', min: '09:00:00', max: '23:00:00' });
       // 开始时间
       laydate.render({
         elem: '#Begin', value: today, done: function (value, date, endDate) {

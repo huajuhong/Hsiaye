@@ -711,7 +711,7 @@ namespace Hsiaye.Web.Controllers
             input.OperatorId = 0;
             input.SeatCategoryId = seat.SeatCategoryId;
             //补充默认字段
-            input.Description ??= "";
+            input.Description = "";
             input.OperatorRemark = "";
             input.Normal = true;
             input.Reported = false;

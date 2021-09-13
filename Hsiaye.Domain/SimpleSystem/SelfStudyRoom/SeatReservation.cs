@@ -28,6 +28,7 @@ namespace Hsiaye.Domain
         public string Phone { get; set; }//电话
         public DateTime Begin { get; set; }//预约开始时间
         public DateTime End { get; set; }//预约结束时间
+        public TimeSpan ArrivalTime { get; set; }//到达时间
         [StringLength(256)]
         public string Description { get; set; }
         public long OperatorId { get; set; }//操作者Id
@@ -40,7 +41,7 @@ namespace Hsiaye.Domain
 
         public Seat Seat { get; set; }
         public SeatSubject SeatSubject { get; set; }
-        
+
     }
     public class SeatReservationMap : ClassMapper<SeatReservation>
     {

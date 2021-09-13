@@ -220,7 +220,7 @@ layui.define(['table', 'form', 'laydate'], function (exports) {
       , { field: 'Begin', width: 190, title: '开始-结束日期', templet: function (d) { return d.Begin.substring(0, 10) + ' ~ ' + d.End.substring(0, 10); } }
       , { field: 'SeatId', title: '座位', templet: '#textTpl-Seat' }
       , { field: 'SeatSubjectId', width: 100, title: '科目', templet: function (d) { return d.SeatSubject.Name; } }
-      , { field: 'Description', title: '说明' }
+      , { field: 'ArrivalTime', width: 100, title: '到达时间' }
       // , { field: 'OperatorId', width: 80, title: '操作者ID' }
       // , { field: 'OperatorRemark', title: '操作者备注' }
       , { field: 'Normal', width: 70, title: '状态', templet: '#buttonTpl-Normal' }
