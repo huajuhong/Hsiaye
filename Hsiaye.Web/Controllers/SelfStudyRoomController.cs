@@ -603,7 +603,7 @@ namespace Hsiaye.Web.Controllers
                 predicateGroup.Predicates.Add(Predicates.Field<SeatReservation>(e => e.Begin, Operator.Le, input.ReservationDate.Value));
                 predicateGroup.Predicates.Add(Predicates.Field<SeatReservation>(e => e.End, Operator.Ge, input.ReservationDate.Value));
             }
-            var sort = new List<ISort> { Predicates.Sort<SeatReservation>(x => x.CreateTime) };
+            var sort = new List<ISort> { Predicates.Sort<SeatReservation>(x => x.CreateTime, false) };
             var list = _database.GetPage<SeatReservation>(predicateGroup, sort, input.PageIndex, input.PageSize);
             var count = _database.Count<SeatReservation>(predicateGroup);
             foreach (var item in list)

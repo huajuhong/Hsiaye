@@ -230,8 +230,8 @@ layui.define(['table', 'form', 'laydate'], function (exports) {
       , { title: '操作', width: 150, align: 'center', fixed: 'right', toolbar: '#table-SeatReservation-list' }
     ]]
     , page: true
-    , limit: 10
-    , limits: [10, 15, 20, 25, 30]
+    , limit: 50
+    , limits: [10, 30, 50]
     , text: '对不起，加载出现异常！'
   });
 

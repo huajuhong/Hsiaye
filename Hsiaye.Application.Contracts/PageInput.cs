@@ -34,9 +34,9 @@ namespace Hsiaye.Application.Contracts
         {
             get
             {
-                if (pageSize > 20)
+                if (pageSize > 100)
                 {
-                    return 10;
+                    return 100;
                 }
                 else
                 {
