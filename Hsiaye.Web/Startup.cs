@@ -77,7 +77,7 @@ namespace Hsiaye.Web
 
             services.AddTransient(serviceProvider =>
             {
-                var connection = new System.Data.SqlClient.SqlConnection("Password=222222;Persist Security Info=True;User ID=sa;Initial Catalog=Hsiaye;Data Source=.");
+                var connection = new System.Data.SqlClient.SqlConnection(Configuration.GetConnectionString("DefaultConnection"));
                 var config = new DapperExtensionsConfiguration(typeof(AutoClassMapper<>), new List<Assembly>(), new SqlServerDialect());
                 var sqlGenerator = new SqlGeneratorImpl(config);
                 IDatabase database = new Database(connection, sqlGenerator);
