@@ -522,6 +522,7 @@ namespace Hsiaye.Web.Controllers
             var seat = _database.Get<Seat>(new { Id = model.SeatId });
             model.SeatCategoryId = seat.SeatCategoryId;
             model.SeatSubjectId = input.SeatSubjectId;
+            model.ArrivalTime = input.ArrivalTime;
             model.Begin = input.Begin;
             model.End = input.End;
             model.Description = input.Description;

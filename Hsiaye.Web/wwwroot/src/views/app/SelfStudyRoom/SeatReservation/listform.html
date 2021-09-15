@@ -62,7 +62,7 @@
   </div>
 
   <div class="layui-form-item">
-    <label class="layui-form-label">学科</label>
+    <label class="layui-form-label">自习学科</label>
     <div class="layui-input-block">
       <script type="text/html" template lay-url="/api/SelfStudyRoom/SeatSubject_Options" lay-type="post"
         lay-done="layui.data.done_SeatSubjectId(d);">
@@ -77,6 +77,15 @@
       </script>
     </div>
   </div>
+
+  <div class="layui-form-item">
+    <label class="layui-form-label">到店时间</label>
+    <div class="layui-input-block">
+      <input id="ArrivalTime" name="ArrivalTime" lay-verify="required" placeholder="请选择" autocomplete="off"
+        class="layui-input">
+    </div>
+  </div>
+
   <div class="layui-form-item">
     <label class="layui-form-label">说明</label>
     <div class="layui-input-block">
@@ -157,6 +166,7 @@
       , view = layui.view
       , form = layui.form
       , laydate = layui.laydate;
+    laydate.render({ elem: '#ArrivalTime', type: 'time', min: '10:00:00', max: '23:00:00' });
     // 开始时间
     laydate.render({
       elem: '#Begin', value: begin, done: function (value, date, endDate) {
