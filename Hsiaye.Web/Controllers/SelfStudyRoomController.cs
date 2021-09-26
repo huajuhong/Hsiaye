@@ -378,6 +378,9 @@ namespace Hsiaye.Web.Controllers
         /// <summary>
         /// 可预约的座位
         /// </summary>
+        /// <param name="seatCategoryId">座位分类Id</param>
+        /// <param name="begin">开始日期</param>
+        /// <param name="end">结束日期</param>
         /// <returns></returns>
         [HttpPost]
         public IEnumerable<Seat> Seat_Options(long seatCategoryId, DateTime? begin, DateTime? end)
