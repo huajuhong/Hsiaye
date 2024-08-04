@@ -134,8 +134,8 @@ namespace Hsiaye.Web.Controllers
         }
         public static AlibabaCloud.SDK.Dysmsapi20170525.Client CreateClient()
         {
-            string accessKeyId = "LTAI5tLaEXg4JCM4yJRGdzep";
-            string accessKeySecret = "Lpei1KBH0JCxkCPYQKHv6GMwsUb1tG";
+            string accessKeyId = "";
+            string accessKeySecret = "";
             AlibabaCloud.OpenApiClient.Models.Config config = new AlibabaCloud.OpenApiClient.Models.Config
             {
                 // 您的AccessKey ID
